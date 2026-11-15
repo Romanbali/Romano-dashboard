@@ -964,7 +964,7 @@
         date.textContent = new Date(item.date + "T12:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
         const type = document.createElement("span");
         type.className = "history-type " + (isDeposit ? "deposit" : "withdrawal");
-        type.textContent = isDeposit ? (Number(item.bonusAmount) > 0 ? "Пополнение · " + Number(item.bonusPercent) + "% бонус" : "Пополнение") : "Вывод";
+        type.textContent = isDeposit ? (Number(item.bonusAmount) > 0 ? "Пополнение · бонус +" + money(Number(item.bonusAmount)) + " (" + Number(item.bonusPercent) + "%)" : "Пополнение") : "Вывод";
         if (isDeposit && Number(item.bonusAmount) > 0) type.title = "Сумма: " + money(Number(item.principalAmount) || 0) + " · Бонус: " + money(Number(item.bonusAmount) || 0);
         const amount = document.createElement("strong");
         amount.className = "history-amount " + (isDeposit ? "deposit" : "withdrawal");
