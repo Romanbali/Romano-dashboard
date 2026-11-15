@@ -741,7 +741,7 @@
       editorStartDate.textContent = formatEditorDate(ordered[0]);
       editorEndDate.textContent = formatEditorDate(ordered[1]);
       editorHint.textContent = selectingRangeEnd ? "Теперь выбери конечную дату — можно нажать или провести по календарю" : "Удерживай дату, чтобы начать новый диапазон";
-      editorKindActions.hidden = rangeStart !== rangeEnd;
+      editorKindActions.hidden = rangeStart !== rangeEnd || rangeStart > todayKey;
     }
     function openCalendarEditor(dateKey) {
       editorActive = true;
@@ -979,11 +979,10 @@
     editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
     let depositDialogKind = "deposit";
     function openDepositDialog(kind) {
-      if (rangeStart !== rangeEnd) return;
+      if (rangeStart !== rangeEnd || !rangeStart || rangeStart > todayKey) return;
       depositDialogKind = kind;
       const isDeposit = kind === "deposit";
-      const operationDate = rangeStart || todayKey;
-      depositDialogTitle.textContent = (isDeposit ? "Пополнение депозита" : "Вывод из депозита") + " · " + formatEditorDate(operationDate);
+      depositDialogTitle.textContent = isDeposit ? "Пополнение депозита" : "Вывод из депозита";
       depositDialogSubmit.textContent = isDeposit ? "Пополнить" : "Вывести";
       depositDialogAmount.value = "";
       depositDialogAmount.setCustomValidity("");
@@ -1012,7 +1011,7 @@
       if (!Array.isArray(calendarData.history)) calendarData.history = [];
       calendarData.history.push({
         id: "deposit-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
-        date: rangeStart || todayKey,
+        date: todayKey,
         createdAt: Date.now(),
         type: depositDialogKind,
         amount: depositDialogKind === "deposit" ? amount : -amount,
@@ -1020,7 +1019,7 @@
       });
       saveDepositHistory();
       renderHistory();
-      calendarDetail.textContent = (depositDialogKind === "deposit" ? "Депозит пополнен на " : "Из депозита выведено ") + money(amount) + " · " + formatEditorDate(rangeStart || todayKey);
+      calendarDetail.textContent = depositDialogKind === "deposit" ? "Депозит пополнен на " + money(amount) : "Из депозита выведено " + money(amount);
       closeDepositDialog();
       closeCalendarEditor();
     }
