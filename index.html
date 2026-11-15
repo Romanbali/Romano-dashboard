@@ -329,7 +329,19 @@
     .editor-amount-label { display:block; margin-bottom:6px; color:#566074; font-size:12px; font-weight:750; }
     .editor-amount { width:100%; min-height:44px; padding:9px 12px; border:1px solid #dce2ec; border-radius:11px; outline:none; background:#fff; color:#172033; font:inherit; font-size:18px; font-weight:750; font-variant-numeric:tabular-nums; }
     .editor-amount:focus { border-color:#7188c8; box-shadow:0 0 0 3px rgba(83,111,174,.12); }
-    .editor-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
+    .editor-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:12px; }
+    .editor-kind-actions { display:flex; align-items:center; gap:8px; margin-right:auto; }
+    .editor-kind-actions[hidden] { display:none; }
+    .editor-kind-button { display:grid; place-items:center; width:42px; height:42px; padding:10px; border:1px solid transparent; border-radius:50%; background:transparent; cursor:pointer; transition:transform 140ms var(--ease-out), background-color 140ms ease; }
+    .editor-kind-button svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+    .editor-kind-button.deposit { color:#22bd59; }
+    .editor-kind-button.withdrawal { color:#ff3b30; }
+    .editor-kind-button:active { transform:scale(.94); }
+    @media (hover:hover) and (pointer:fine) {
+      .editor-kind-button.deposit:hover { background:#eaf9ef; }
+      .editor-kind-button.withdrawal:hover { background:#fff0ef; }
+    }
+    @media (prefers-reduced-motion:reduce) { .editor-kind-button { transition:none; } }
     .editor-button { min-height:40px; padding:8px 15px; border:1px solid #e0e4ed; border-radius:10px; background:#f7f8fb; color:#596274; font:inherit; font-size:13px; font-weight:750; cursor:pointer; transition:transform 140ms var(--ease-out), background-color 140ms ease; }
     .editor-button.primary { border-color:#536fe0; background:#536fe0; color:#fff; }
     .editor-button:active { transform:scale(.97); }
@@ -476,7 +488,13 @@
           <div class="editor-range"><div class="editor-date" id="editor-start-date">—</div><span>→</span><div class="editor-date" id="editor-end-date">—</div></div>
           <label class="editor-amount-label" for="editor-amount">Сумма в USD (можно отрицательную)</label>
           <input class="editor-amount" id="editor-amount" type="number" inputmode="decimal" step="0.01" placeholder="0.00">
-          <div class="editor-actions"><button class="editor-button" id="editor-cancel" type="button">Отмена</button><button class="editor-button primary" id="editor-apply" type="button">Сохранить сумму</button></div>
+          <div class="editor-actions">
+            <div class="editor-kind-actions" id="editor-kind-actions" hidden>
+              <button class="editor-kind-button deposit" id="editor-deposit" type="button" aria-label="Пополнение" title="Пополнение"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+              <button class="editor-kind-button withdrawal" id="editor-withdrawal" type="button" aria-label="Вывод" title="Вывод"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 8v9H8"/></svg></button>
+            </div>
+            <button class="editor-button" id="editor-cancel" type="button">Отмена</button><button class="editor-button primary" id="editor-apply" type="button">Сохранить сумму</button>
+          </div>
         </section>
         <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
       </div>
@@ -509,6 +527,9 @@
     const editorStartDate = document.getElementById("editor-start-date");
     const editorEndDate = document.getElementById("editor-end-date");
     const editorAmount = document.getElementById("editor-amount");
+    const editorKindActions = document.getElementById("editor-kind-actions");
+    const editorDeposit = document.getElementById("editor-deposit");
+    const editorWithdrawal = document.getElementById("editor-withdrawal");
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
     const historyPanel = document.getElementById("history-panel");
@@ -669,6 +690,7 @@
       editorStartDate.textContent = formatEditorDate(ordered[0]);
       editorEndDate.textContent = formatEditorDate(ordered[1]);
       editorHint.textContent = selectingRangeEnd ? "Теперь выбери конечную дату — можно нажать или провести по календарю" : "Удерживай дату, чтобы начать новый диапазон";
+      editorKindActions.hidden = rangeStart !== rangeEnd;
     }
     function openCalendarEditor(dateKey) {
       editorActive = true;
@@ -896,6 +918,18 @@
     document.getElementById("editor-cancel").addEventListener("click", closeCalendarEditor);
     document.getElementById("editor-apply").addEventListener("click", applyCalendarEdit);
     editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
+    editorDeposit.addEventListener("click", () => {
+      if (rangeStart !== rangeEnd) return;
+      const amount = Math.abs(Number(editorAmount.value) || 0);
+      editorAmount.value = amount.toFixed(2);
+      editorAmount.dispatchEvent(new Event("input", { bubbles:true }));
+    });
+    editorWithdrawal.addEventListener("click", () => {
+      if (rangeStart !== rangeEnd) return;
+      const amount = Math.abs(Number(editorAmount.value) || 0);
+      editorAmount.value = (-amount).toFixed(2);
+      editorAmount.dispatchEvent(new Event("input", { bubbles:true }));
+    });
     calendarDays.addEventListener("contextmenu", event => event.preventDefault());
     calendarDays.addEventListener("selectstart", event => event.preventDefault());
     calendarDays.addEventListener("pointerdown", event => {
