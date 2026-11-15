@@ -320,8 +320,13 @@
     .history-totals .deposit-total { color:#159b39; }
     .history-totals .withdrawal-total { color:#151515; }
     .history-list { display:grid; margin-top:8px; }
-    .history-row { display:grid; grid-template-columns:34px minmax(90px,.9fr) minmax(90px,1fr) minmax(90px,auto); align-items:center; gap:9px; min-height:48px; border-bottom:1px solid #e7e9ef; color:#151b2c; font-size:clamp(11px,2.6vw,15px); }
+    .history-row { appearance:none; width:100%; display:grid; grid-template-columns:34px minmax(90px,.9fr) minmax(90px,1fr) minmax(90px,auto); align-items:center; gap:9px; min-height:48px; padding:5px 8px; border:0; border-bottom:1px solid #e7e9ef; border-radius:10px; background:transparent; color:#151b2c; font:inherit; font-size:clamp(11px,2.6vw,15px); text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform 140ms cubic-bezier(0.23,1,0.32,1), background-color 140ms ease, box-shadow 140ms ease; }
     .history-row:last-child { border-bottom:0; }
+    .history-row:active { transform:scale(.985); background:#f0f4fa; }
+    .history-row[aria-pressed="true"] { background:#f0f4fa; box-shadow:inset 0 0 0 1px #dce4f2; }
+    .history-row:focus-visible { outline:2px solid #7189bb; outline-offset:2px; }
+    @media (hover:hover) and (pointer:fine) { .history-row:hover { background:#f7f8fb; } }
+    @media (prefers-reduced-motion:reduce) { .history-row { transition:background-color 100ms ease, box-shadow 100ms ease; } .history-row:active { transform:none; } }
     .history-kind-icon { display:grid; place-items:center; width:30px; height:30px; border-radius:9px; background:#f0f2f8; color:#667086; font-size:22px; line-height:1; }
     .history-date { color:#697184; white-space:nowrap; }
     .history-type { font-weight:750; }
@@ -484,8 +489,16 @@
       historyList.innerHTML = "";
       transactions.sort((a, b) => b.date.localeCompare(a.date)).forEach(item => {
         const isDeposit = item.type === "deposit";
-        const row = document.createElement("div");
+        const row = document.createElement("button");
+        row.type = "button";
         row.className = "history-row";
+        row.setAttribute("aria-pressed", "false");
+        row.setAttribute("aria-label", (isDeposit ? "Пополнение " : "Вывод ") + money(Math.abs(Number(item.amount) || 0)) + ", " + item.date);
+        row.addEventListener("click", () => {
+          const wasSelected = row.getAttribute("aria-pressed") === "true";
+          historyList.querySelectorAll(".history-row").forEach(button => button.setAttribute("aria-pressed", "false"));
+          row.setAttribute("aria-pressed", String(!wasSelected));
+        });
         const icon = document.createElement("span");
         icon.className = "history-kind-icon";
         icon.setAttribute("aria-hidden", "true");
