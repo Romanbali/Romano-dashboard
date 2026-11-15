@@ -72,5 +72,31 @@
         "30": -6.91
       }
     }
-  }
+  },
+  "history": [
+    {
+      "id": "tx-001",
+      "date": "2026-07-29",
+      "type": "deposit",
+      "amount": 1000
+    },
+    {
+      "id": "tx-002",
+      "date": "2026-07-28",
+      "type": "withdrawal",
+      "amount": -700
+    },
+    {
+      "id": "tx-003",
+      "date": "2026-07-25",
+      "type": "deposit",
+      "amount": 1500
+    },
+    {
+      "id": "tx-004",
+      "date": "2026-07-20",
+      "type": "withdrawal",
+      "amount": -500
+    }
+  ]
 }
