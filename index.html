@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f6f7fb" />
-  <title>Dashboard</title>
+  <title>Romano Dashboard</title>
   <style>
     :root {
       color-scheme: light;
@@ -18,13 +18,7 @@
     }
 
     * { box-sizing: border-box; }
-
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      margin: 0;
-    }
-
+    html, body { width: 100%; min-height: 100%; margin: 0; }
     body {
       min-height: 100vh;
       padding: clamp(8px, 1.35vw, 15px);
@@ -33,7 +27,6 @@
       background: var(--page);
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     body.sheet-open { overflow: hidden; }
 
     .dashboard {
@@ -43,40 +36,27 @@
       width: 100%;
       min-width: 0;
     }
-
-    .rail,
-    .top-panel,
-    .tile {
+    .rail, .top-panel, .tile {
       background: var(--surface);
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: 0 2px 5px rgba(28, 36, 58, 0.055);
     }
-
     .rail { min-height: clamp(590px, 86vh, 900px); }
-
     .workspace {
       display: grid;
       grid-template-rows: clamp(42px, 6.2vw, 68px) auto;
       gap: clamp(10px, 1.65vw, 18px);
       min-width: 0;
     }
-
     .top-panel { min-width: 0; }
-
     .grid {
       display: grid;
       grid-template-rows: repeat(4, clamp(110px, 26vw, 180px));
       gap: var(--space);
       min-width: 0;
     }
-
-    .tile-row {
-      display: grid;
-      gap: var(--space);
-      min-width: 0;
-    }
-
+    .tile-row { display: grid; gap: var(--space); min-width: 0; }
     .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .row-two { grid-template-columns: 2fr 1fr; }
     .row-three { grid-template-columns: 1fr 1fr 2fr; }
@@ -88,27 +68,74 @@
       min-width: 0;
       min-height: 0;
       padding: 0;
+      overflow: hidden;
       cursor: pointer;
       appearance: none;
       -webkit-tap-highlight-color: transparent;
       transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease;
     }
-
-    .tile:active {
+    .tile:active, .calendar-control:active, .calendar-day:active {
       transform: scale(0.97);
       background-color: #edf0f6;
       border-color: #b9c3d5;
     }
-
-    .tile:focus-visible {
+    .tile:focus-visible, .calendar-control:focus-visible, .calendar-day:focus-visible {
       outline: 2px solid #9aa8c4;
-      outline-offset: 3px;
+      outline-offset: 2px;
     }
-
     @media (hover: hover) and (pointer: fine) {
-      .tile:hover { border-color: #c4cad7; }
+      .tile:hover, .calendar-control:hover { border-color: #c4cad7; }
     }
 
+    /* Compact calendar preview inside dashboard tile 1 */
+    .calendar-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 100%;
+      height: 100%;
+      padding: clamp(5px, 0.8vw, 10px);
+      text-align: left;
+      color: #172033;
+      pointer-events: none;
+    }
+    .preview-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 3px;
+      font-size: clamp(7px, 1vw, 12px);
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .preview-arrow { color: #778095; font-size: 1.15em; }
+    .preview-weekdays, .preview-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 2px;
+    }
+    .preview-weekdays span {
+      overflow: hidden;
+      color: #858b99;
+      font-size: clamp(4px, 0.55vw, 7px);
+      text-align: center;
+      font-weight: 700;
+    }
+    .preview-days span {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      aspect-ratio: 1;
+      border-radius: 3px;
+      color: #5b6372;
+      background: #f5f6f9;
+      font-size: clamp(4px, 0.62vw, 8px);
+      line-height: 1;
+    }
+    .preview-days span.positive { color: #159447; background: #edf8f0; }
+    .preview-days span.negative { color: #e33c3c; background: #fff0ef; }
+
+    /* Bottom sheet */
     .sheet-backdrop {
       position: fixed;
       inset: 0;
@@ -119,13 +146,7 @@
       pointer-events: none;
       transition: opacity 250ms var(--ease-out), visibility 250ms;
     }
-
-    .sheet-backdrop[data-open="true"] {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
+    .sheet-backdrop[data-open="true"] { opacity: 1; visibility: visible; pointer-events: auto; }
     .bottom-sheet {
       position: fixed;
       z-index: 21;
@@ -137,7 +158,7 @@
       height: 60vh;
       min-height: 0;
       max-height: 60vh;
-      padding: 10px clamp(20px, 5vw, 32px) max(24px, env(safe-area-inset-bottom));
+      padding: 10px clamp(12px, 3vw, 28px) max(16px, env(safe-area-inset-bottom));
       overflow: auto;
       background: #fff;
       border-radius: 26px 26px 0 0;
@@ -147,69 +168,125 @@
       overscroll-behavior: contain;
       touch-action: pan-y;
     }
-
     .bottom-sheet[data-open="true"] { transform: translateY(0); }
-
     .sheet-handle-area {
       display: flex;
-      flex: 0 0 34px;
+      flex: 0 0 25px;
       align-items: flex-start;
       justify-content: center;
-      margin: -2px -12px 12px;
-      padding: 2px 12px 12px;
+      margin: -2px -12px 5px;
+      padding: 2px 12px 8px;
       cursor: grab;
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
     }
-
     .sheet-handle-area:active { cursor: grabbing; }
-
-    .sheet-handle {
-      width: 46px;
-      height: 5px;
-      border-radius: 999px;
-      background: #dedede;
-    }
-
-    .sheet-content {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    .sheet-placeholder {
-      width: min(58%, 190px);
-      height: 14px;
-      margin: 4px 0 22px;
-      border-radius: 999px;
-      background: #d2d2d0;
-    }
-
-    .sheet-line {
-      height: 10px;
-      margin: 0 0 12px;
-      border-radius: 999px;
-      background: #ededeb;
-    }
-
+    .sheet-handle { width: 46px; height: 5px; border-radius: 999px; background: #dedede; }
+    .sheet-content { width: 100%; max-width: 760px; margin: 0 auto; }
+    .sheet-placeholder { width: min(58%, 190px); height: 14px; margin: 4px 0 22px; border-radius: 999px; background: #d2d2d0; }
+    .sheet-line { height: 10px; margin: 0 0 12px; border-radius: 999px; background: #ededeb; }
     .sheet-line.wide { width: 88%; }
     .sheet-line.medium { width: 62%; }
+    .sheet-placeholder-card { height: 76px; margin-top: 28px; border-radius: 16px; background: #f7f7f6; }
+    .calendar-full { display: none; width: 100%; max-width: 900px; margin: 0 auto; }
+    .calendar-full[data-visible="true"] { display: block; }
+    .generic-sheet[data-visible="false"] { display: none; }
 
-    .sheet-placeholder-card {
-      height: 76px;
-      margin-top: 28px;
-      border-radius: 16px;
-      background: #f7f7f6;
+    .calendar-header {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e7e9ef;
     }
+    .calendar-title {
+      margin: 0;
+      color: #151b2c;
+      font-size: clamp(18px, 4.4vw, 27px);
+      font-weight: 750;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .calendar-control {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 42px;
+      padding: 0;
+      color: #596174;
+      background: #f7f8fb;
+      border: 1px solid #dfe2eb;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 23px;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease;
+    }
+    .calendar-weekdays, .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: clamp(3px, 0.7vw, 7px);
+    }
+    .calendar-weekdays { margin-top: 10px; }
+    .calendar-weekdays span {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 27px;
+      border-radius: 8px;
+      background: #f0f1f6;
+      color: #737987;
+      font-size: clamp(8px, 2.1vw, 12px);
+      font-weight: 750;
+    }
+    .calendar-days { margin-top: 5px; }
+    .calendar-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(2px, 0.7vw, 6px);
+      min-width: 0;
+      min-height: clamp(43px, 9.6vw, 68px);
+      padding: 3px 1px;
+      color: #111;
+      background: #fff;
+      border: 1px solid #dfe2e9;
+      border-radius: 9px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease;
+    }
+    .calendar-day.empty { visibility: hidden; pointer-events: none; }
+    .calendar-day.selected { background: #f0f4ff; border-color: #9aadd8; }
+    .calendar-day-number { font-size: clamp(11px, 3vw, 18px); font-weight: 650; line-height: 1; }
+    .calendar-amount { font-size: clamp(7px, 2.05vw, 13px); font-weight: 750; line-height: 1; white-space: nowrap; }
+    .calendar-amount.positive { color: #159b39; }
+    .calendar-amount.negative { color: #e23b3b; }
+    .calendar-amount.no-value { color: #b8bdc7; font-weight: 500; }
+    .calendar-detail {
+      min-height: 34px;
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 9px;
+      background: #f7f8fa;
+      color: #51596a;
+      font-size: 12px;
+      text-align: center;
+    }
+    .calendar-detail strong { color: #182033; }
+    .calendar-detail .positive { color: #159b39; }
+    .calendar-detail .negative { color: #e23b3b; }
 
     @media (prefers-reduced-motion: reduce) {
       .sheet-backdrop { transition: opacity 120ms ease; }
       .bottom-sheet { transition: opacity 120ms ease; transform: none; }
       .bottom-sheet[data-open="false"] { opacity: 0; visibility: hidden; }
       .bottom-sheet[data-open="true"] { opacity: 1; visibility: visible; }
-      .tile { transition: background-color 100ms ease, border-color 100ms ease; }
-      .tile:active { transform: none; background-color: #edf0f6; }
+      .tile, .calendar-control, .calendar-day { transition: background-color 100ms ease, border-color 100ms ease; }
+      .tile:active, .calendar-control:active, .calendar-day:active { transform: none; background-color: #edf0f6; }
     }
   </style>
 </head>
@@ -220,7 +297,13 @@
       <header class="top-panel" aria-hidden="true"></header>
       <div class="grid" aria-label="Dashboard blocks">
         <div class="tile-row row-one">
-          <button class="tile" type="button" aria-label="Open block 1"></button>
+          <button class="tile" id="calendar-launch" type="button" aria-label="Open July 2026 calendar">
+            <div class="calendar-preview" id="calendar-preview">
+              <div class="preview-heading"><span>JUL 2026</span><span class="preview-arrow">↗</span></div>
+              <div class="preview-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+              <div class="preview-days" id="preview-days"></div>
+            </div>
+          </button>
           <button class="tile" type="button" aria-label="Open block 2"></button>
           <button class="tile" type="button" aria-label="Open block 3"></button>
           <button class="tile" type="button" aria-label="Open block 4"></button>
@@ -244,36 +327,153 @@
 
   <div class="sheet-backdrop" id="sheet-backdrop"></div>
   <section class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true" aria-label="Block details" aria-hidden="true" data-open="false">
-    <div class="sheet-handle-area" id="sheet-handle-area" aria-label="Drag down to close">
-      <span class="sheet-handle"></span>
-    </div>
+    <div class="sheet-handle-area" id="sheet-handle-area" aria-label="Drag down to close"><span class="sheet-handle"></span></div>
     <div class="sheet-content">
-      <div class="sheet-placeholder"></div>
-      <div class="sheet-line wide"></div>
-      <div class="sheet-line medium"></div>
-      <div class="sheet-placeholder-card"></div>
+      <div class="generic-sheet" id="generic-sheet" data-visible="true">
+        <div class="sheet-placeholder"></div>
+        <div class="sheet-line wide"></div>
+        <div class="sheet-line medium"></div>
+        <div class="sheet-placeholder-card"></div>
+      </div>
+      <div class="calendar-full" id="calendar-full" data-visible="false" aria-label="Monthly balance calendar">
+        <div class="calendar-header">
+          <button class="calendar-control" id="month-prev" type="button" aria-label="Previous month">←</button>
+          <h2 class="calendar-title" id="calendar-title">July 2026</h2>
+          <button class="calendar-control" id="month-next" type="button" aria-label="Next month">→</button>
+        </div>
+        <div class="calendar-weekdays">
+          <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+        </div>
+        <div class="calendar-days" id="calendar-days"></div>
+        <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
+      </div>
     </div>
   </section>
 
   <script>
     const tiles = document.querySelectorAll(".tile");
+    const calendarLaunch = document.getElementById("calendar-launch");
     const backdrop = document.getElementById("sheet-backdrop");
     const sheet = document.getElementById("bottom-sheet");
     const handle = document.getElementById("sheet-handle-area");
+    const genericSheet = document.getElementById("generic-sheet");
+    const calendarFull = document.getElementById("calendar-full");
+    const calendarTitle = document.getElementById("calendar-title");
+    const calendarDays = document.getElementById("calendar-days");
+    const calendarDetail = document.getElementById("calendar-detail");
+    const previewDays = document.getElementById("preview-days");
 
     let activeTile = null;
     let dragPointerId = null;
     let dragStartY = 0;
     let dragStartTime = 0;
     let dragDistance = 0;
+    let calendarData = { currency: "USD", months: {} };
+    let visibleMonth = new Date(Date.UTC(2026, 6, 1));
+    let selectedDate = null;
 
-    function openSheet(tile) {
+    const monthKey = date => date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0");
+    const monthLabel = date => new Intl.DateTimeFormat("en", { month: "long", year: "numeric", timeZone: "UTC" }).format(date);
+    const money = value => new Intl.NumberFormat("en-US", { style: "currency", currency: calendarData.currency || "USD", signDisplay: "always" }).format(value);
+
+    function monthDays(date) {
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth();
+      const count = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+      const mondayOffset = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7;
+      return { count, offset: mondayOffset };
+    }
+
+    function renderPreview() {
+      const month = calendarData.months["2026-07"] || {};
+      const { count, offset } = monthDays(new Date(Date.UTC(2026, 6, 1)));
+      previewDays.innerHTML = "";
+      for (let i = 0; i < offset; i++) {
+        const blank = document.createElement("span");
+        previewDays.appendChild(blank);
+      }
+      for (let day = 1; day <= count; day++) {
+        const cell = document.createElement("span");
+        const amount = month.days && month.days[String(day)];
+        cell.textContent = day;
+        if (typeof amount === "number") cell.classList.add(amount >= 0 ? "positive" : "negative");
+        previewDays.appendChild(cell);
+      }
+    }
+
+    function renderCalendar() {
+      const key = monthKey(visibleMonth);
+      const month = calendarData.months[key] || {};
+      const { count, offset } = monthDays(visibleMonth);
+      calendarTitle.textContent = monthLabel(visibleMonth);
+      calendarDays.innerHTML = "";
+      for (let i = 0; i < offset; i++) {
+        const blank = document.createElement("div");
+        blank.className = "calendar-day empty";
+        blank.setAttribute("aria-hidden", "true");
+        calendarDays.appendChild(blank);
+      }
+      for (let day = 1; day <= count; day++) {
+        const value = month.days && month.days[String(day)];
+        const dateKey = key + "-" + String(day).padStart(2, "0");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "calendar-day";
+        if (selectedDate === dateKey) button.classList.add("selected");
+        button.setAttribute("aria-label", monthLabel(visibleMonth) + " " + day + (typeof value === "number" ? ", " + money(value) : ", no amount recorded"));
+        const number = document.createElement("span");
+        number.className = "calendar-day-number";
+        number.textContent = day;
+        const amount = document.createElement("span");
+        amount.className = "calendar-amount";
+        if (typeof value === "number") {
+          amount.textContent = money(value);
+          amount.classList.add(value >= 0 ? "positive" : "negative");
+        } else {
+          amount.textContent = "—";
+          amount.classList.add("no-value");
+        }
+        button.append(number, amount);
+        button.addEventListener("click", () => {
+          selectedDate = dateKey;
+          renderCalendar();
+          const signClass = typeof value === "number" ? (value >= 0 ? "positive" : "negative") : "";
+          calendarDetail.innerHTML = "<strong>" + day + " " + monthLabel(visibleMonth) + "</strong>" +
+            (typeof value === "number" ? " · <span class='" + signClass + "'>" + money(value) + "</span>" : " · Нет сохранённой суммы");
+        });
+        calendarDays.appendChild(button);
+      }
+    }
+
+    function changeMonth(delta) {
+      visibleMonth = new Date(Date.UTC(visibleMonth.getUTCFullYear(), visibleMonth.getUTCMonth() + delta, 1));
+      selectedDate = null;
+      calendarDetail.textContent = "Выбери день, чтобы посмотреть сумму";
+      renderCalendar();
+    }
+
+    async function loadCalendarData() {
+      try {
+        const response = await fetch("./data/calendar.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("Calendar data request failed");
+        calendarData = await response.json();
+      } catch (error) {
+        console.error("Could not load calendar data", error);
+      }
+      renderPreview();
+      renderCalendar();
+    }
+
+    function openSheet(tile, showCalendar) {
       activeTile = tile;
+      genericSheet.dataset.visible = String(!showCalendar);
+      calendarFull.dataset.visible = String(showCalendar);
       sheet.style.transform = "";
       sheet.dataset.open = "true";
       sheet.setAttribute("aria-hidden", "false");
       backdrop.dataset.open = "true";
       document.body.classList.add("sheet-open");
+      if (showCalendar) renderCalendar();
     }
 
     function closeSheet() {
@@ -288,7 +488,9 @@
       if (tileToFocus) tileToFocus.focus({ preventScroll: true });
     }
 
-    tiles.forEach(tile => tile.addEventListener("click", () => openSheet(tile)));
+    tiles.forEach(tile => tile.addEventListener("click", () => openSheet(tile, tile === calendarLaunch)));
+    document.getElementById("month-prev").addEventListener("click", () => changeMonth(-1));
+    document.getElementById("month-next").addEventListener("click", () => changeMonth(1));
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && sheet.dataset.open === "true") closeSheet();
@@ -303,35 +505,30 @@
       sheet.style.transition = "none";
       handle.setPointerCapture(event.pointerId);
     });
-
     handle.addEventListener("pointermove", event => {
       if (event.pointerId !== dragPointerId) return;
       const rawDistance = event.clientY - dragStartY;
       dragDistance = rawDistance < 0 ? rawDistance * 0.18 : rawDistance;
       sheet.style.transform = "translateY(" + Math.max(-24, dragDistance) + "px)";
     });
-
     function finishDrag(event) {
       if (event.pointerId !== dragPointerId) return;
       const elapsed = Math.max(1, performance.now() - dragStartTime);
       const velocity = Math.max(0, dragDistance) / elapsed;
       const threshold = Math.max(110, sheet.getBoundingClientRect().height * 0.22);
       const shouldDismiss = dragDistance > threshold || velocity > 0.11;
-
       dragPointerId = null;
       sheet.style.transition = "";
-      if (shouldDismiss) {
-        closeSheet();
-      } else {
-        sheet.style.transform = "";
-      }
+      if (shouldDismiss) closeSheet();
+      else sheet.style.transform = "";
     }
-
     handle.addEventListener("pointerup", finishDrag);
     handle.addEventListener("pointercancel", finishDrag);
     handle.addEventListener("lostpointercapture", event => {
       if (event.pointerId === dragPointerId) finishDrag(event);
     });
+
+    loadCalendarData();
   </script>
 </body>
 </html>
