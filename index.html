@@ -612,6 +612,7 @@
     let lastPointerY = 0;
     const calendarStorageKey = "romano-calendar-data-v1";
     const depositStorageKey = "romano-deposit-amount-v1";
+    const depositHistoryStorageKey = "romano-deposit-history-v1";
     let depositAmount = 500;
 
     function renderDepositAmount() {
@@ -620,6 +621,20 @@
     function saveDepositAmount() {
       try { localStorage.setItem(depositStorageKey, String(depositAmount)); } catch (error) { console.warn("Could not save deposit amount", error); }
       renderDepositAmount();
+    }
+    function saveDepositHistory() {
+      try {
+        const operations = Array.isArray(calendarData.history) ? calendarData.history : [];
+        localStorage.setItem(depositHistoryStorageKey, JSON.stringify(operations.filter(item => item.source === "deposit-dialog")));
+      } catch (error) { console.warn("Could not save deposit history", error); }
+    }
+    function restoreDepositHistory() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(depositHistoryStorageKey) || "[]");
+        if (!Array.isArray(saved)) return;
+        const existingIds = new Set((Array.isArray(calendarData.history) ? calendarData.history : []).map(item => item.id));
+        calendarData.history = (Array.isArray(calendarData.history) ? calendarData.history : []).concat(saved.filter(item => item && item.source === "deposit-dialog" && !existingIds.has(item.id)));
+      } catch (error) { console.warn("Could not restore deposit history", error); }
     }
 
     const monthKey = date => date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0");
@@ -914,6 +929,7 @@
       } catch (error) {
         console.error("Could not load calendar data", error);
       }
+      restoreDepositHistory();
       renderPreview();
       renderCalendar();
       renderHistory();
@@ -988,6 +1004,16 @@
       }
       depositAmount = Math.round((depositAmount + (depositDialogKind === "deposit" ? amount : -amount)) * 100) / 100;
       saveDepositAmount();
+      if (!Array.isArray(calendarData.history)) calendarData.history = [];
+      calendarData.history.push({
+        id: "deposit-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+        date: todayKey,
+        type: depositDialogKind,
+        amount: depositDialogKind === "deposit" ? amount : -amount,
+        source: "deposit-dialog"
+      });
+      saveDepositHistory();
+      renderHistory();
       calendarDetail.textContent = depositDialogKind === "deposit" ? "Депозит пополнен на " + money(amount) : "Из депозита выведено " + money(amount);
       closeDepositDialog();
       closeCalendarEditor();
