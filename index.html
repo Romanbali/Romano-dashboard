@@ -307,6 +307,30 @@
     .calendar-amount.positive { color: #159b39; }
     .calendar-amount.negative { color: #e23b3b; }
     .calendar-amount.no-value { color: #b8bdc7; font-weight: 500; }
+    .calendar-day.range-start,
+    .calendar-day.range-end { position:relative; z-index:1; background:#536fe0; border-color:#536fe0; color:#fff; }
+    .calendar-day.range-start .calendar-day-number,
+    .calendar-day.range-end .calendar-day-number { color:#fff; }
+    .calendar-day.in-range { background:#edf1ff; border-color:#edf1ff; border-radius:5px; }
+    .calendar-day.range-start { border-radius:12px 5px 5px 12px; }
+    .calendar-day.range-end { border-radius:5px 12px 12px 5px; }
+    .calendar-editor { margin-top:12px; padding:14px; border:1px solid #dfe4ef; border-radius:15px; background:#fff; box-shadow:0 5px 18px rgba(33,48,82,.07); }
+    .calendar-editor[hidden] { display:none; }
+    .editor-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:5px; color:#172033; font-size:15px; font-weight:800; }
+    .editor-close { display:grid; place-items:center; width:30px; height:30px; border:0; border-radius:9px; background:#f1f3f8; color:#596274; font-size:19px; cursor:pointer; }
+    .editor-hint { margin:0 0 12px; color:#788194; font-size:12px; line-height:1.4; }
+    .editor-range { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; margin-bottom:12px; }
+    .editor-date { min-width:0; padding:9px 10px; border:1px solid #e2e6ee; border-radius:10px; background:#f8f9fc; color:#202a3d; font-size:12px; font-weight:700; text-align:center; }
+    .editor-amount-label { display:block; margin-bottom:6px; color:#566074; font-size:12px; font-weight:750; }
+    .editor-amount { width:100%; min-height:44px; padding:9px 12px; border:1px solid #dce2ec; border-radius:11px; outline:none; background:#fff; color:#172033; font:inherit; font-size:18px; font-weight:750; font-variant-numeric:tabular-nums; }
+    .editor-amount:focus { border-color:#7188c8; box-shadow:0 0 0 3px rgba(83,111,174,.12); }
+    .editor-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
+    .editor-button { min-height:40px; padding:8px 15px; border:1px solid #e0e4ed; border-radius:10px; background:#f7f8fb; color:#596274; font:inherit; font-size:13px; font-weight:750; cursor:pointer; transition:transform 140ms var(--ease-out), background-color 140ms ease; }
+    .editor-button.primary { border-color:#536fe0; background:#536fe0; color:#fff; }
+    .editor-button:active { transform:scale(.97); }
+    .editor-button:focus-visible,.editor-close:focus-visible { outline:2px solid #7189bb; outline-offset:2px; }
+    @media (hover:hover) and (pointer:fine) { .editor-button:hover { background:#edf0f7; } .editor-button.primary:hover { background:#465fca; } }
+    @media (prefers-reduced-motion:reduce) { .editor-button { transition:background-color 100ms ease; } .editor-button:active { transform:none; } }
     .calendar-detail {
       min-height: 34px;
       margin-top: 8px;
@@ -441,6 +465,14 @@
           <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
         </div>
         <div class="calendar-days" id="calendar-days"></div>
+        <section class="calendar-editor" id="calendar-editor" hidden aria-label="Редактор сумм календаря">
+          <div class="editor-heading"><span>Изменить сумму</span><button class="editor-close" id="editor-close" type="button" aria-label="Закрыть редактор">×</button></div>
+          <p class="editor-hint" id="editor-hint">Выбери конечную дату диапазона или оставь один день</p>
+          <div class="editor-range"><div class="editor-date" id="editor-start-date">—</div><span>→</span><div class="editor-date" id="editor-end-date">—</div></div>
+          <label class="editor-amount-label" for="editor-amount">Сумма в USD (можно отрицательную)</label>
+          <input class="editor-amount" id="editor-amount" type="number" inputmode="decimal" step="0.01" placeholder="0.00">
+          <div class="editor-actions"><button class="editor-button" id="editor-cancel" type="button">Отмена</button><button class="editor-button primary" id="editor-apply" type="button">Сохранить сумму</button></div>
+        </section>
         <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
       </div>
       <section class="history-panel" id="history-panel" data-visible="false" aria-label="История операций">
@@ -467,6 +499,11 @@
     const calendarTitle = document.getElementById("calendar-title");
     const calendarDays = document.getElementById("calendar-days");
     const calendarDetail = document.getElementById("calendar-detail");
+    const calendarEditor = document.getElementById("calendar-editor");
+    const editorHint = document.getElementById("editor-hint");
+    const editorStartDate = document.getElementById("editor-start-date");
+    const editorEndDate = document.getElementById("editor-end-date");
+    const editorAmount = document.getElementById("editor-amount");
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
     const historyPanel = document.getElementById("history-panel");
@@ -513,6 +550,17 @@
     const todayKey = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
     let visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
     let selectedDate = null;
+    let editorActive = false;
+    let rangeStart = null;
+    let rangeEnd = null;
+    let selectingRangeEnd = false;
+    let holdTimer = null;
+    let holdPointerId = null;
+    let holdStarted = false;
+    let suppressDayClick = false;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+    const calendarStorageKey = "romano-calendar-data-v1";
 
     const monthKey = date => date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0");
     const monthLabel = date => new Intl.DateTimeFormat("en", { month: "long", year: "numeric", timeZone: "UTC" }).format(date);
@@ -590,6 +638,93 @@
       }
     }
 
+    function parseDateKey(dateKey) {
+      const [year, month, day] = dateKey.split("-").map(Number);
+      return new Date(Date.UTC(year, month - 1, day));
+    }
+    function dateKeyFromDate(date) {
+      return date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0") + "-" + String(date.getUTCDate()).padStart(2, "0");
+    }
+    function formatEditorDate(dateKey) {
+      return parseDateKey(dateKey).toLocaleDateString("ru-RU", { day:"numeric", month:"short", timeZone:"UTC" });
+    }
+    function dateKeysBetween(start, end) {
+      const first = parseDateKey(start);
+      const last = parseDateKey(end);
+      const low = first <= last ? first : last;
+      const high = first <= last ? last : first;
+      const keys = [];
+      for (let date = new Date(low); date <= high; date.setUTCDate(date.getUTCDate() + 1)) keys.push(dateKeyFromDate(date));
+      return keys;
+    }
+    function updateEditorRange() {
+      const ordered = [rangeStart, rangeEnd].sort();
+      editorStartDate.textContent = formatEditorDate(ordered[0]);
+      editorEndDate.textContent = formatEditorDate(ordered[1]);
+      editorHint.textContent = selectingRangeEnd ? "Теперь выбери конечную дату — можно нажать или провести по календарю" : "Удерживай дату, чтобы начать новый диапазон";
+    }
+    function openCalendarEditor(dateKey) {
+      editorActive = true;
+      rangeStart = dateKey;
+      rangeEnd = dateKey;
+      selectingRangeEnd = true;
+      selectedDate = dateKey;
+      const month = calendarData.months[dateKey.slice(0,7)] || {};
+      const existing = month.days && month.days[String(Number(dateKey.slice(-2)))];
+      editorAmount.value = typeof existing === "number" ? existing.toFixed(2) : "";
+      calendarEditor.hidden = false;
+      updateEditorRange();
+      renderCalendar();
+      editorAmount.focus({ preventScroll:true });
+    }
+    function closeCalendarEditor() {
+      editorActive = false;
+      selectingRangeEnd = false;
+      rangeStart = null;
+      rangeEnd = null;
+      calendarEditor.hidden = true;
+      renderCalendar();
+    }
+    function updateRangeEnd(dateKey) {
+      if (!editorActive || !selectingRangeEnd || dateKey.slice(0,7) !== rangeStart.slice(0,7)) return;
+      rangeEnd = dateKey;
+      selectedDate = dateKey;
+      updateEditorRange();
+      renderCalendar();
+    }
+    function saveCalendarDataLocally() {
+      try {
+        localStorage.setItem(calendarStorageKey, JSON.stringify(calendarData));
+        return true;
+      } catch (error) {
+        console.error("Could not save calendar changes locally", error);
+        return false;
+      }
+    }
+    function applyCalendarEdit() {
+      const amount = Number(editorAmount.value);
+      if (editorAmount.value.trim() === "" || !Number.isFinite(amount)) {
+        editorAmount.setCustomValidity("Введи корректную сумму");
+        editorAmount.reportValidity();
+        return;
+      }
+      editorAmount.setCustomValidity("");
+      const start = rangeStart < rangeEnd ? rangeStart : rangeEnd;
+      const end = rangeStart < rangeEnd ? rangeEnd : rangeStart;
+      dateKeysBetween(start, end).forEach(dateKey => {
+        const key = dateKey.slice(0,7);
+        if (!calendarData.months[key]) calendarData.months[key] = { label: monthLabel(parseDateKey(dateKey)), days:{} };
+        if (!calendarData.months[key].days) calendarData.months[key].days = {};
+        calendarData.months[key].days[String(Number(dateKey.slice(-2)))] = Math.round(amount * 100) / 100;
+      });
+      saveCalendarDataLocally();
+      closeCalendarEditor();
+      renderPreview();
+      renderCalendar();
+      const daysCount = dateKeysBetween(start, end).length;
+      calendarDetail.textContent = "Сумма " + money(amount) + " сохранена для " + (daysCount === 1 ? formatEditorDate(start) : daysCount + " дней");
+    }
+
     function renderCalendar() {
       updateGoalProgress(visibleMonth);
       const key = monthKey(visibleMonth);
@@ -610,6 +745,13 @@
         button.type = "button";
         button.className = "calendar-day";
         if (selectedDate === dateKey) button.classList.add("selected");
+        if (editorActive && rangeStart && rangeEnd) {
+          const low = rangeStart < rangeEnd ? rangeStart : rangeEnd;
+          const high = rangeStart < rangeEnd ? rangeEnd : rangeStart;
+          if (dateKey === low) button.classList.add("range-start");
+          else if (dateKey === high) button.classList.add("range-end");
+          else if (dateKey > low && dateKey < high) button.classList.add("in-range");
+        }
         if (dateKey === todayKey) {
           button.classList.add("today");
           button.setAttribute("aria-current", "date");
@@ -628,7 +770,22 @@
           amount.classList.add("no-value");
         }
         button.append(number, amount);
+        button.dataset.date = dateKey;
         button.addEventListener("click", () => {
+          if (suppressDayClick) { suppressDayClick = false; return; }
+          if (editorActive && selectingRangeEnd) {
+            updateRangeEnd(dateKey);
+            selectingRangeEnd = false;
+            updateEditorRange();
+            const selectedValues = dateKeysBetween(rangeStart, rangeEnd).map(key => {
+              const itemMonth = calendarData.months[key.slice(0,7)] || {};
+              return itemMonth.days && itemMonth.days[String(Number(key.slice(-2)))];
+            });
+            const firstValue = selectedValues[0];
+            editorAmount.value = selectedValues.every(item => typeof item === "number" && item === firstValue) ? Number(firstValue).toFixed(2) : "";
+            editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
+            return;
+          }
           selectedDate = dateKey;
           renderCalendar();
           const signClass = typeof value === "number" ? (value >= 0 ? "positive" : "negative") : "";
@@ -642,6 +799,7 @@
     function changeMonth(delta) {
       visibleMonth = new Date(Date.UTC(visibleMonth.getUTCFullYear(), visibleMonth.getUTCMonth() + delta, 1));
       selectedDate = null;
+      if (editorActive) closeCalendarEditor();
       calendarDetail.textContent = "Выбери день, чтобы посмотреть сумму";
       renderCalendar();
     }
@@ -651,6 +809,12 @@
         const response = await fetch("./data/calendar.json", { cache: "no-store" });
         if (!response.ok) throw new Error("Calendar data request failed");
         calendarData = await response.json();
+        try {
+          const saved = localStorage.getItem(calendarStorageKey);
+          if (saved) calendarData = JSON.parse(saved);
+        } catch (storageError) {
+          console.warn("Could not restore local calendar edits", storageError);
+        }
       } catch (error) {
         console.error("Could not load calendar data", error);
       }
@@ -693,6 +857,46 @@
     tiles.forEach(tile => tile.addEventListener("click", () => openSheet(tile, tile === calendarLaunch)));
     document.getElementById("month-prev").addEventListener("click", () => changeMonth(-1));
     document.getElementById("month-next").addEventListener("click", () => changeMonth(1));
+    document.getElementById("editor-close").addEventListener("click", closeCalendarEditor);
+    document.getElementById("editor-cancel").addEventListener("click", closeCalendarEditor);
+    document.getElementById("editor-apply").addEventListener("click", applyCalendarEdit);
+    editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
+    calendarDays.addEventListener("pointerdown", event => {
+      const dayButton = event.target.closest(".calendar-day[data-date]");
+      if (!dayButton || event.button !== 0 || editorActive) return;
+      holdPointerId = event.pointerId;
+      holdStarted = false;
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
+      const dateKey = dayButton.dataset.date;
+      holdTimer = window.setTimeout(() => {
+        holdStarted = true;
+        suppressDayClick = true;
+        openCalendarEditor(dateKey);
+      }, 480);
+    });
+    calendarDays.addEventListener("pointermove", event => {
+      if (holdPointerId !== event.pointerId) return;
+      if (!holdStarted && Math.hypot(event.clientX-lastPointerX,event.clientY-lastPointerY) > 12) {
+        window.clearTimeout(holdTimer);
+        holdTimer = null;
+        return;
+      }
+      if (holdStarted) {
+        const underPointer = document.elementFromPoint(event.clientX,event.clientY);
+        const dayButton = underPointer && underPointer.closest(".calendar-day[data-date]");
+        if (dayButton) updateRangeEnd(dayButton.dataset.date);
+      }
+    });
+    function finishCalendarPointer(event) {
+      if (holdPointerId !== event.pointerId) return;
+      if (holdTimer) window.clearTimeout(holdTimer);
+      holdTimer = null;
+      if (holdStarted) suppressDayClick = true;
+      holdPointerId = null;
+    }
+    calendarDays.addEventListener("pointerup", finishCalendarPointer);
+    calendarDays.addEventListener("pointercancel", finishCalendarPointer);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && sheet.dataset.open === "true") closeSheet();
