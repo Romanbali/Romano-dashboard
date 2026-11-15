@@ -49,25 +49,21 @@
       gap: clamp(10px, 1.65vw, 18px);
       min-width: 0;
     }
-    .top-panel {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 0 clamp(10px, 1.8vw, 18px);
-    }
+    .top-panel { min-width: 0; }
     .deposit-summary {
       display: flex;
       align-items: baseline;
-      gap: 10px;
-      color: #667085;
-      font-size: clamp(10px, 1.15vw, 13px);
-      letter-spacing: .075em;
-      font-weight: 700;
+      justify-content: space-between;
+      gap: 4px;
+      color: #7b8495;
+      font-size: clamp(5px, .72vw, 9px);
+      letter-spacing: .06em;
+      font-weight: 750;
+      line-height: 1;
     }
     .deposit-summary strong {
       color: #159447;
-      font-size: clamp(16px, 2vw, 21px);
+      font-size: clamp(8px, 1.05vw, 13px);
       letter-spacing: 0;
       font-weight: 800;
       white-space: nowrap;
@@ -339,11 +335,12 @@
   <main class="dashboard" aria-label="Dashboard layout">
     <aside class="rail" aria-hidden="true"></aside>
     <section class="workspace" aria-label="Dashboard workspace">
-      <header class="top-panel"><div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div></header>
+      <header class="top-panel" aria-hidden="true"></header>
       <div class="grid" aria-label="Dashboard blocks">
         <div class="tile-row row-one">
           <button class="tile" id="calendar-launch" type="button" aria-label="Open current month calendar">
             <div class="calendar-preview" id="calendar-preview">
+              <div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div>
               <div class="preview-heading"><span id="preview-month">NOV 2026</span><span class="preview-arrow">↗</span></div>
               <div class="preview-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
               <div class="preview-days" id="preview-days"></div>
