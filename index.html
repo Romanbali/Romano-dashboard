@@ -361,6 +361,13 @@
     .delete-dialog-actions .editor-button { min-height:44px; }
     .delete-dialog-actions .danger { border-color:#e34d43; background:#e34d43; color:#fff; }
     @media (prefers-reduced-motion:reduce) { .deposit-dialog-backdrop,.deposit-dialog { transition:opacity 100ms ease; } .deposit-dialog-backdrop:not([hidden]) .deposit-dialog { transform:none; } }
+    .backup-panel { margin-top:12px; padding:14px; border:1px solid #e1e5ed; border-radius:15px; background:#fff; box-shadow:0 3px 12px rgba(24,35,58,.04); }
+    .backup-title { margin:0 0 5px; color:#172033; font-size:14px; font-weight:800; }
+    .backup-description { margin:0 0 12px; color:#7b8493; font-size:12px; line-height:1.45; }
+    .backup-actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    .backup-actions button { min-height:42px; padding:8px 10px; border:1px solid #dce2ec; border-radius:10px; background:#f8f9fc; color:#46536a; font:inherit; font-size:12px; font-weight:750; cursor:pointer; }
+    .backup-actions button:active { transform:scale(.98); }
+    .backup-status { min-height:16px; margin:9px 0 0; color:#748095; font-size:11px; }
     .calendar-detail {
       min-height: 34px;
       margin-top: 8px;
@@ -553,6 +560,16 @@
         </div>
         <div class="history-list" id="history-list"></div>
       </section>
+      <section class="backup-panel" aria-label="Резервное копирование">
+        <h2 class="backup-title">Резервное копирование</h2>
+        <p class="backup-description">Сохрани календарь, суммы, историю операций и баланс депозита в файл. Этот файл можно использовать для восстановления данных.</p>
+        <div class="backup-actions">
+          <button id="backup-export" type="button">↓ Создать копию</button>
+          <button id="backup-import" type="button">↑ Восстановить</button>
+        </div>
+        <input id="backup-file" type="file" accept="application/json,.json" hidden>
+        <p class="backup-status" id="backup-status" role="status" aria-live="polite"></p>
+      </section>
     </div>
   </section>
 
@@ -602,6 +619,8 @@
     const depositEditBackdrop = document.getElementById("deposit-edit-backdrop");
     const deleteDialogBackdrop = document.getElementById("delete-dialog-backdrop");
     const deleteDialogCopy = document.getElementById("delete-dialog-copy");
+    const backupStatus = document.getElementById("backup-status");
+    const backupFile = document.getElementById("backup-file");
     let pendingDeleteTransaction = null;
     const depositEditAmount = document.getElementById("deposit-edit-amount");
     let depositHoldTimer = null;
@@ -715,6 +734,64 @@
         calendarData.history = (Array.isArray(calendarData.history) ? calendarData.history : []).concat(saved.filter(item => item && item.source === "deposit-dialog" && !existingIds.has(item.id)));
       } catch (error) { console.warn("Could not restore deposit history", error); }
     }
+    function exportBackup() {
+      const backup = {
+        format: "romano-dashboard-backup",
+        version: 1,
+        createdAt: new Date().toISOString(),
+        calendarData: calendarData,
+        depositBaseAmount: depositBaseAmount,
+        depositHistory: (Array.isArray(calendarData.history) ? calendarData.history : []).filter(item => item && item.source === "deposit-dialog")
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "romano-dashboard-backup-" + todayKey + ".json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      backupStatus.textContent = "Резервная копия создана. Сохрани файл в надёжном месте.";
+    }
+    function importBackupFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const backup = JSON.parse(String(reader.result || ""));
+          if (!backup || backup.format !== "romano-dashboard-backup" || backup.version !== 1 || !backup.calendarData || typeof backup.calendarData !== "object" || !backup.calendarData.months || typeof backup.calendarData.months !== "object" || !Array.isArray(backup.calendarData.history) || !Number.isFinite(Number(backup.depositBaseAmount))) {
+            throw new Error("Файл не похож на резервную копию Romano Dashboard.");
+          }
+          if (!window.confirm("Восстановить данные из резервной копии? Текущие календарь, история и баланс будут заменены данными из файла.")) return;
+          calendarData = backup.calendarData;
+          depositBaseAmount = Number(backup.depositBaseAmount);
+          try {
+            localStorage.setItem(calendarStorageKey, JSON.stringify(calendarData));
+            localStorage.setItem(depositBaseStorageKey, String(depositBaseAmount));
+            localStorage.setItem(depositHistoryStorageKey, JSON.stringify((Array.isArray(backup.depositHistory) ? backup.depositHistory : []).filter(item => item && item.source === "deposit-dialog")));
+          } catch (storageError) {
+            console.warn("Could not save restored backup", storageError);
+            throw new Error("Не удалось сохранить данные на этом устройстве. Возможно, недостаточно места.");
+          }
+          recalculateDeposit();
+          renderPreview();
+          renderCalendar();
+          renderHistory();
+          backupStatus.textContent = "Данные успешно восстановлены из резервной копии.";
+        } catch (error) {
+          backupStatus.textContent = error.message || "Не удалось прочитать резервную копию.";
+        } finally {
+          backupFile.value = "";
+        }
+      };
+      reader.onerror = () => { backupStatus.textContent = "Не удалось прочитать выбранный файл."; backupFile.value = ""; };
+      reader.readAsText(file);
+    }
+    document.getElementById("backup-export").addEventListener("click", exportBackup);
+    document.getElementById("backup-import").addEventListener("click", () => backupFile.click());
+    backupFile.addEventListener("change", () => importBackupFile(backupFile.files && backupFile.files[0]));
+
     function openDeleteDialog(item) {
       if (!item) return;
       pendingDeleteTransaction = item;
