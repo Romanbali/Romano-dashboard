@@ -134,6 +134,7 @@
     }
     .preview-days span.positive { color: #159447; background: #edf8f0; }
     .preview-days span.negative { color: #e33c3c; background: #fff0ef; }
+    .preview-days span.today { outline: 2px solid #536fae; outline-offset: -1px; color: #172033; font-weight: 850; background: #e5edff; }
 
     /* Bottom sheet */
     .sheet-backdrop {
@@ -261,6 +262,8 @@
     }
     .calendar-day.empty { visibility: hidden; pointer-events: none; }
     .calendar-day.selected { background: #f0f4ff; border-color: #9aadd8; }
+    .calendar-day.today { border: 2px solid #536fae; background: #eaf0ff; }
+    .calendar-day.today .calendar-day-number { color: #294b91; font-weight: 850; }
     .calendar-day-number { font-size: clamp(11px, 3vw, 18px); font-weight: 650; line-height: 1; }
     .calendar-amount { font-size: clamp(7px, 2.05vw, 13px); font-weight: 750; line-height: 1; white-space: nowrap; }
     .calendar-amount.positive { color: #159b39; }
@@ -297,9 +300,9 @@
       <header class="top-panel" aria-hidden="true"></header>
       <div class="grid" aria-label="Dashboard blocks">
         <div class="tile-row row-one">
-          <button class="tile" id="calendar-launch" type="button" aria-label="Open July 2026 calendar">
+          <button class="tile" id="calendar-launch" type="button" aria-label="Open current month calendar">
             <div class="calendar-preview" id="calendar-preview">
-              <div class="preview-heading"><span>JUL 2026</span><span class="preview-arrow">↗</span></div>
+              <div class="preview-heading"><span id="preview-month">NOV 2026</span><span class="preview-arrow">↗</span></div>
               <div class="preview-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
               <div class="preview-days" id="preview-days"></div>
             </div>
@@ -362,6 +365,7 @@
     const calendarDays = document.getElementById("calendar-days");
     const calendarDetail = document.getElementById("calendar-detail");
     const previewDays = document.getElementById("preview-days");
+    const previewMonth = document.getElementById("preview-month");
 
     let activeTile = null;
     let dragPointerId = null;
@@ -369,7 +373,9 @@
     let dragStartTime = 0;
     let dragDistance = 0;
     let calendarData = { currency: "USD", months: {} };
-    let visibleMonth = new Date(Date.UTC(2026, 6, 1));
+    const today = new Date();
+    const todayKey = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
+    let visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
     let selectedDate = null;
 
     const monthKey = date => date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0");
@@ -385,8 +391,10 @@
     }
 
     function renderPreview() {
-      const month = calendarData.months["2026-07"] || {};
-      const { count, offset } = monthDays(new Date(Date.UTC(2026, 6, 1)));
+      const key = monthKey(visibleMonth);
+      const month = calendarData.months[key] || {};
+      const { count, offset } = monthDays(visibleMonth);
+      previewMonth.textContent = monthLabel(visibleMonth).toUpperCase();
       previewDays.innerHTML = "";
       for (let i = 0; i < offset; i++) {
         const blank = document.createElement("span");
@@ -397,6 +405,7 @@
         const amount = month.days && month.days[String(day)];
         cell.textContent = day;
         if (typeof amount === "number") cell.classList.add(amount >= 0 ? "positive" : "negative");
+        if (key + "-" + String(day).padStart(2, "0") === todayKey) cell.classList.add("today");
         previewDays.appendChild(cell);
       }
     }
@@ -420,6 +429,10 @@
         button.type = "button";
         button.className = "calendar-day";
         if (selectedDate === dateKey) button.classList.add("selected");
+        if (dateKey === todayKey) {
+          button.classList.add("today");
+          button.setAttribute("aria-current", "date");
+        }
         button.setAttribute("aria-label", monthLabel(visibleMonth) + " " + day + (typeof value === "number" ? ", " + money(value) : ", no amount recorded"));
         const number = document.createElement("span");
         number.className = "calendar-day-number";
@@ -473,7 +486,12 @@
       sheet.setAttribute("aria-hidden", "false");
       backdrop.dataset.open = "true";
       document.body.classList.add("sheet-open");
-      if (showCalendar) renderCalendar();
+      if (showCalendar) {
+        visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
+        selectedDate = todayKey;
+        calendarDetail.textContent = "Сегодня · " + today.toLocaleDateString("ru-RU");
+        renderCalendar();
+      }
     }
 
     function closeSheet() {
