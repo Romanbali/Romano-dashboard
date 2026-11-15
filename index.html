@@ -347,7 +347,7 @@
     .editor-button:focus-visible,.editor-close:focus-visible { outline:2px solid #7189bb; outline-offset:2px; }
     @media (hover:hover) and (pointer:fine) { .editor-button:hover { background:#edf0f7; } .editor-button.primary:hover { background:#465fca; } }
     @media (prefers-reduced-motion:reduce) { .editor-button { transition:background-color 100ms ease; } .editor-button:active { transform:none; } }
-    .deposit-dialog-backdrop { position:fixed; inset:0; z-index:10020; display:grid; place-items:center; padding:16px; overflow-y:auto; box-sizing:border-box; background:rgba(20,27,42,.42); opacity:1; transition:opacity 220ms var(--ease-out); }
+    #deposit-value { cursor: pointer; -webkit-user-select:none; user-select:none; touch-action:manipulation; }    .deposit-dialog-backdrop { position:fixed; inset:0; z-index:10020; display:grid; place-items:center; padding:16px; overflow-y:auto; box-sizing:border-box; background:rgba(20,27,42,.42); opacity:1; transition:opacity 220ms var(--ease-out); }
     .deposit-dialog-backdrop.keyboard-open { place-items:start center; padding-top:12px; }
     .deposit-dialog-backdrop.keyboard-open .deposit-dialog { max-height:calc(100% - 24px); transform:none; }
     .deposit-dialog-backdrop[hidden] { display:none; }
@@ -514,6 +514,18 @@
             </div>
           </section>
         </div>
+        <div class="deposit-dialog-backdrop" id="deposit-edit-backdrop" hidden>
+          <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="deposit-edit-title">
+            <div class="editor-heading"><span id="deposit-edit-title">Изменить депозит</span><button class="editor-close" id="deposit-edit-close" type="button" aria-label="Закрыть">×</button></div>
+            <p class="editor-hint">Укажи новый баланс депозита в USD. История операций не изменится.</p>
+            <label class="editor-amount-label" for="deposit-edit-amount">Новый баланс в USD</label>
+            <input class="editor-amount" id="deposit-edit-amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+            <div class="editor-actions">
+              <button class="editor-button" id="deposit-edit-cancel" type="button">Отмена</button>
+              <button class="editor-button primary" id="deposit-edit-submit" type="button">Сохранить</button>
+            </div>
+          </section>
+        </div>
         <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
       </div>
       <section class="history-panel" id="history-panel" data-visible="false" aria-label="История операций">
@@ -572,6 +584,13 @@
     window.addEventListener("resize", syncDepositDialogViewport);
     syncDepositDialogViewport();
     const depositValue = document.getElementById("deposit-value");
+    const depositEditBackdrop = document.getElementById("deposit-edit-backdrop");
+    const depositEditAmount = document.getElementById("deposit-edit-amount");
+    let depositHoldTimer = null;
+    let depositHoldPointerId = null;
+    let depositHoldX = 0;
+    let depositHoldY = 0;
+    let suppressDepositClick = false;    const depositValue = document.getElementById("deposit-value");
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
     const historyPanel = document.getElementById("history-panel");
@@ -1039,7 +1058,36 @@
     document.getElementById("editor-cancel").addEventListener("click", closeCalendarEditor);
     document.getElementById("editor-apply").addEventListener("click", applyCalendarEdit);
     editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
-    let depositDialogKind = "deposit";
+    function openDepositEditDialog() {
+      depositEditAmount.value = depositAmount.toFixed(2);
+      depositEditAmount.setCustomValidity("");
+      depositEditBackdrop.hidden = false;
+      requestAnimationFrame(() => {
+        syncDepositDialogViewport();
+        depositEditAmount.focus();
+        depositEditAmount.select();
+        requestAnimationFrame(syncDepositDialogViewport);
+      });
+    }
+    function closeDepositEditDialog() {
+      depositEditBackdrop.hidden = true;
+      depositEditAmount.value = "";
+      syncDepositDialogViewport();
+    }
+    function submitDepositEditDialog() {
+      const value = Number(depositEditAmount.value);
+      if (depositEditAmount.value.trim() === "" || !Number.isFinite(value) || value < 0) {
+        depositEditAmount.setCustomValidity("Введи корректный баланс — ноль или больше");
+        depositEditAmount.reportValidity();
+        return;
+      }
+      depositEditAmount.setCustomValidity("");
+      depositAmount = Math.round(value * 100) / 100;
+      saveDepositAmount();
+      closeDepositEditDialog();
+    }
+
+    let depositDialogKind = "deposit";    let depositDialogKind = "deposit";
     function openDepositDialog(kind) {
       if (rangeStart !== rangeEnd || !rangeStart || rangeStart > todayKey) return;
       depositDialogKind = kind;
@@ -1092,6 +1140,51 @@
     editorDeposit.addEventListener("click", () => openDepositDialog("deposit"));
     editorWithdrawal.addEventListener("click", () => openDepositDialog("withdrawal"));
     depositDialogSubmit.addEventListener("click", submitDepositDialog);
+    document.getElementById("deposit-edit-close").addEventListener("click", closeDepositEditDialog);
+    document.getElementById("deposit-edit-cancel").addEventListener("click", closeDepositEditDialog);
+    document.getElementById("deposit-edit-submit").addEventListener("click", submitDepositEditDialog);
+    depositEditBackdrop.addEventListener("click", event => {
+      if (event.target === depositEditBackdrop) closeDepositEditDialog();
+    });
+    depositEditAmount.addEventListener("input", () => depositEditAmount.setCustomValidity(""));
+    depositEditAmount.addEventListener("keydown", event => {
+      if (event.key === "Enter") submitDepositEditDialog();
+      if (event.key === "Escape") closeDepositEditDialog();
+    });
+    depositValue.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      depositHoldPointerId = event.pointerId;
+      depositHoldX = event.clientX;
+      depositHoldY = event.clientY;
+      depositHoldTimer = window.setTimeout(() => {
+        suppressDepositClick = true;
+        depositHoldTimer = null;
+        depositHoldPointerId = null;
+        openDepositEditDialog();
+      }, 650);
+    });
+    function finishDepositHold(event) {
+      if (depositHoldPointerId !== event.pointerId) return;
+      if (depositHoldTimer) window.clearTimeout(depositHoldTimer);
+      depositHoldTimer = null;
+      depositHoldPointerId = null;
+    }
+    depositValue.addEventListener("pointerup", finishDepositHold);
+    depositValue.addEventListener("pointercancel", finishDepositHold);
+    depositValue.addEventListener("pointermove", event => {
+      if (depositHoldPointerId !== event.pointerId) return;
+      if (Math.hypot(event.clientX - depositHoldX, event.clientY - depositHoldY) > 10) finishDepositHold(event);
+    });
+    depositValue.addEventListener("contextmenu", event => {
+      event.preventDefault();
+      openDepositEditDialog();
+    });
+    depositValue.addEventListener("click", event => {
+      if (!suppressDepositClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+      suppressDepositClick = false;
+    });    depositDialogSubmit.addEventListener("click", submitDepositDialog);
     document.getElementById("deposit-dialog-close").addEventListener("click", closeDepositDialog);
     document.getElementById("deposit-dialog-cancel").addEventListener("click", closeDepositDialog);
     depositDialogBackdrop.addEventListener("click", event => {
@@ -1148,7 +1241,7 @@
     calendarDays.addEventListener("pointercancel", finishCalendarPointer);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && !depositDialogBackdrop.hidden) { closeDepositDialog(); return; }
+      if (event.key === "Escape" && !depositEditBackdrop.hidden) { closeDepositEditDialog(); return; }\n      if (event.key === "Escape" && !depositDialogBackdrop.hidden)      if (event.key === "Escape" && !depositDialogBackdrop.hidden) { closeDepositDialog(); return; }
       if (event.key === "Escape" && sheet.dataset.open === "true") closeSheet();
     });
 
