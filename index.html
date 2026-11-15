@@ -91,7 +91,13 @@
       cursor: pointer;
       appearance: none;
       -webkit-tap-highlight-color: transparent;
-      transition: border-color 160ms ease;
+      transition: transform 160ms var(--ease-out), background-color 160ms ease, border-color 160ms ease;
+    }
+
+    .tile:active {
+      transform: scale(0.97);
+      background-color: #edf0f6;
+      border-color: #b9c3d5;
     }
 
     .tile:focus-visible {
@@ -202,7 +208,8 @@
       .bottom-sheet { transition: opacity 120ms ease; transform: none; }
       .bottom-sheet[data-open="false"] { opacity: 0; visibility: hidden; }
       .bottom-sheet[data-open="true"] { opacity: 1; visibility: visible; }
-      .tile { transition: none; }
+      .tile { transition: background-color 100ms ease, border-color 100ms ease; }
+      .tile:active { transform: none; background-color: #edf0f6; }
     }
   </style>
 </head>
