@@ -282,6 +282,7 @@
     }
     .calendar-days { margin-top: 5px; }
     .calendar-day {
+      touch-action:pan-y;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -892,7 +893,14 @@
       if (holdPointerId !== event.pointerId) return;
       if (holdTimer) window.clearTimeout(holdTimer);
       holdTimer = null;
-      if (holdStarted) suppressDayClick = true;
+      if (holdStarted) {
+        suppressDayClick = true;
+        event.preventDefault();
+        window.setTimeout(() => { suppressDayClick = false; }, 0);
+        selectingRangeEnd = false;
+        editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
+        updateEditorRange();
+      }
       holdPointerId = null;
     }
     calendarDays.addEventListener("pointerup", finishCalendarPointer);
