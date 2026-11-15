@@ -587,7 +587,8 @@
       }
     }
 
-    function renderCalendar() {\n      updateGoalProgress(visibleMonth);
+    function renderCalendar() {
+      updateGoalProgress(visibleMonth);
       const key = monthKey(visibleMonth);
       const month = calendarData.months[key] || {};
       const { count, offset } = monthDays(visibleMonth);
@@ -641,8 +642,6 @@
       calendarDetail.textContent = "Выбери день, чтобы посмотреть сумму";
       renderCalendar();
     }
-
-    updateGoalProgress(goalRange.value);
 
     async function loadCalendarData() {
       try {
