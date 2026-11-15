@@ -748,7 +748,7 @@
       const deposits = transactions.filter(item => item.type === "deposit").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
       const withdrawals = transactions.filter(item => item.type === "withdrawal").reduce((sum, item) => sum + Math.abs(Math.min(0, Number(item.amount) || 0)), 0);
       historyDeposits.textContent = money(deposits);
-      historyWithdrawals.textContent = money(-withdrawals);
+      historyWithdrawals.textContent = money(withdrawals);
       historyList.innerHTML = "";
       transactions.sort((a, b) => {
         const dateOrder = b.date.localeCompare(a.date);
