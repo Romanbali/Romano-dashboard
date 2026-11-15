@@ -656,6 +656,18 @@
         calendarData.history = (Array.isArray(calendarData.history) ? calendarData.history : []).concat(saved.filter(item => item && item.source === "deposit-dialog" && !existingIds.has(item.id)));
       } catch (error) { console.warn("Could not restore deposit history", error); }
     }
+    function deleteHistoryTransaction(item) {
+      if (!item || !Array.isArray(calendarData.history)) return;
+      const amount = Number(item.amount) || 0;
+      if (!window.confirm("Удалить эту операцию? Изменение депозита будет отменено.")) return;
+      if (item.source === "deposit-dialog") {
+        depositAmount = Math.round((depositAmount - amount) * 100) / 100;
+        saveDepositAmount();
+      }
+      calendarData.history = calendarData.history.filter(entry => entry.id !== item.id);
+      saveDepositHistory();
+      renderHistory();
+    }
 
     const monthKey = date => date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0");
     const monthLabel = date => new Intl.DateTimeFormat("en", { month: "long", year: "numeric", timeZone: "UTC" }).format(date);
@@ -709,8 +721,33 @@
         row.type = "button";
         row.className = "history-row";
         row.setAttribute("aria-pressed", "false");
-        row.setAttribute("aria-label", (isDeposit ? "Пополнение " : "Вывод ") + money(Math.abs(Number(item.amount) || 0)) + ", " + item.date);
-        row.addEventListener("click", () => {
+        row.setAttribute("aria-label", (isDeposit ? "Пополнение " : "Вывод ") + money(Math.abs(Number(item.amount) || 0)) + ", " + item.date + ". Удерживай, чтобы удалить");
+        let historyHoldTimer = null;
+        let historyHoldHandled = false;
+        row.addEventListener("pointerdown", event => {
+          if (event.button !== 0) return;
+          historyHoldHandled = false;
+          historyHoldTimer = window.setTimeout(() => {
+            historyHoldHandled = true;
+            deleteHistoryTransaction(item);
+          }, 650);
+        });
+        ["pointerup", "pointercancel", "pointerleave"].forEach(name => row.addEventListener(name, () => {
+          if (historyHoldTimer !== null) window.clearTimeout(historyHoldTimer);
+          historyHoldTimer = null;
+        }));
+        row.addEventListener("contextmenu", event => {
+          event.preventDefault();
+          historyHoldHandled = true;
+          deleteHistoryTransaction(item);
+        });
+        row.addEventListener("click", event => {
+          if (historyHoldHandled) {
+            event.preventDefault();
+            event.stopPropagation();
+            historyHoldHandled = false;
+            return;
+          }
           const wasSelected = row.getAttribute("aria-pressed") === "true";
           historyList.querySelectorAll(".history-row").forEach(button => button.setAttribute("aria-pressed", "false"));
           row.setAttribute("aria-pressed", String(!wasSelected));
