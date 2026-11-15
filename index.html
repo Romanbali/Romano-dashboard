@@ -534,6 +534,7 @@
       const percent = monthTotal > 0 ? Math.max(0, Math.min(1, currentTotal / monthTotal)) : 0;
       goalFill.style.transform = "scaleX(" + percent + ")";
       goalCurrent.textContent = formatGoalMoney(currentTotal);
+      goalCurrent.style.color = currentTotal < 0 ? "#d99a16" : "#159447";
       goalTotal.textContent = formatGoalMoney(monthTotal);
       goalPercent.textContent = (percent * 100).toFixed(1) + "%";
       const trackWidth = goalTrack.clientWidth;
