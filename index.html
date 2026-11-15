@@ -673,8 +673,8 @@
       const transactions = Array.isArray(calendarData.history) ? calendarData.history.slice() : [];
       const deposits = transactions.filter(item => item.type === "deposit").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
       const withdrawals = transactions.filter(item => item.type === "withdrawal").reduce((sum, item) => sum + Math.abs(Math.min(0, Number(item.amount) || 0)), 0);
-      historyDeposits.textContent = "+" + money(deposits);
-      historyWithdrawals.textContent = "−" + money(withdrawals);
+      historyDeposits.textContent = money(deposits);
+      historyWithdrawals.textContent = money(-withdrawals);
       historyList.innerHTML = "";
       transactions.sort((a, b) => b.date.localeCompare(a.date)).forEach(item => {
         const isDeposit = item.type === "deposit";
@@ -701,7 +701,7 @@
         type.textContent = isDeposit ? "Пополнение" : "Вывод";
         const amount = document.createElement("strong");
         amount.className = "history-amount " + (isDeposit ? "deposit" : "withdrawal");
-        amount.textContent = (isDeposit ? "+" : "−") + money(Math.abs(Number(item.amount) || 0));
+        amount.textContent = money(isDeposit ? Math.abs(Number(item.amount) || 0) : -Math.abs(Number(item.amount) || 0));
         row.append(icon, date, type, amount);
         historyList.appendChild(row);
       });
