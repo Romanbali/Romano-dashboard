@@ -1080,13 +1080,6 @@
     }
     calendarDays.addEventListener("pointerup", finishCalendarPointer);
     calendarDays.addEventListener("pointercancel", finishCalendarPointer);
-    document.addEventListener("pointerdown", event => {
-      if (!editorActive) return;
-      if (calendarFull.contains(event.target)) return;
-      selectedDate = null;
-      closeCalendarEditor();
-      calendarDetail.textContent = "Выбери день, чтобы посмотреть сумму";
-    }, true);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && !depositDialogBackdrop.hidden) { closeDepositDialog(); return; }
