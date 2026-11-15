@@ -56,12 +56,9 @@
     .goal-values { display:grid; grid-template-columns:max-content max-content minmax(0,1fr); align-items:baseline; column-gap:12px; width:100%; min-width:0; white-space:nowrap; font-size:clamp(17px,3.2vw,30px); font-weight:800; letter-spacing:-.045em; color:#626b7d; font-variant-numeric:tabular-nums; }
     .deposit-summary { justify-self:end; margin-left:0; }
     .goal-values #goal-current { color:#159447; font-size:1.28em; }
-    .goal-meta { display:flex; align-items:center; gap:12px; white-space:nowrap; }
-    .goal-forecast { padding:6px 10px; border:1px solid #a6e4b7; border-radius:999px; color:#626b7d; background:#f5fff7; font-size:clamp(10px,1.8vw,14px); box-shadow:0 2px 5px rgba(21,148,71,.08); }
-    .goal-forecast strong { color:#159447; }
-    .goal-percent { color:#151b2c; font-size:clamp(20px,3.3vw,31px); letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
     .goal-track-wrap { position:static; padding:20px 0 4px; }
     .goal-track { position:relative; height:clamp(15px,3.2vw,24px); border-radius:999px; background:#e5e8ee; }
+    .goal-percent { position:absolute; top:50%; left:0; z-index:1; color:#159447; font-size:clamp(15px,2.7vw,21px); font-weight:800; letter-spacing:-.04em; line-height:1; white-space:nowrap; font-variant-numeric:tabular-nums; transform:translate3d(0,-50%,0); transition:transform 180ms var(--ease-out); pointer-events:none; }
     .goal-fill { position:absolute; inset:0 auto 0 0; width:100%; border-radius:inherit; background:linear-gradient(90deg,#39ed72,#13b94c); transform:scaleX(.426); transform-origin:left center; transition:transform 180ms var(--ease-out); }
     .deposit-summary {
       display:inline-flex;
@@ -361,7 +358,7 @@
       .deposit-summary span { font-size:8px; }
       .deposit-summary strong { font-size:1em; }
     }
-    @media (prefers-reduced-motion:reduce) { .goal-fill { transition:none; } }
+    @media (prefers-reduced-motion:reduce) { .goal-fill, .goal-percent { transition:none; } }
     @media (max-width:520px) { .history-row { grid-template-columns:28px minmax(76px,.9fr) minmax(75px,1fr) auto; gap:6px; } .history-kind-icon { width:26px; height:26px; } .history-totals { width:100%; justify-content:space-between; } }
 
 
@@ -426,11 +423,11 @@
           <div class="goal-card">
             <div class="goal-topline">
               <div class="goal-values"><strong id="goal-current">$0</strong><span>/ <strong id="goal-total">$0</strong></span><div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div></div>
-              <div class="goal-meta"><strong class="goal-percent" id="goal-percent">0.0%</strong></div>
             </div>
             <div class="goal-track-wrap">
               <div class="goal-track" id="goal-track" role="progressbar" aria-label="Сумма за месяц до сегодняшнего дня" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div class="goal-fill" id="goal-fill"></div>
+                <strong class="goal-percent" id="goal-percent">0.0%</strong>
               </div>
             </div>
           </div>
@@ -497,6 +494,11 @@
       goalCurrent.textContent = formatGoalMoney(currentTotal);
       goalTotal.textContent = formatGoalMoney(monthTotal);
       goalPercent.textContent = (percent * 100).toFixed(1) + "%";
+      const trackWidth = goalTrack.clientWidth;
+      const labelWidth = goalPercent.getBoundingClientRect().width;
+      const barEnd = percent * trackWidth;
+      const labelX = barEnd + labelWidth + 10 <= trackWidth ? barEnd + 8 : Math.max(0, barEnd - labelWidth - 8);
+      goalPercent.style.transform = "translate3d(" + labelX + "px, -50%, 0)";
       goalTrack.setAttribute("aria-valuenow", (percent * 100).toFixed(1));
       goalTrack.setAttribute("aria-valuetext", formatGoalMoney(currentTotal) + " из " + formatGoalMoney(monthTotal));
     }
