@@ -282,6 +282,26 @@
     .calendar-detail strong { color: #182033; }
     .calendar-detail .positive { color: #159b39; }
     .calendar-detail .negative { color: #e23b3b; }
+    .history-panel[data-visible="false"] { display: none; }
+    .history-panel { margin-top: 14px; padding: clamp(12px, 2.2vw, 20px); border: 1px solid #dfe2eb; border-radius: 16px; background: #fff; box-shadow: 0 2px 5px rgba(28,36,58,.045); }
+    .history-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; padding-bottom:10px; border-bottom:1px solid #e7e9ef; }
+    .history-title { margin:0; color:#151b2c; font-size:clamp(17px,3.6vw,23px); font-weight:750; }
+    .history-totals { display:flex; flex-wrap:wrap; gap:8px 18px; color:#6d7483; font-size:clamp(11px,2.5vw,14px); }
+    .history-totals strong { margin-left:4px; font-weight:800; white-space:nowrap; }
+    .history-totals .deposit-total { color:#159b39; }
+    .history-totals .withdrawal-total { color:#151515; }
+    .history-list { display:grid; margin-top:8px; }
+    .history-row { display:grid; grid-template-columns:34px minmax(90px,.9fr) minmax(90px,1fr) minmax(90px,auto); align-items:center; gap:9px; min-height:48px; border-bottom:1px solid #e7e9ef; color:#151b2c; font-size:clamp(11px,2.6vw,15px); }
+    .history-row:last-child { border-bottom:0; }
+    .history-kind-icon { display:grid; place-items:center; width:30px; height:30px; border-radius:9px; background:#f0f2f8; color:#667086; font-size:22px; line-height:1; }
+    .history-date { color:#697184; white-space:nowrap; }
+    .history-type { font-weight:750; }
+    .history-type.deposit, .history-amount.deposit { color:#159b39; }
+    .history-type.withdrawal { color:#151515; }
+    .history-amount { justify-self:end; font-weight:800; white-space:nowrap; }
+    .history-empty { padding:20px 0; color:#858b99; text-align:center; font-size:13px; }
+    @media (max-width:520px) { .history-row { grid-template-columns:28px minmax(76px,.9fr) minmax(75px,1fr) auto; gap:6px; } .history-kind-icon { width:26px; height:26px; } .history-totals { width:100%; justify-content:space-between; } }
+
 
     @media (prefers-reduced-motion: reduce) {
       .sheet-backdrop { transition: opacity 120ms ease; }
@@ -350,6 +370,16 @@
         <div class="calendar-days" id="calendar-days"></div>
         <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
       </div>
+      <section class="history-panel" id="history-panel" data-visible="false" aria-label="История операций">
+        <div class="history-heading">
+          <h2 class="history-title">История операций</h2>
+          <div class="history-totals">
+            <span>Пополнения: <strong class="deposit-total" id="history-deposits">+$0.00</strong></span>
+            <span>Выводы: <strong class="withdrawal-total" id="history-withdrawals">−$0.00</strong></span>
+          </div>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </section>
     </div>
   </section>
 
@@ -366,6 +396,10 @@
     const calendarDetail = document.getElementById("calendar-detail");
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
+    const historyPanel = document.getElementById("history-panel");
+    const historyList = document.getElementById("history-list");
+    const historyDeposits = document.getElementById("history-deposits");
+    const historyWithdrawals = document.getElementById("history-withdrawals");
 
     let activeTile = null;
     let dragPointerId = null;
@@ -407,6 +441,42 @@
         if (typeof amount === "number") cell.classList.add(amount >= 0 ? "positive" : "negative");
         if (key + "-" + String(day).padStart(2, "0") === todayKey) cell.classList.add("today");
         previewDays.appendChild(cell);
+      }
+    }
+
+    function renderHistory() {
+      const transactions = Array.isArray(calendarData.history) ? calendarData.history.slice() : [];
+      const deposits = transactions.filter(item => item.type === "deposit").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+      const withdrawals = transactions.filter(item => item.type === "withdrawal").reduce((sum, item) => sum + Math.abs(Math.min(0, Number(item.amount) || 0)), 0);
+      historyDeposits.textContent = "+" + money(deposits);
+      historyWithdrawals.textContent = "−" + money(withdrawals);
+      historyList.innerHTML = "";
+      transactions.sort((a, b) => b.date.localeCompare(a.date)).forEach(item => {
+        const isDeposit = item.type === "deposit";
+        const row = document.createElement("div");
+        row.className = "history-row";
+        const icon = document.createElement("span");
+        icon.className = "history-kind-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = isDeposit ? "+" : "−";
+        const date = document.createElement("time");
+        date.className = "history-date";
+        date.dateTime = item.date;
+        date.textContent = new Date(item.date + "T12:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+        const type = document.createElement("span");
+        type.className = "history-type " + (isDeposit ? "deposit" : "withdrawal");
+        type.textContent = isDeposit ? "Пополнение" : "Вывод";
+        const amount = document.createElement("strong");
+        amount.className = "history-amount " + (isDeposit ? "deposit" : "withdrawal");
+        amount.textContent = (isDeposit ? "+" : "−") + money(Math.abs(Number(item.amount) || 0));
+        row.append(icon, date, type, amount);
+        historyList.appendChild(row);
+      });
+      if (!transactions.length) {
+        const empty = document.createElement("div");
+        empty.className = "history-empty";
+        empty.textContent = "Операций пока нет";
+        historyList.appendChild(empty);
       }
     }
 
@@ -475,12 +545,14 @@
       }
       renderPreview();
       renderCalendar();
+      renderHistory();
     }
 
     function openSheet(tile, showCalendar) {
       activeTile = tile;
       genericSheet.dataset.visible = String(!showCalendar);
       calendarFull.dataset.visible = String(showCalendar);
+      historyPanel.dataset.visible = String(showCalendar);
       sheet.style.transform = "";
       sheet.dataset.open = "true";
       sheet.setAttribute("aria-hidden", "false");
@@ -491,6 +563,7 @@
         selectedDate = todayKey;
         calendarDetail.textContent = "Сегодня · " + today.toLocaleDateString("ru-RU");
         renderCalendar();
+        renderHistory();
       }
     }
 
