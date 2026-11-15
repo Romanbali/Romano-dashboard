@@ -52,21 +52,32 @@
     .top-panel { min-width: 0; }
     .deposit-summary {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
-      gap: 4px;
-      color: #7b8495;
-      font-size: clamp(5px, .72vw, 9px);
-      letter-spacing: .06em;
-      font-weight: 750;
-      line-height: 1;
+      gap: 16px;
+      margin: 0 0 18px;
+      padding: 14px 18px;
+      min-height: 68px;
+      color: #596579;
+      background: linear-gradient(105deg, #f0f8f2 0%, #f7faf8 100%);
+      border: 1px solid #dcecdf;
+      border-radius: 15px;
+      box-shadow: 0 2px 7px rgba(31, 91, 48, .045);
+    }
+    .deposit-summary span {
+      font-size: 12px;
+      letter-spacing: .12em;
+      font-weight: 800;
+      line-height: 1.2;
     }
     .deposit-summary strong {
       color: #159447;
-      font-size: clamp(8px, 1.05vw, 13px);
-      letter-spacing: 0;
+      font-size: clamp(23px, 3.5vw, 30px);
+      letter-spacing: -.035em;
       font-weight: 800;
+      line-height: 1;
       white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
     .grid {
       display: grid;
