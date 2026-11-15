@@ -472,6 +472,48 @@
       .calendar-day.range-start,.calendar-day.range-end { border-radius:10px; }
       .calendar-amount { font-size:clamp(6px,1.9vw,11px); }
     }
+    /* Habits card and tracker */
+    .habits-preview { display:flex; flex-direction:column; gap:5px; width:100%; height:100%; padding:clamp(7px,1vw,12px); text-align:left; color:#20283a; pointer-events:none; }
+    .habits-preview-title { display:flex; justify-content:space-between; align-items:center; gap:4px; font-size:clamp(7px,1.05vw,12px); font-weight:800; }
+    .habits-preview-subtitle { color:#858c9b; font-size:clamp(6px,.78vw,9px); }
+    .habits-preview-list { display:grid; gap:clamp(3px,.45vw,6px); margin-top:2px; }
+    .habits-preview-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:5px; min-width:0; }
+    .habits-preview-name { overflow:hidden; color:#535d70; font-size:clamp(6px,.8vw,9px); font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+    .habits-preview-streak { color:#ed5277; font-size:clamp(6px,.78vw,9px); font-weight:850; white-space:nowrap; }
+    .habits-preview-dots { display:flex; gap:2px; }
+    .habits-preview-dots i { width:clamp(3px,.48vw,6px); height:clamp(3px,.48vw,6px); border-radius:2px; background:#e9eaf0; }
+    .habits-preview-dots i.done { background:#f27694; }
+    .habits-panel[hidden] { display:none; }
+    .habits-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:0 0 16px; }
+    .habits-title { margin:0; color:#1c2333; font-size:22px; font-weight:800; letter-spacing:-.03em; }
+    .habits-subtitle { margin:5px 0 0; color:#818999; font-size:13px; }
+    .habit-add-form { display:flex; gap:8px; margin-bottom:16px; }
+    .habit-add-input { flex:1; min-width:0; min-height:44px; padding:10px 13px; border:1px solid #e0e3eb; border-radius:12px; background:#fafbfe; color:#20283a; font:inherit; font-size:14px; outline:none; }
+    .habit-add-input:focus { border-color:#8a9be0; box-shadow:0 0 0 3px rgba(79,111,229,.1); }
+    .habit-add-button { min-height:44px; padding:0 16px; border:0; border-radius:12px; background:#4f6fe5; color:#fff; font:inherit; font-size:13px; font-weight:800; cursor:pointer; }
+    .habit-list { display:grid; gap:12px; }
+    .habit-card { padding:15px; border:1px solid #e6e7ee; border-radius:17px; background:linear-gradient(145deg,#fff,#fcfaff); box-shadow:0 3px 12px rgba(35,39,58,.045); }
+    .habit-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .habit-name { margin:0; color:#202638; font-size:16px; font-weight:800; }
+    .habit-streak { margin-top:5px; color:#ed5277; font-size:13px; font-weight:800; }
+    .habit-streak small { color:#8990a0; font-size:11px; font-weight:600; }
+    .habit-delete { width:30px; height:30px; border:0; border-radius:9px; background:#f4f4f7; color:#8b91a0; font-size:18px; cursor:pointer; }
+    .habit-month-label { margin:14px 0 7px; color:#858b99; font-size:11px; font-weight:750; }
+    .habit-weekdays,.habit-heatmap { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; }
+    .habit-weekdays span { color:#9a9eaa; font-size:10px; font-weight:700; text-align:center; }
+    .habit-heatmap { margin-top:5px; }
+    .habit-day { display:grid; place-items:center; min-width:0; aspect-ratio:1; padding:0; border:0; border-radius:7px; background:#f0f0f4; color:#8d93a0; font:600 11px inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    .habit-day.done { background:#f27694; color:#fff; }
+    .habit-day.missed { background:#f0e8eb; color:#bd8796; }
+    .habit-day.today { outline:2px solid #4f6fe5; outline-offset:1px; }
+    .habit-day.future { opacity:.32; cursor:default; }
+    .habit-legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; color:#8990a0; font-size:11px; }
+    .habit-legend span { display:inline-flex; align-items:center; gap:5px; }
+    .habit-legend i { width:9px; height:9px; border-radius:3px; background:#f0f0f4; }
+    .habit-legend i.done { background:#f27694; }
+    .habit-legend i.missed { background:#f0e8eb; }
+    .habit-empty { padding:28px 16px; border:1px dashed #dfe2ea; border-radius:15px; color:#858c9b; text-align:center; font-size:13px; }
+    @media (prefers-reduced-motion:reduce) { .habit-day { transition:none !important; } }
 
   </style>
 </head>
@@ -490,7 +532,13 @@
               <div class="preview-days" id="preview-days"></div>
             </div>
           </button>
-          <button class="tile" type="button" aria-label="Open block 2"></button>
+          <button class="tile" id="habits-launch" type="button" aria-label="Open habits tracker">
+            <div class="habits-preview" id="habits-preview">
+              <div class="habits-preview-title"><span>ПРИВЫЧКИ</span><span>↗</span></div>
+              <div class="habits-preview-subtitle" id="habits-preview-subtitle">Твои ежедневные серии</div>
+              <div class="habits-preview-list" id="habits-preview-list"></div>
+            </div>
+          </button>
           <button class="tile" type="button" aria-label="Open block 3"></button>
           <button class="tile" type="button" aria-label="Open block 4"></button>
         </div>
@@ -521,6 +569,14 @@
         <div class="sheet-line medium"></div>
         <div class="sheet-placeholder-card"></div>
       </div>
+      <section class="habits-panel" id="habits-panel" hidden aria-label="Трекер привычек">
+        <div class="habits-heading"><div><h2 class="habits-title">Привычки</h2><p class="habits-subtitle">Отмечай дни, когда выполнил привычку. Пропуски останутся видны в календаре.</p></div></div>
+        <form class="habit-add-form" id="habit-add-form">
+          <input class="habit-add-input" id="habit-name-input" maxlength="48" placeholder="Например, читать 20 минут" aria-label="Название новой привычки" required>
+          <button class="habit-add-button" type="submit">＋ Добавить</button>
+        </form>
+        <div class="habit-list" id="habit-list"></div>
+      </section>
       <div class="calendar-full" id="calendar-full" data-visible="false" aria-label="Monthly balance calendar">
         <section class="goal-overview" aria-label="Прогресс и депозит">
           <div class="goal-card">
@@ -626,6 +682,14 @@
   <script>
     const tiles = document.querySelectorAll(".tile");
     const calendarLaunch = document.getElementById("calendar-launch");
+    const habitsLaunch = document.getElementById("habits-launch");
+    const habitsPanel = document.getElementById("habits-panel");
+    const habitList = document.getElementById("habit-list");
+    const habitNameInput = document.getElementById("habit-name-input");
+    const habitsPreviewList = document.getElementById("habits-preview-list");
+    const habitsPreviewSubtitle = document.getElementById("habits-preview-subtitle");
+    const habitsStorageKey = "romano-habits-v1";
+    let habits = [];
     const backdrop = document.getElementById("sheet-backdrop");
     const sheet = document.getElementById("bottom-sheet");
     const handle = document.getElementById("sheet-handle-area");
@@ -797,7 +861,8 @@
         createdAt: new Date().toISOString(),
         calendarData: calendarData,
         depositBaseAmount: depositBaseAmount,
-        depositHistory: (Array.isArray(calendarData.history) ? calendarData.history : []).filter(item => item && item.source === "deposit-dialog")
+        depositHistory: (Array.isArray(calendarData.history) ? calendarData.history : []).filter(item => item && item.source === "deposit-dialog"),
+        habits: habits
       };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -826,6 +891,8 @@
             localStorage.setItem(calendarStorageKey, JSON.stringify(calendarData));
             localStorage.setItem(depositBaseStorageKey, String(depositBaseAmount));
             localStorage.setItem(depositHistoryStorageKey, JSON.stringify((Array.isArray(backup.depositHistory) ? backup.depositHistory : []).filter(item => item && item.source === "deposit-dialog")));
+            habits = Array.isArray(backup.habits) ? backup.habits.filter(item => item && typeof item.name === "string").map(item => ({...item,completed:Array.isArray(item.completed)?item.completed:[]})) : [];
+            localStorage.setItem(habitsStorageKey, JSON.stringify(habits));
           } catch (storageError) {
             console.warn("Could not save restored backup", storageError);
             throw new Error("Не удалось сохранить данные на этом устройстве. Возможно, недостаточно места.");
@@ -834,6 +901,7 @@
           renderPreview();
           renderCalendar();
           renderHistory();
+          renderHabits();
           backupStatus.textContent = "Данные успешно восстановлены из резервной копии.";
         } catch (error) {
           backupStatus.textContent = error.message || "Не удалось прочитать резервную копию.";
@@ -882,6 +950,75 @@
       const mondayOffset = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7;
       return { count, offset: mondayOffset };
     }
+
+    function habitDateKey(date) {
+      return date.getFullYear() + "-" + String(date.getMonth()+1).padStart(2,"0") + "-" + String(date.getDate()).padStart(2,"0");
+    }
+    function habitStreak(habit) {
+      const completed = new Set(Array.isArray(habit.completed) ? habit.completed : []);
+      let cursor = new Date(today.getFullYear(),today.getMonth(),today.getDate());
+      if (!completed.has(habitDateKey(cursor))) cursor.setDate(cursor.getDate()-1);
+      let streak = 0;
+      while (completed.has(habitDateKey(cursor))) { streak++; cursor.setDate(cursor.getDate()-1); }
+      return streak;
+    }
+    function saveHabits() {
+      try { localStorage.setItem(habitsStorageKey,JSON.stringify(habits)); }
+      catch(error) { console.warn("Could not save habits",error); }
+    }
+    function renderHabitsPreview() {
+      habitsPreviewList.innerHTML = "";
+      habitsPreviewSubtitle.textContent = habits.length ? habits.length + " привычек · отметки за неделю" : "Добавь первую привычку";
+      habits.slice(0,3).forEach(habit => {
+        const row = document.createElement("div"); row.className = "habits-preview-row";
+        const name = document.createElement("span"); name.className = "habits-preview-name"; name.textContent = habit.name;
+        const streak = document.createElement("span"); streak.className = "habits-preview-streak"; streak.textContent = "🔥 " + habitStreak(habit);
+        row.append(name,streak); habitsPreviewList.appendChild(row);
+        const dots = document.createElement("div"); dots.className = "habits-preview-dots";
+        for(let offset=6;offset>=0;offset--){const d=new Date(today.getFullYear(),today.getMonth(),today.getDate()-offset);const dot=document.createElement("i");if((habit.completed||[]).includes(habitDateKey(d)))dot.classList.add("done");dots.appendChild(dot);}
+        habitsPreviewList.appendChild(dots);
+      });
+    }
+    function renderHabits() {
+      habitList.innerHTML = "";
+      if (!habits.length) { const empty=document.createElement("div"); empty.className="habit-empty"; empty.textContent="Пока нет привычек. Добавь привычку выше — и отмечай каждый день."; habitList.appendChild(empty); renderHabitsPreview(); return; }
+      const now = new Date(today.getFullYear(),today.getMonth(),today.getDate());
+      habits.forEach(habit => {
+        const card=document.createElement("article"); card.className="habit-card";
+        const top=document.createElement("div"); top.className="habit-card-top";
+        const info=document.createElement("div");
+        const name=document.createElement("h3"); name.className="habit-name"; name.textContent=habit.name;
+        const streak=document.createElement("div"); streak.className="habit-streak"; streak.textContent="🔥 "+habitStreak(habit)+" дней подряд "; const suffix=document.createElement("small"); suffix.textContent="без перерыва"; streak.appendChild(suffix);
+        info.append(name,streak);
+        const remove=document.createElement("button"); remove.type="button"; remove.className="habit-delete"; remove.textContent="×"; remove.setAttribute("aria-label","Удалить привычку "+habit.name);
+        remove.addEventListener("click",()=>{if(!window.confirm("Удалить привычку «"+habit.name+"» и её отметки?"))return;habits=habits.filter(item=>item.id!==habit.id);saveHabits();renderHabits();});
+        top.append(info,remove); card.appendChild(top);
+        const monthLabel=document.createElement("div"); monthLabel.className="habit-month-label"; monthLabel.textContent=now.toLocaleDateString("ru-RU",{month:"long",year:"numeric"}); card.appendChild(monthLabel);
+        const weekdays=document.createElement("div"); weekdays.className="habit-weekdays"; ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(day=>{const el=document.createElement("span");el.textContent=day;weekdays.appendChild(el);}); card.appendChild(weekdays);
+        const heat=document.createElement("div"); heat.className="habit-heatmap";
+        const first=new Date(now.getFullYear(),now.getMonth(),1); const offset=(first.getDay()+6)%7; for(let i=0;i<offset;i++){const blank=document.createElement("span");heat.appendChild(blank);}
+        const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+        for(let day=1;day<=daysInMonth;day++){
+          const date=new Date(now.getFullYear(),now.getMonth(),day); const key=habitDateKey(date); const button=document.createElement("button"); button.type="button"; button.className="habit-day"; button.textContent=day;
+          const isDone=(habit.completed||[]).includes(key); if(isDone)button.classList.add("done"); else if(date<now)button.classList.add("missed"); if(key===todayKey)button.classList.add("today");
+          if(date>now){button.classList.add("future");button.disabled=true;}
+          button.setAttribute("aria-label",date.toLocaleDateString("ru-RU")+(isDone?", выполнено":date<now?", пропуск":", сегодня"));
+          button.setAttribute("aria-pressed",String(isDone));
+          button.addEventListener("click",()=>{const completed=new Set(habit.completed||[]);if(completed.has(key))completed.delete(key);else completed.add(key);habit.completed=Array.from(completed).sort();saveHabits();renderHabits();});
+          heat.appendChild(button);
+        }
+        card.appendChild(heat);
+        const legend=document.createElement("div");legend.className="habit-legend";
+        [["done","Выполнено"],["missed","Пропуск"],["","Будущий день"]].forEach(([cls,label])=>{const item=document.createElement("span");const swatch=document.createElement("i");if(cls)swatch.className=cls;item.append(swatch,document.createTextNode(label));legend.appendChild(item);});
+        card.appendChild(legend);habitList.appendChild(card);
+      });
+      renderHabitsPreview();
+    }
+    document.getElementById("habit-add-form").addEventListener("submit",event=>{
+      event.preventDefault();const name=habitNameInput.value.trim();if(!name)return;
+      habits.push({id:"habit-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),name,completed:[]});habitNameInput.value="";saveHabits();renderHabits();
+    });
+    function loadHabits(){try{const saved=JSON.parse(localStorage.getItem(habitsStorageKey)||"[]");if(Array.isArray(saved))habits=saved.filter(item=>item&&typeof item.name==="string").map(item=>({...item,completed:Array.isArray(item.completed)?item.completed:[]}));}catch(error){console.warn("Could not restore habits",error);}renderHabits();}
 
     function renderPreview() {
       const key = monthKey(visibleMonth);
@@ -1213,14 +1350,17 @@
       renderPreview();
       renderCalendar();
       renderHistory();
+      loadHabits();
     }
 
-    function openSheet(tile, showCalendar) {
+    function openSheet(tile, showCalendar, showHabits) {
       activeTile = tile;
-      genericSheet.dataset.visible = String(!showCalendar);
+      genericSheet.dataset.visible = String(!showCalendar && !showHabits);
       calendarFull.dataset.visible = String(showCalendar);
+      habitsPanel.hidden = !showHabits;
       historyPanel.dataset.visible = String(showCalendar);
       backupPanel.dataset.visible = String(showCalendar);
+      if (showHabits) renderHabits();
       sheet.style.transform = "";
       sheet.dataset.open = "true";
       sheet.setAttribute("aria-hidden", "false");
@@ -1247,7 +1387,7 @@
       if (tileToFocus) tileToFocus.focus({ preventScroll: true });
     }
 
-    tiles.forEach(tile => tile.addEventListener("click", () => openSheet(tile, tile === calendarLaunch)));
+    tiles.forEach(tile => tile.addEventListener("click", () => openSheet(tile, tile === calendarLaunch, tile === habitsLaunch)));
     document.getElementById("delete-dialog-cancel").addEventListener("click", closeDeleteDialog);
     document.getElementById("delete-dialog-confirm").addEventListener("click", deleteHistoryTransaction);
     deleteDialogBackdrop.addEventListener("click", event => { if (event.target === deleteDialogBackdrop) closeDeleteDialog(); });
