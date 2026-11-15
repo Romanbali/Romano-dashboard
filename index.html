@@ -669,7 +669,7 @@
     }
     function getDepositTransactionsTotal() {
       return (Array.isArray(calendarData.history) ? calendarData.history : [])
-        .filter(item => item && item.source === "deposit-dialog")
+        .filter(item => item && item.source === "deposit-dialog" && typeof item.date === "string" && item.date <= todayKey)
         .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     }
     function recalculateDeposit() {
@@ -1146,7 +1146,7 @@
       if (!Array.isArray(calendarData.history)) calendarData.history = [];
       calendarData.history.push({
         id: "deposit-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
-        date: todayKey,
+        date: rangeStart,
         createdAt: Date.now(),
         type: depositDialogKind,
         amount: depositDialogKind === "deposit" ? amount : -amount,
