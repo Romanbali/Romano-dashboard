@@ -652,15 +652,37 @@
     let lastPointerY = 0;
     const calendarStorageKey = "romano-calendar-data-v1";
     const depositStorageKey = "romano-deposit-amount-v1";
+    const depositBaseStorageKey = "romano-deposit-base-amount-v1";
     const depositHistoryStorageKey = "romano-deposit-history-v1";
     let depositAmount = 500;
+    let depositBaseAmount = 500;
 
+    function getCalendarContribution() {
+      let total = 0;
+      for (const [key, month] of Object.entries(calendarData.months || {})) {
+        for (const [day, value] of Object.entries((month && month.days) || {})) {
+          const dateKey = key + "-" + String(day).padStart(2, "0");
+          if (dateKey <= todayKey && Number.isFinite(Number(value))) total += Number(value);
+        }
+      }
+      return Math.round(total * 100) / 100;
+    }
+    function getDepositTransactionsTotal() {
+      return (Array.isArray(calendarData.history) ? calendarData.history : [])
+        .filter(item => item && item.source === "deposit-dialog")
+        .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    }
+    function recalculateDeposit() {
+      depositAmount = Math.round((depositBaseAmount + getCalendarContribution() + getDepositTransactionsTotal()) * 100) / 100;
+      renderDepositAmount();
+      try { localStorage.setItem(depositStorageKey, String(depositAmount)); } catch (error) { console.warn("Could not save deposit amount", error); }
+    }
     function renderDepositAmount() {
       depositValue.textContent = "$" + depositAmount.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
     }
     function saveDepositAmount() {
-      try { localStorage.setItem(depositStorageKey, String(depositAmount)); } catch (error) { console.warn("Could not save deposit amount", error); }
-      renderDepositAmount();
+      try { localStorage.setItem(depositBaseStorageKey, String(depositBaseAmount)); } catch (error) { console.warn("Could not save deposit base amount", error); }
+      recalculateDeposit();
     }
     function saveDepositHistory() {
       try {
@@ -680,13 +702,9 @@
       if (!item || !Array.isArray(calendarData.history)) return;
       const amount = Math.abs(Number(item.amount) || 0);
       if (!window.confirm("Удалить эту операцию? Изменение депозита будет отменено.")) return;
-      if (item.source === "deposit-dialog") {
-        const balanceCorrection = item.type === "deposit" ? -amount : item.type === "withdrawal" ? amount : 0;
-        depositAmount = Math.max(0, Math.round((depositAmount + balanceCorrection) * 100) / 100);
-        saveDepositAmount();
-      }
       calendarData.history = calendarData.history.filter(entry => entry.id !== item.id);
       saveDepositHistory();
+      recalculateDeposit();
       renderHistory();
     }
 
@@ -996,8 +1014,10 @@
 
     async function loadCalendarData() {
       try {
+        const savedBase = localStorage.getItem(depositBaseStorageKey);
         const savedDeposit = localStorage.getItem(depositStorageKey);
-        if (savedDeposit !== null && Number.isFinite(Number(savedDeposit))) depositAmount = Number(savedDeposit);
+        if (savedBase !== null && Number.isFinite(Number(savedBase))) depositBaseAmount = Number(savedBase);
+        else if (savedDeposit !== null && Number.isFinite(Number(savedDeposit))) depositBaseAmount = Number(savedDeposit);
       } catch (storageError) {
         console.warn("Could not restore deposit amount", storageError);
       }
@@ -1016,6 +1036,7 @@
         console.error("Could not load calendar data", error);
       }
       restoreDepositHistory();
+      recalculateDeposit();
       renderPreview();
       renderCalendar();
       renderHistory();
@@ -1083,7 +1104,7 @@
         return;
       }
       depositEditAmount.setCustomValidity("");
-      depositAmount = Math.round(value * 100) / 100;
+      depositBaseAmount = Math.round((value - getCalendarContribution() - getDepositTransactionsTotal()) * 100) / 100;
       saveDepositAmount();
       closeDepositEditDialog();
     }
@@ -1121,8 +1142,6 @@
         depositDialogAmount.reportValidity();
         return;
       }
-      depositAmount = Math.round((depositAmount + (depositDialogKind === "deposit" ? amount : -amount)) * 100) / 100;
-      saveDepositAmount();
       if (!Array.isArray(calendarData.history)) calendarData.history = [];
       calendarData.history.push({
         id: "deposit-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
@@ -1133,6 +1152,7 @@
         source: "deposit-dialog"
       });
       saveDepositHistory();
+      recalculateDeposit();
       renderHistory();
       calendarDetail.textContent = depositDialogKind === "deposit" ? "Депозит пополнен на " + money(amount) : "Из депозита выведено " + money(amount);
       closeDepositDialog();
