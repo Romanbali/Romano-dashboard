@@ -676,7 +676,11 @@
       historyDeposits.textContent = money(deposits);
       historyWithdrawals.textContent = money(-withdrawals);
       historyList.innerHTML = "";
-      transactions.sort((a, b) => b.date.localeCompare(a.date)).forEach(item => {
+      transactions.sort((a, b) => {
+        const dateOrder = b.date.localeCompare(a.date);
+        if (dateOrder !== 0) return dateOrder;
+        return (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0);
+      }).forEach(item => {
         const isDeposit = item.type === "deposit";
         const row = document.createElement("button");
         row.type = "button";
@@ -1008,6 +1012,7 @@
       calendarData.history.push({
         id: "deposit-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
         date: todayKey,
+        createdAt: Date.now(),
         type: depositDialogKind,
         amount: depositDialogKind === "deposit" ? amount : -amount,
         source: "deposit-dialog"
