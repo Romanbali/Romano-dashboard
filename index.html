@@ -912,6 +912,7 @@
         calendarData.months[key].days[String(Number(dateKey.slice(-2)))] = Math.round(amount * 100) / 100;
       });
       saveCalendarDataLocally();
+      recalculateDeposit();
       closeCalendarEditor();
       renderPreview();
       renderCalendar();
