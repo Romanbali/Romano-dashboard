@@ -520,6 +520,178 @@
     .habit-empty { padding:28px 16px; border:1px dashed #dfe2ea; border-radius:15px; color:#858c9b; text-align:center; font-size:13px; }
     @media (prefers-reduced-motion:reduce) { .habit-day { transition:none !important; } }
 
+
+    /* Trading view: refreshed visual design, behavior and data remain unchanged */
+    .bottom-sheet.trading-open {
+      width:100%;
+      height: min(94dvh, 1100px);
+      max-height: min(94dvh, 1100px);
+      padding: 10px clamp(16px, 3.2vw, 30px) max(22px, env(safe-area-inset-bottom));
+      border-radius: 28px 28px 0 0;
+      background:#fbfcfe;
+      box-shadow:0 -12px 48px rgba(22,32,52,.13);
+    }
+    .bottom-sheet.trading-open .sheet-content { max-width:760px; }
+    .bottom-sheet.trading-open .calendar-full { max-width:760px; }
+    .bottom-sheet.trading-open .goal-overview { margin:8px 0 24px; }
+    .bottom-sheet.trading-open .goal-card {
+      padding:20px 20px 18px;
+      border:1px solid #edf0f4;
+      border-radius:24px;
+      background:linear-gradient(145deg,#fff 0%,#fbfcff 100%);
+      box-shadow:0 8px 26px rgba(28,42,68,.055);
+    }
+    .bottom-sheet.trading-open .goal-topline { margin:0 0 16px; }
+    .bottom-sheet.trading-open .goal-values {
+      grid-template-columns:max-content max-content minmax(0,1fr);
+      align-items:center;
+      column-gap:10px;
+      font-size:clamp(21px,5vw,32px);
+      letter-spacing:-.05em;
+    }
+    .bottom-sheet.trading-open .goal-values::before {
+      content:"▣";
+      display:grid;
+      place-items:center;
+      width:48px;
+      height:48px;
+      margin-right:4px;
+      border-radius:50%;
+      background:#f1f7f4;
+      color:#159447;
+      font-size:24px;
+      letter-spacing:0;
+    }
+    .bottom-sheet.trading-open .deposit-summary {
+      justify-self:end;
+      align-items:center;
+      gap:8px;
+      padding:11px 14px;
+      border-radius:999px;
+      background:#f4f6f8;
+    }
+    .bottom-sheet.trading-open .deposit-summary span {
+      color:#737b89;
+      font-size:12px;
+      letter-spacing:0;
+      font-weight:600;
+    }
+    .bottom-sheet.trading-open .deposit-summary strong {
+      color:#168342;
+      font-size:17px;
+    }
+    .bottom-sheet.trading-open .goal-track-wrap { padding:8px 0 4px; }
+    .bottom-sheet.trading-open .goal-track { height:14px; background:#edf0f4; }
+    .bottom-sheet.trading-open .goal-fill { background:linear-gradient(90deg,#22c477,#0d9e58); }
+    .bottom-sheet.trading-open .goal-percent { color:#168342; font-size:16px; }
+    .bottom-sheet.trading-open .calendar-header {
+      grid-template-columns:44px minmax(0,1fr) 44px;
+      gap:12px;
+      padding:0 0 18px;
+      border:0;
+    }
+    .bottom-sheet.trading-open .calendar-title {
+      font-size:clamp(22px,5.5vw,30px);
+      font-weight:800;
+      letter-spacing:-.04em;
+    }
+    .bottom-sheet.trading-open .calendar-control {
+      width:44px;height:44px;border:0;border-radius:50%;
+      background:#f1f3f6;color:#343b48;font-size:25px;
+    }
+    .bottom-sheet.trading-open .calendar-weekdays {
+      margin:0;
+      padding:8px 4px;
+      border-radius:18px;
+      background:#f3f5f8;
+    }
+    .bottom-sheet.trading-open .calendar-weekdays span {
+      min-height:34px;border-radius:12px;background:transparent;
+      color:#777f8d;font-size:12px;font-weight:700;
+    }
+    .bottom-sheet.trading-open .calendar-days {
+      gap:4px;
+      margin-top:8px;
+      padding:4px 0 10px;
+      border:1px solid #edf0f4;
+      border-radius:22px;
+      background:#fff;
+    }
+    .bottom-sheet.trading-open .calendar-day {
+      min-height:clamp(58px,12vw,82px);
+      gap:6px;padding:7px 2px;
+      border:1px solid transparent;border-radius:14px;
+      background:#fff;color:#151a22;
+    }
+    .bottom-sheet.trading-open .calendar-day-number {font-size:clamp(15px,3.7vw,20px);font-weight:650;}
+    .bottom-sheet.trading-open .calendar-amount {font-size:clamp(10px,2.7vw,14px);font-weight:800;}
+    .bottom-sheet.trading-open .calendar-day.today,
+    .bottom-sheet.trading-open .calendar-day.range-start,
+    .bottom-sheet.trading-open .calendar-day.range-end {
+      border-color:#0ca65a;background:#0ca65a;color:#fff;border-radius:16px;
+      box-shadow:0 4px 10px rgba(12,166,90,.18);
+    }
+    .bottom-sheet.trading-open .calendar-day.today .calendar-day-number,
+    .bottom-sheet.trading-open .calendar-day.range-start .calendar-day-number,
+    .bottom-sheet.trading-open .calendar-day.range-end .calendar-day-number {color:#fff;}
+    .bottom-sheet.trading-open .calendar-day.today .calendar-amount,
+    .bottom-sheet.trading-open .calendar-day.range-start .calendar-amount,
+    .bottom-sheet.trading-open .calendar-day.range-end .calendar-amount {color:#eafff2;}
+    .bottom-sheet.trading-open .calendar-day.in-range {background:#eaf8f0;border-color:#eaf8f0;border-radius:9px;}
+    .bottom-sheet.trading-open .calendar-detail {
+      min-height:42px;margin-top:16px;padding:12px;border:0;border-radius:999px;
+      background:#f1f3f6;color:#737b89;font-size:13px;
+    }
+    .bottom-sheet.trading-open .history-panel {
+      margin-top:18px;padding:18px;
+      border:1px solid #edf0f4;border-radius:24px;
+      background:#fff;box-shadow:0 5px 20px rgba(28,42,68,.04);
+    }
+    .bottom-sheet.trading-open .history-heading {
+      padding-bottom:14px;border-bottom:1px solid #edf0f2;
+    }
+    .bottom-sheet.trading-open .history-title {font-size:21px;font-weight:800;letter-spacing:-.03em;}
+    .bottom-sheet.trading-open .history-totals {gap:8px 14px;font-size:13px;}
+    .bottom-sheet.trading-open .history-row {
+      grid-template-columns:42px minmax(0,1fr) auto;
+      gap:12px;min-height:72px;padding:12px 2px;
+      border-bottom:1px solid #edf0f2;border-radius:0;font-size:14px;
+    }
+    .bottom-sheet.trading-open .history-kind-icon {
+      width:40px;height:40px;border-radius:50%;
+      background:#eaf7f0;color:#159447;font-size:24px;
+    }
+    .bottom-sheet.trading-open .history-row:has(.history-type.withdrawal) .history-kind-icon {
+      background:#f0f2f5;color:#4d5664;
+    }
+    .bottom-sheet.trading-open .history-amount {font-size:16px;}
+    @media (max-width:600px) {
+      .bottom-sheet.trading-open {
+        height: min(94dvh, 1100px);
+        max-height:min(94dvh,1100px);
+        padding-right:16px;padding-left:16px;
+      }
+      .bottom-sheet.trading-open .goal-card {padding:18px 16px 16px;}
+      .bottom-sheet.trading-open .goal-values {
+        grid-template-columns:42px max-content max-content minmax(0,1fr);
+        column-gap:7px;font-size:clamp(19px,5.2vw,25px);
+      }
+      .bottom-sheet.trading-open .goal-values::before {width:42px;height:42px;font-size:21px;}
+      .bottom-sheet.trading-open .deposit-summary {gap:6px;padding:10px 11px;}
+      .bottom-sheet.trading-open .deposit-summary span {font-size:10px;}
+      .bottom-sheet.trading-open .deposit-summary strong {font-size:14px;}
+      .bottom-sheet.trading-open .calendar-days {gap:2px;}
+      .bottom-sheet.trading-open .calendar-day {min-height:clamp(54px,12.2vw,76px);border-radius:12px;}
+      .bottom-sheet.trading-open .history-panel {padding:16px;}
+      .bottom-sheet.trading-open .history-heading {align-items:flex-start;flex-direction:column;}
+      .bottom-sheet.trading-open .history-totals {width:100%;justify-content:space-between;}
+      .bottom-sheet.trading-open .history-row {grid-template-columns:38px minmax(0,1fr) auto;gap:9px;}
+      .bottom-sheet.trading-open .history-kind-icon {width:36px;height:36px;}
+    }
+    @media (prefers-reduced-motion:reduce) {
+      .bottom-sheet.trading-open .calendar-day,
+      .bottom-sheet.trading-open .calendar-control {transition:none;}
+    }
   </style>
 </head>
 <body>
