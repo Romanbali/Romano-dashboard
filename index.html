@@ -793,7 +793,25 @@
         button.append(number, amount);
         button.dataset.date = dateKey;
         button.addEventListener("click", () => {
-          if (editorActive && selectingRangeEnd) {
+          if (editorActive) {
+            if (!selectingRangeEnd) {
+              rangeStart = dateKey;
+              rangeEnd = dateKey;
+              selectingRangeEnd = true;
+              calendarDays.dataset.rangeSelecting = "true";
+              editorHint.textContent = "Выбери вторую дату диапазона";
+              updateRangeEnd(dateKey);
+              return;
+            }
+            if (dateKey < rangeStart) {
+              rangeStart = dateKey;
+              rangeEnd = dateKey;
+              selectedDate = dateKey;
+              editorAmount.value = "";
+              updateEditorRange();
+              renderCalendar();
+              return;
+            }
             if (dateKey === rangeStart) return;
             updateRangeEnd(dateKey);
             selectingRangeEnd = false;
@@ -881,15 +899,7 @@
     calendarDays.addEventListener("selectstart", event => event.preventDefault());
     calendarDays.addEventListener("pointerdown", event => {
       const dayButton = event.target.closest(".calendar-day[data-date]");
-      if (!dayButton || event.button !== 0) return;
-      if (editorActive && selectingRangeEnd) {
-        rangePointerId = event.pointerId;
-        rangePointerMoved = false;
-        calendarDays.setPointerCapture(event.pointerId);
-        updateRangeEnd(dayButton.dataset.date);
-        return;
-      }
-      if (editorActive) return;
+      if (!dayButton || event.button !== 0 || editorActive) return;
       holdPointerId = event.pointerId;
       holdStarted = false;
       lastPointerX = event.clientX;
@@ -918,12 +928,6 @@
     });
     function finishCalendarPointer(event) {
       if (rangePointerId === event.pointerId) {
-        if (rangePointerMoved) {
-          selectingRangeEnd = false;
-          delete calendarDays.dataset.rangeSelecting;
-          editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
-          updateEditorRange();
-        }
         rangePointerId = null;
         rangePointerMoved = false;
         return;
@@ -935,6 +939,12 @@
     }
     calendarDays.addEventListener("pointerup", finishCalendarPointer);
     calendarDays.addEventListener("pointercancel", finishCalendarPointer);
+    document.addEventListener("pointerdown", event => {
+      if (!editorActive) return;
+      if (calendarFull.contains(event.target)) return;
+      closeCalendarEditor();
+      selectedDate = null;
+    }, true);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && sheet.dataset.open === "true") closeSheet();
