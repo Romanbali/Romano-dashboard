@@ -923,7 +923,12 @@
         row.type = "button";
         row.className = "history-row";
         row.setAttribute("aria-pressed", "false");
-        row.setAttribute("aria-label", (isDeposit ? "Пополнение " : "Вывод ") + money(Math.abs(Number(item.amount) || 0)) + ", " + item.date + ". Удерживай, чтобы удалить");
+        const transactionTotal = Math.abs(Number(item.amount) || 0);
+        const transactionBonus = isDeposit ? Math.max(0, Number(item.bonusAmount) || 0) : 0;
+        const transactionPrincipal = isDeposit && transactionBonus > 0
+          ? Math.max(0, Number(item.principalAmount) || (transactionTotal - transactionBonus))
+          : transactionTotal;
+        row.setAttribute("aria-label", (isDeposit ? "Пополнение " + money(transactionPrincipal) + (transactionBonus > 0 ? " плюс бонус " + money(transactionBonus) : "") + ", всего " : "Вывод ") + money(transactionTotal) + ", " + item.date + ". Удерживай, чтобы удалить");
         let historyHoldTimer = null;
         let historyHoldHandled = false;
         row.addEventListener("pointerdown", event => {
@@ -964,8 +969,11 @@
         date.textContent = new Date(item.date + "T12:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
         const type = document.createElement("span");
         type.className = "history-type " + (isDeposit ? "deposit" : "withdrawal");
-        type.textContent = isDeposit ? (Number(item.bonusAmount) > 0 ? "Пополнение · бонус +" + money(Number(item.bonusAmount)) + " (" + Number(item.bonusPercent) + "%)" : "Пополнение") : "Вывод";
-        if (isDeposit && Number(item.bonusAmount) > 0) type.title = "Сумма: " + money(Number(item.principalAmount) || 0) + " · Бонус: " + money(Number(item.bonusAmount) || 0);
+        type.textContent = isDeposit
+          ? (transactionBonus > 0
+            ? "Пополнение " + money(transactionPrincipal) + " + бонус " + money(transactionBonus) + " (" + Number(item.bonusPercent) + "%)"
+            : "Пополнение")
+          : "Вывод";
         const amount = document.createElement("strong");
         amount.className = "history-amount " + (isDeposit ? "deposit" : "withdrawal");
         amount.textContent = money(isDeposit ? Math.abs(Number(item.amount) || 0) : -Math.abs(Number(item.amount) || 0));
