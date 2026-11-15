@@ -440,7 +440,10 @@
   
     /* Calendar visual refresh: compact preview and expanded calendar */
     .calendar-preview { gap:clamp(4px,.65vw,8px); padding:clamp(7px,1vw,12px); }
-    .preview-heading { color:#20283a; font-size:clamp(7px,1.05vw,12px); letter-spacing:.015em; }
+    .preview-heading { display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; align-items:center; gap:3px 4px; color:#20283a; font-size:clamp(7px,1.05vw,12px); letter-spacing:.015em; white-space:normal; }
+    .preview-heading > span:first-child { grid-column:1; grid-row:1; font-size:.9em; line-height:1.1; letter-spacing:.04em; }
+    .preview-heading #preview-month { grid-column:1; grid-row:2; font-size:1.05em; line-height:1.1; }
+    .preview-heading .preview-arrow { grid-column:2; grid-row:1 / span 2; align-self:center; }
     .preview-arrow { color:#8a91a0; }
     .preview-weekdays { margin-top:2px; }
     .preview-weekdays span { color:#9a9eaa; font-size:clamp(4px,.58vw,7px); font-weight:650; }
