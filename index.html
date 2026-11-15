@@ -332,8 +332,7 @@
     .editor-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:12px; }
     .editor-kind-actions { display:flex; align-items:center; gap:8px; margin-right:auto; }
     .editor-kind-actions[hidden] { display:none; }
-    .editor-kind-button { display:grid; place-items:center; width:42px; height:42px; padding:10px; border:1px solid transparent; border-radius:50%; background:transparent; cursor:pointer; transition:transform 140ms var(--ease-out), background-color 140ms ease; }
-    .editor-kind-button svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+    .editor-kind-button { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:8px 13px; border:1px solid currentColor; border-radius:9px; background:#fff; font:inherit; font-size:13px; font-weight:750; white-space:nowrap; cursor:pointer; transition:transform 140ms var(--ease-out), background-color 140ms ease; }
     .editor-kind-button.deposit { color:#22bd59; }
     .editor-kind-button.withdrawal { color:#ff3b30; }
     .editor-kind-button:active { transform:scale(.94); }
@@ -495,8 +494,8 @@
           <input class="editor-amount" id="editor-amount" type="number" inputmode="decimal" step="0.01" placeholder="0.00">
           <div class="editor-actions">
             <div class="editor-kind-actions" id="editor-kind-actions" hidden>
-              <button class="editor-kind-button deposit" id="editor-deposit" type="button" aria-label="Пополнение" title="Пополнение"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-              <button class="editor-kind-button withdrawal" id="editor-withdrawal" type="button" aria-label="Вывод" title="Вывод"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 8v9H8"/></svg></button>
+              <button class="editor-kind-button withdrawal" id="editor-withdrawal" type="button" aria-label="Вывод" title="Вывод">Вывести</button>
+              <button class="editor-kind-button deposit" id="editor-deposit" type="button" aria-label="Пополнение" title="Пополнение">Пополнить</button>
             </div>
             <button class="editor-button" id="editor-cancel" type="button">Отмена</button><button class="editor-button primary" id="editor-apply" type="button">Сохранить сумму</button>
           </div>
