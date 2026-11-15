@@ -90,14 +90,13 @@
     }
     .grid {
       display: grid;
-      grid-template-rows: 80vh repeat(3, clamp(110px, 26vw, 180px));
+      grid-template-rows: repeat(4, clamp(110px, 26vw, 180px));
       gap: var(--space);
       min-width: 0;
     }
     .tile-row { display: grid; gap: var(--space); min-width: 0; }
     .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
-    #calendar-launch { height: 80vh; }
-    .row-one .tile:not(#calendar-launch) { height: clamp(110px, 26vw, 180px); }
+    .row-one .tile { height: clamp(110px, 26vw, 180px); }
     .row-two { grid-template-columns: 2fr 1fr; }
     .row-three { grid-template-columns: 1fr 1fr 2fr; }
     .row-four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -210,6 +209,7 @@
       touch-action: pan-y;
     }
     .bottom-sheet[data-open="true"] { transform: translateY(0); }
+    .bottom-sheet.trading-open { height: 80vh; max-height: 80vh; }
     .sheet-handle-area {
       display: flex;
       flex: 0 0 25px;
@@ -1360,6 +1360,7 @@
 
     function openSheet(tile, showCalendar, showHabits) {
       activeTile = tile;
+      sheet.classList.toggle("trading-open", tile === calendarLaunch);
       genericSheet.dataset.visible = String(!showCalendar && !showHabits);
       calendarFull.dataset.visible = String(showCalendar);
       habitsPanel.hidden = !showHabits;
