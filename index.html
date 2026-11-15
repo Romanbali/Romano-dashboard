@@ -348,6 +348,8 @@
     @media (hover:hover) and (pointer:fine) { .editor-button:hover { background:#edf0f7; } .editor-button.primary:hover { background:#465fca; } }
     @media (prefers-reduced-motion:reduce) { .editor-button { transition:background-color 100ms ease; } .editor-button:active { transform:none; } }
     .deposit-dialog-backdrop { position:fixed; inset:0; z-index:10020; display:grid; place-items:center; padding:16px; overflow-y:auto; box-sizing:border-box; background:rgba(20,27,42,.42); opacity:1; transition:opacity 220ms var(--ease-out); }
+    .deposit-dialog-backdrop.keyboard-open { place-items:start center; padding-top:12px; }
+    .deposit-dialog-backdrop.keyboard-open .deposit-dialog { max-height:calc(100% - 24px); transform:none; }
     .deposit-dialog-backdrop[hidden] { display:none; }
     .deposit-dialog { width:min(100%,390px); max-height:calc(100% - 8px); overflow-y:auto; box-sizing:border-box; padding:18px; border:1px solid #e0e4ed; border-radius:18px; background:#fff; box-shadow:0 18px 55px rgba(20,30,55,.2); opacity:1; transform:scale(1); transition:opacity 220ms var(--ease-out),transform 220ms var(--ease-out); }
     .deposit-dialog-backdrop[hidden] .deposit-dialog { opacity:0; transform:scale(.96); }
@@ -553,8 +555,15 @@
     function syncDepositDialogViewport() {
       const viewport = window.visualViewport;
       if (!viewport) return;
+      const keyboardOpen = viewport.height < window.innerHeight * 0.78;
+      depositDialogBackdrop.classList.toggle("keyboard-open", keyboardOpen);
       depositDialogBackdrop.style.top = viewport.offsetTop + "px";
+      depositDialogBackdrop.style.left = viewport.offsetLeft + "px";
+      depositDialogBackdrop.style.width = viewport.width + "px";
       depositDialogBackdrop.style.height = viewport.height + "px";
+      depositDialogBackdrop.style.bottom = "auto";
+      if (keyboardOpen) depositDialogBackdrop.style.paddingBottom = "12px";
+      else depositDialogBackdrop.style.paddingBottom = "";
     }
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", syncDepositDialogViewport);
@@ -998,7 +1007,11 @@
       depositDialogAmount.value = "";
       depositDialogAmount.setCustomValidity("");
       depositDialogBackdrop.hidden = false;
-      requestAnimationFrame(() => depositDialogAmount.focus());
+      requestAnimationFrame(() => {
+        syncDepositDialogViewport();
+        depositDialogAmount.focus();
+        requestAnimationFrame(syncDepositDialogViewport);
+      });
     }
     function closeDepositDialog() {
       depositDialogBackdrop.hidden = true;
