@@ -348,6 +348,11 @@
     .editor-button:focus-visible,.editor-close:focus-visible { outline:2px solid #7189bb; outline-offset:2px; }
     @media (hover:hover) and (pointer:fine) { .editor-button:hover { background:#edf0f7; } .editor-button.primary:hover { background:#465fca; } }
     @media (prefers-reduced-motion:reduce) { .editor-button { transition:background-color 100ms ease; } .editor-button:active { transform:none; } }
+    .deposit-dialog-backdrop { position:fixed; inset:0; z-index:10020; display:grid; place-items:center; padding:20px; background:rgba(20,27,42,.42); opacity:1; transition:opacity 220ms var(--ease-out); }
+    .deposit-dialog-backdrop[hidden] { display:none; }
+    .deposit-dialog { width:min(100%,390px); padding:18px; border:1px solid #e0e4ed; border-radius:18px; background:#fff; box-shadow:0 18px 55px rgba(20,30,55,.2); opacity:1; transform:scale(1); transition:opacity 220ms var(--ease-out),transform 220ms var(--ease-out); }
+    .deposit-dialog-backdrop[hidden] .deposit-dialog { opacity:0; transform:scale(.96); }
+    @media (prefers-reduced-motion:reduce) { .deposit-dialog-backdrop,.deposit-dialog { transition:opacity 100ms ease; } .deposit-dialog-backdrop:not([hidden]) .deposit-dialog { transform:none; } }
     .calendar-detail {
       min-height: 34px;
       margin-top: 8px;
@@ -496,6 +501,18 @@
             <button class="editor-button" id="editor-cancel" type="button">Отмена</button><button class="editor-button primary" id="editor-apply" type="button">Сохранить сумму</button>
           </div>
         </section>
+        <div class="deposit-dialog-backdrop" id="deposit-dialog-backdrop" hidden>
+          <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="deposit-dialog-title">
+            <div class="editor-heading"><span id="deposit-dialog-title">Пополнение депозита</span><button class="editor-close" id="deposit-dialog-close" type="button" aria-label="Закрыть">×</button></div>
+            <p class="editor-hint" id="deposit-dialog-hint">Укажи сумму операции в USD</p>
+            <label class="editor-amount-label" for="deposit-dialog-amount">Сумма в USD</label>
+            <input class="editor-amount" id="deposit-dialog-amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00">
+            <div class="editor-actions">
+              <button class="editor-button" id="deposit-dialog-cancel" type="button">Отмена</button>
+              <button class="editor-button primary" id="deposit-dialog-submit" type="button">Пополнить</button>
+            </div>
+          </section>
+        </div>
         <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
       </div>
       <section class="history-panel" id="history-panel" data-visible="false" aria-label="История операций">
@@ -530,6 +547,10 @@
     const editorKindActions = document.getElementById("editor-kind-actions");
     const editorDeposit = document.getElementById("editor-deposit");
     const editorWithdrawal = document.getElementById("editor-withdrawal");
+    const depositDialogBackdrop = document.getElementById("deposit-dialog-backdrop");
+    const depositDialogTitle = document.getElementById("deposit-dialog-title");
+    const depositDialogAmount = document.getElementById("deposit-dialog-amount");
+    const depositDialogSubmit = document.getElementById("deposit-dialog-submit");
     const depositValue = document.getElementById("deposit-value");
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
@@ -936,23 +957,53 @@
     document.getElementById("editor-cancel").addEventListener("click", closeCalendarEditor);
     document.getElementById("editor-apply").addEventListener("click", applyCalendarEdit);
     editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
-    editorDeposit.addEventListener("click", () => {
+    let depositDialogKind = "deposit";
+    function openDepositDialog(kind) {
       if (rangeStart !== rangeEnd) return;
-      const amount = Math.abs(Number(editorAmount.value));
-      if (editorAmount.value.trim() === "" || !Number.isFinite(amount)) return;
-      depositAmount += amount;
+      depositDialogKind = kind;
+      const isDeposit = kind === "deposit";
+      depositDialogTitle.textContent = isDeposit ? "Пополнение депозита" : "Вывод из депозита";
+      depositDialogSubmit.textContent = isDeposit ? "Пополнить" : "Вывести";
+      depositDialogAmount.value = "";
+      depositDialogAmount.setCustomValidity("");
+      depositDialogBackdrop.hidden = false;
+      requestAnimationFrame(() => depositDialogAmount.focus());
+    }
+    function closeDepositDialog() {
+      depositDialogBackdrop.hidden = true;
+      depositDialogAmount.value = "";
+    }
+    function submitDepositDialog() {
+      const amount = Number(depositDialogAmount.value);
+      if (depositDialogAmount.value.trim() === "" || !Number.isFinite(amount) || amount <= 0) {
+        depositDialogAmount.setCustomValidity("Введи сумму больше нуля");
+        depositDialogAmount.reportValidity();
+        return;
+      }
+      depositDialogAmount.setCustomValidity("");
+      if (depositDialogKind === "withdrawal" && amount > depositAmount) {
+        depositDialogAmount.setCustomValidity("Сумма вывода превышает депозит");
+        depositDialogAmount.reportValidity();
+        return;
+      }
+      depositAmount = Math.round((depositAmount + (depositDialogKind === "deposit" ? amount : -amount)) * 100) / 100;
       saveDepositAmount();
-      calendarDetail.textContent = "Депозит пополнен на " + money(amount);
+      calendarDetail.textContent = depositDialogKind === "deposit" ? "Депозит пополнен на " + money(amount) : "Из депозита выведено " + money(amount);
+      closeDepositDialog();
       closeCalendarEditor();
+    }
+    editorDeposit.addEventListener("click", () => openDepositDialog("deposit"));
+    editorWithdrawal.addEventListener("click", () => openDepositDialog("withdrawal"));
+    depositDialogSubmit.addEventListener("click", submitDepositDialog);
+    document.getElementById("deposit-dialog-close").addEventListener("click", closeDepositDialog);
+    document.getElementById("deposit-dialog-cancel").addEventListener("click", closeDepositDialog);
+    depositDialogBackdrop.addEventListener("click", event => {
+      if (event.target === depositDialogBackdrop) closeDepositDialog();
     });
-    editorWithdrawal.addEventListener("click", () => {
-      if (rangeStart !== rangeEnd) return;
-      const amount = Math.abs(Number(editorAmount.value));
-      if (editorAmount.value.trim() === "" || !Number.isFinite(amount)) return;
-      depositAmount -= amount;
-      saveDepositAmount();
-      calendarDetail.textContent = "Из депозита выведено " + money(amount);
-      closeCalendarEditor();
+    depositDialogAmount.addEventListener("input", () => depositDialogAmount.setCustomValidity(""));
+    depositDialogAmount.addEventListener("keydown", event => {
+      if (event.key === "Enter") submitDepositDialog();
+      if (event.key === "Escape") closeDepositDialog();
     });
     calendarDays.addEventListener("contextmenu", event => event.preventDefault());
     calendarDays.addEventListener("selectstart", event => event.preventDefault());
@@ -1007,6 +1058,7 @@
     }, true);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !depositDialogBackdrop.hidden) { closeDepositDialog(); return; }
       if (event.key === "Escape" && sheet.dataset.open === "true") closeSheet();
     });
 
