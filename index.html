@@ -50,8 +50,8 @@
       min-width: 0;
     }
     .top-panel { min-width: 0; }
-    .goal-overview { display:grid; grid-template-columns:minmax(0, 1fr) minmax(125px, 190px); align-items:stretch; gap:12px; margin-bottom:18px; }
-    .goal-card { min-width:0; padding:14px clamp(12px,2.2vw,22px) 11px; border:1px solid #e0e5ee; border-radius:17px; background:linear-gradient(120deg,#fff 0%,#fbfcff 100%); box-shadow:0 2px 7px rgba(28,36,58,.045); }
+    .goal-overview { display:block; width:100%; margin-bottom:18px; }
+    .goal-card { display:flex; flex-direction:column; min-width:0; width:100%; padding:14px clamp(12px,2.2vw,22px) 13px; border:1px solid #e0e5ee; border-radius:17px; background:linear-gradient(120deg,#fff 0%,#fbfcff 100%); box-shadow:0 2px 7px rgba(28,36,58,.045); }
     .goal-topline { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
     .goal-values { display:flex; align-items:baseline; gap:8px; min-width:0; white-space:nowrap; font-size:clamp(17px,3.2vw,30px); font-weight:800; letter-spacing:-.045em; color:#626b7d; font-variant-numeric:tabular-nums; }
     .goal-values #goal-current { color:#159447; font-size:1.28em; }
@@ -66,10 +66,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin: 0 0 18px;
-      padding: 14px 18px;
-      min-height: 68px;
+      gap: 12px;
+      align-self:stretch;
+      width:100%;
+      margin:14px 0 0;
+      padding:11px 15px;
+      min-height:48px;
       color: #596579;
       background: linear-gradient(105deg, #f0f8f2 0%, #f7faf8 100%);
       border: 1px solid #dcecdf;
@@ -431,8 +433,8 @@
                 <div class="goal-fill" id="goal-fill"></div>
               </div>
             </div>
+            <div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div>
           </div>
-          <div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div>
         </section>
         <div class="calendar-header">
           <button class="calendar-control" id="month-prev" type="button" aria-label="Previous month">←</button>
