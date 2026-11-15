@@ -361,6 +361,7 @@
     .delete-dialog-actions .editor-button { min-height:44px; }
     .delete-dialog-actions .danger { border-color:#e34d43; background:#e34d43; color:#fff; }
     @media (prefers-reduced-motion:reduce) { .deposit-dialog-backdrop,.deposit-dialog { transition:opacity 100ms ease; } .deposit-dialog-backdrop:not([hidden]) .deposit-dialog { transform:none; } }
+    .backup-panel[data-visible="false"] { display:none; }
     .backup-panel { margin-top:12px; padding:14px; border:1px solid #e1e5ed; border-radius:15px; background:#fff; box-shadow:0 3px 12px rgba(24,35,58,.04); }
     .backup-title { margin:0 0 5px; color:#172033; font-size:14px; font-weight:800; }
     .backup-description { margin:0 0 12px; color:#7b8493; font-size:12px; line-height:1.45; }
@@ -596,7 +597,7 @@
         </div>
         <div class="history-list" id="history-list"></div>
       </section>
-      <section class="backup-panel" aria-label="Резервное копирование">
+      <section class="backup-panel" id="backup-panel" data-visible="false" aria-label="Резервное копирование">
         <h2 class="backup-title">Резервное копирование</h2>
         <p class="backup-description">Сохрани календарь, суммы, историю операций и баланс депозита в файл. Этот файл можно использовать для восстановления данных.</p>
         <div class="backup-actions">
@@ -667,6 +668,7 @@
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
     const historyPanel = document.getElementById("history-panel");
+    const backupPanel = document.getElementById("backup-panel");
     const historyList = document.getElementById("history-list");
     const historyDeposits = document.getElementById("history-deposits");
     const historyWithdrawals = document.getElementById("history-withdrawals");
@@ -1191,6 +1193,7 @@
       genericSheet.dataset.visible = String(!showCalendar);
       calendarFull.dataset.visible = String(showCalendar);
       historyPanel.dataset.visible = String(showCalendar);
+      backupPanel.dataset.visible = String(showCalendar);
       sheet.style.transform = "";
       sheet.dataset.open = "true";
       sheet.setAttribute("aria-hidden", "false");
