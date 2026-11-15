@@ -982,7 +982,8 @@
       if (rangeStart !== rangeEnd) return;
       depositDialogKind = kind;
       const isDeposit = kind === "deposit";
-      depositDialogTitle.textContent = isDeposit ? "Пополнение депозита" : "Вывод из депозита";
+      const operationDate = rangeStart || todayKey;
+      depositDialogTitle.textContent = (isDeposit ? "Пополнение депозита" : "Вывод из депозита") + " · " + formatEditorDate(operationDate);
       depositDialogSubmit.textContent = isDeposit ? "Пополнить" : "Вывести";
       depositDialogAmount.value = "";
       depositDialogAmount.setCustomValidity("");
@@ -1011,7 +1012,7 @@
       if (!Array.isArray(calendarData.history)) calendarData.history = [];
       calendarData.history.push({
         id: "deposit-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
-        date: todayKey,
+        date: rangeStart || todayKey,
         createdAt: Date.now(),
         type: depositDialogKind,
         amount: depositDialogKind === "deposit" ? amount : -amount,
@@ -1019,7 +1020,7 @@
       });
       saveDepositHistory();
       renderHistory();
-      calendarDetail.textContent = depositDialogKind === "deposit" ? "Депозит пополнен на " + money(amount) : "Из депозита выведено " + money(amount);
+      calendarDetail.textContent = (depositDialogKind === "deposit" ? "Депозит пополнен на " : "Из депозита выведено ") + money(amount) + " · " + formatEditorDate(rangeStart || todayKey);
       closeDepositDialog();
       closeCalendarEditor();
     }
