@@ -1241,7 +1241,8 @@
     calendarDays.addEventListener("pointercancel", finishCalendarPointer);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && !depositEditBackdrop.hidden) { closeDepositEditDialog(); return; }\n      if (event.key === "Escape" && !depositDialogBackdrop.hidden)      if (event.key === "Escape" && !depositDialogBackdrop.hidden) { closeDepositDialog(); return; }
+      if (event.key === "Escape" && !depositEditBackdrop.hidden) { closeDepositEditDialog(); return; }
+      if (event.key === "Escape" && !depositDialogBackdrop.hidden) { closeDepositDialog(); return; }
       if (event.key === "Escape" && sheet.dataset.open === "true") closeSheet();
     });
 
