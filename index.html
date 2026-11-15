@@ -347,7 +347,8 @@
     .editor-button:focus-visible,.editor-close:focus-visible { outline:2px solid #7189bb; outline-offset:2px; }
     @media (hover:hover) and (pointer:fine) { .editor-button:hover { background:#edf0f7; } .editor-button.primary:hover { background:#465fca; } }
     @media (prefers-reduced-motion:reduce) { .editor-button { transition:background-color 100ms ease; } .editor-button:active { transform:none; } }
-    #deposit-value { cursor: pointer; -webkit-user-select:none; user-select:none; touch-action:manipulation; }    .deposit-dialog-backdrop { position:fixed; inset:0; z-index:10020; display:grid; place-items:center; padding:16px; overflow-y:auto; box-sizing:border-box; background:rgba(20,27,42,.42); opacity:1; transition:opacity 220ms var(--ease-out); }
+    #deposit-value { cursor: pointer; -webkit-user-select:none; user-select:none; touch-action:manipulation; }
+    .deposit-dialog-backdrop { position:fixed; inset:0; z-index:10020; display:grid; place-items:center; padding:16px; overflow-y:auto; box-sizing:border-box; background:rgba(20,27,42,.42); opacity:1; transition:opacity 220ms var(--ease-out); }
     .deposit-dialog-backdrop.keyboard-open { place-items:start center; padding-top:12px; }
     .deposit-dialog-backdrop.keyboard-open .deposit-dialog { max-height:calc(100% - 24px); transform:none; }
     .deposit-dialog-backdrop[hidden] { display:none; }
@@ -590,7 +591,7 @@
     let depositHoldPointerId = null;
     let depositHoldX = 0;
     let depositHoldY = 0;
-    let suppressDepositClick = false;    const depositValue = document.getElementById("deposit-value");
+    let suppressDepositClick = false;
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
     const historyPanel = document.getElementById("history-panel");
@@ -1184,7 +1185,8 @@
       event.preventDefault();
       event.stopPropagation();
       suppressDepositClick = false;
-    });    depositDialogSubmit.addEventListener("click", submitDepositDialog);
+    });
+    depositDialogSubmit.addEventListener("click", submitDepositDialog);
     document.getElementById("deposit-dialog-close").addEventListener("click", closeDepositDialog);
     document.getElementById("deposit-dialog-cancel").addEventListener("click", closeDepositDialog);
     depositDialogBackdrop.addEventListener("click", event => {
