@@ -62,11 +62,6 @@
     .goal-track-wrap { padding:20px 0 4px; }
     .goal-track { position:relative; height:clamp(15px,3.2vw,24px); border-radius:999px; background:#e5e8ee; }
     .goal-fill { position:absolute; inset:0 auto 0 0; width:100%; border-radius:inherit; background:linear-gradient(90deg,#39ed72,#13b94c); transform:scaleX(.426); transform-origin:left center; transition:transform 180ms var(--ease-out); }
-    .goal-forecast-marker { position:absolute; z-index:1; left:98.6%; top:-9px; bottom:-5px; border-left:2px dashed #159447; pointer-events:none; }
-    .goal-forecast-pin { position:absolute; z-index:2; right:0; bottom:calc(100% + 15px); padding:5px 9px; border:1px solid #a6e4b7; border-radius:10px; background:#f5fff7; color:#626b7d; font-size:11px; white-space:nowrap; transform:translateX(0); pointer-events:none; }
-    .goal-forecast-pin strong { color:#159447; }
-    .goal-range { position:absolute; z-index:3; inset:-10px 0; width:100%; height:calc(100% + 20px); margin:0; opacity:0; cursor:ew-resize; touch-action:pan-y; }
-    .goal-hint { margin-top:9px; color:#8a91a0; font-size:10px; }
     .deposit-summary {
       display: flex;
       align-items: center;
@@ -428,18 +423,14 @@
         <section class="goal-overview" aria-label="Прогресс и депозит">
           <div class="goal-card">
             <div class="goal-topline">
-              <div class="goal-values"><strong id="goal-current">$4,260</strong><span>/ $10,000</span></div>
-              <div class="goal-meta"><span class="goal-forecast">Прогноз: <strong>$9,860</strong></span><strong class="goal-percent" id="goal-percent">42.6%</strong></div>
+              <div class="goal-values"><strong id="goal-current">$0</strong><span>/ <strong id="goal-total">$0</strong></span></div>
+              <div class="goal-meta"><strong class="goal-percent" id="goal-percent">0.0%</strong></div>
             </div>
             <div class="goal-track-wrap">
-              <div class="goal-track" id="goal-track">
+              <div class="goal-track" id="goal-track" role="progressbar" aria-label="Сумма за месяц до сегодняшнего дня" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div class="goal-fill" id="goal-fill"></div>
-                <span class="goal-forecast-marker" aria-hidden="true"></span>
-                <span class="goal-forecast-pin" aria-hidden="true">Прогноз: <strong>$9,860</strong></span>
-                <input class="goal-range" id="goal-range" type="range" min="0" max="10000" step="10" value="4260" aria-label="Текущий прогресс к цели от 0 до 10000 долларов">
               </div>
             </div>
-            <div class="goal-hint">Передвигай ползунок, чтобы изменить текущий прогресс</div>
           </div>
           <div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div>
         </section>
@@ -484,21 +475,30 @@
     const historyList = document.getElementById("history-list");
     const historyDeposits = document.getElementById("history-deposits");
     const historyWithdrawals = document.getElementById("history-withdrawals");
-    const goalRange = document.getElementById("goal-range");
     const goalFill = document.getElementById("goal-fill");
     const goalCurrent = document.getElementById("goal-current");
+    const goalTotal = document.getElementById("goal-total");
     const goalPercent = document.getElementById("goal-percent");
-    const goalTarget = 10000;
-    const formatGoalMoney = value => "$" + Math.round(value).toLocaleString("en-US");
-    function updateGoalProgress(value) {
-      const amount = Math.max(0, Math.min(goalTarget, Number(value) || 0));
-      const percent = amount / goalTarget;
+    const goalTrack = document.getElementById("goal-track");
+    const formatGoalMoney = value => "$" + Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    function updateGoalProgress(monthDate) {
+      const key = monthKey(monthDate);
+      const month = calendarData.months[key] || {};
+      const days = month.days || {};
+      const todayMonth = monthKey(new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1)));
+      const cutoff = key < todayMonth ? 31 : key > todayMonth ? 0 : today.getDate();
+      const values = Object.entries(days).filter(([day, value]) => Number(day) <= cutoff && typeof value === "number").map(([, value]) => value);
+      const monthValues = Object.values(days).filter(value => typeof value === "number");
+      const currentTotal = values.reduce((sum, value) => sum + value, 0);
+      const monthTotal = monthValues.reduce((sum, value) => sum + value, 0);
+      const percent = monthTotal > 0 ? Math.max(0, Math.min(1, currentTotal / monthTotal)) : 0;
       goalFill.style.transform = "scaleX(" + percent + ")";
-      goalCurrent.textContent = formatGoalMoney(amount);
+      goalCurrent.textContent = formatGoalMoney(currentTotal);
+      goalTotal.textContent = formatGoalMoney(monthTotal);
       goalPercent.textContent = (percent * 100).toFixed(1) + "%";
-      goalRange.setAttribute("aria-valuetext", formatGoalMoney(amount) + " из " + formatGoalMoney(goalTarget));
+      goalTrack.setAttribute("aria-valuenow", (percent * 100).toFixed(1));
+      goalTrack.setAttribute("aria-valuetext", formatGoalMoney(currentTotal) + " из " + formatGoalMoney(monthTotal));
     }
-    goalRange.addEventListener("input", event => updateGoalProgress(event.currentTarget.value));
 
     let activeTile = null;
     let dragPointerId = null;
@@ -587,7 +587,7 @@
       }
     }
 
-    function renderCalendar() {
+    function renderCalendar() {\n      updateGoalProgress(visibleMonth);
       const key = monthKey(visibleMonth);
       const month = calendarData.months[key] || {};
       const { count, offset } = monthDays(visibleMonth);
