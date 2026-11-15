@@ -463,7 +463,7 @@
         <section class="goal-overview" aria-label="Прогресс и депозит">
           <div class="goal-card">
             <div class="goal-topline">
-              <div class="goal-values"><strong id="goal-current">$0</strong><span>/ <strong id="goal-total">$0</strong></span><div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div></div>
+              <div class="goal-values"><strong id="goal-current">$0</strong><span>/ <strong id="goal-total">$0</strong></span><div class="deposit-summary"><span>ДЕПОЗИТ</span><strong id="deposit-value">$500.00</strong></div></div>
             </div>
             <div class="goal-track-wrap">
               <div class="goal-track" id="goal-track" role="progressbar" aria-label="Сумма за месяц до сегодняшнего дня" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -530,6 +530,7 @@
     const editorKindActions = document.getElementById("editor-kind-actions");
     const editorDeposit = document.getElementById("editor-deposit");
     const editorWithdrawal = document.getElementById("editor-withdrawal");
+    const depositValue = document.getElementById("deposit-value");
     const previewDays = document.getElementById("preview-days");
     const previewMonth = document.getElementById("preview-month");
     const historyPanel = document.getElementById("history-panel");
@@ -589,6 +590,16 @@
     let lastPointerX = 0;
     let lastPointerY = 0;
     const calendarStorageKey = "romano-calendar-data-v1";
+    const depositStorageKey = "romano-deposit-amount-v1";
+    let depositAmount = 500;
+
+    function renderDepositAmount() {
+      depositValue.textContent = "$" + depositAmount.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+    }
+    function saveDepositAmount() {
+      try { localStorage.setItem(depositStorageKey, String(depositAmount)); } catch (error) { console.warn("Could not save deposit amount", error); }
+      renderDepositAmount();
+    }
 
     const monthKey = date => date.getUTCFullYear() + "-" + String(date.getUTCMonth() + 1).padStart(2, "0");
     const monthLabel = date => new Intl.DateTimeFormat("en", { month: "long", year: "numeric", timeZone: "UTC" }).format(date);
@@ -863,6 +874,13 @@
 
     async function loadCalendarData() {
       try {
+        const savedDeposit = localStorage.getItem(depositStorageKey);
+        if (savedDeposit !== null && Number.isFinite(Number(savedDeposit))) depositAmount = Number(savedDeposit);
+      } catch (storageError) {
+        console.warn("Could not restore deposit amount", storageError);
+      }
+      renderDepositAmount();
+      try {
         const response = await fetch("./data/calendar.json", { cache: "no-store" });
         if (!response.ok) throw new Error("Calendar data request failed");
         calendarData = await response.json();
@@ -920,15 +938,21 @@
     editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
     editorDeposit.addEventListener("click", () => {
       if (rangeStart !== rangeEnd) return;
-      const amount = Math.abs(Number(editorAmount.value) || 0);
-      editorAmount.value = amount.toFixed(2);
-      editorAmount.dispatchEvent(new Event("input", { bubbles:true }));
+      const amount = Math.abs(Number(editorAmount.value));
+      if (editorAmount.value.trim() === "" || !Number.isFinite(amount)) return;
+      depositAmount += amount;
+      saveDepositAmount();
+      calendarDetail.textContent = "Депозит пополнен на " + money(amount);
+      closeCalendarEditor();
     });
     editorWithdrawal.addEventListener("click", () => {
       if (rangeStart !== rangeEnd) return;
-      const amount = Math.abs(Number(editorAmount.value) || 0);
-      editorAmount.value = (-amount).toFixed(2);
-      editorAmount.dispatchEvent(new Event("input", { bubbles:true }));
+      const amount = Math.abs(Number(editorAmount.value));
+      if (editorAmount.value.trim() === "" || !Number.isFinite(amount)) return;
+      depositAmount -= amount;
+      saveDepositAmount();
+      calendarDetail.textContent = "Из депозита выведено " + money(amount);
+      closeCalendarEditor();
     });
     calendarDays.addEventListener("contextmenu", event => event.preventDefault());
     calendarDays.addEventListener("selectstart", event => event.preventDefault());
