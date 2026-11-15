@@ -51,9 +51,9 @@
     }
     .top-panel { min-width: 0; }
     .goal-overview { display:block; width:100%; margin-bottom:18px; }
-    .goal-card { position:relative; display:flex; flex-direction:column; min-width:0; width:100%; padding:14px clamp(12px,2.2vw,22px) 13px; border:1px solid #e0e5ee; border-radius:17px; background:linear-gradient(120deg,#fff 0%,#fbfcff 100%); box-shadow:0 2px 7px rgba(28,36,58,.045); }
-    .goal-topline { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding-right:112px; }
-    .goal-values { display:flex; align-items:baseline; gap:8px; min-width:0; white-space:nowrap; font-size:clamp(17px,3.2vw,30px); font-weight:800; letter-spacing:-.045em; color:#626b7d; font-variant-numeric:tabular-nums; }
+    .goal-card { display:flex; flex-direction:column; min-width:0; width:100%; padding:14px clamp(12px,2.2vw,22px) 13px; border:1px solid #e0e5ee; border-radius:17px; background:linear-gradient(120deg,#fff 0%,#fbfcff 100%); box-shadow:0 2px 7px rgba(28,36,58,.045); }
+    .goal-topline { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .goal-values { display:flex; align-items:baseline; flex-wrap:wrap; gap:8px 12px; min-width:0; white-space:nowrap; font-size:clamp(17px,3.2vw,30px); font-weight:800; letter-spacing:-.045em; color:#626b7d; font-variant-numeric:tabular-nums; }
     .goal-values #goal-current { color:#159447; font-size:1.28em; }
     .goal-meta { display:flex; align-items:center; gap:12px; white-space:nowrap; }
     .goal-forecast { padding:6px 10px; border:1px solid #a6e4b7; border-radius:999px; color:#626b7d; background:#f5fff7; font-size:clamp(10px,1.8vw,14px); box-shadow:0 2px 5px rgba(21,148,71,.08); }
@@ -63,30 +63,27 @@
     .goal-track { position:relative; height:clamp(15px,3.2vw,24px); border-radius:999px; background:#e5e8ee; }
     .goal-fill { position:absolute; inset:0 auto 0 0; width:100%; border-radius:inherit; background:linear-gradient(90deg,#39ed72,#13b94c); transform:scaleX(.426); transform-origin:left center; transition:transform 180ms var(--ease-out); }
     .deposit-summary {
-      position:absolute;
-      top:8px;
-      right:14px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-end;
-      gap:8px;
-      margin:0;
-      padding:4px 9px;
+      display:inline-flex;
+      align-items:baseline;
+      gap:6px;
+      margin:0 0 0 2px;
+      padding:0;
       color:#596579;
-      background:#f3f7ff;
-      border:1px solid #dce7fb;
-      border-radius:10px;
-      box-shadow:0 2px 6px rgba(37,99,235,.06);
+      background:transparent;
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+      white-space:nowrap;
     }
     .deposit-summary span {
-      font-size:10px;
-      letter-spacing:.1em;
+      font-size:clamp(9px,1.3vw,11px);
+      letter-spacing:.08em;
       font-weight:800;
-      line-height:1.2;
+      line-height:1;
     }
     .deposit-summary strong {
       color:#2563eb;
-      font-size:clamp(16px,2.4vw,20px);
+      font-size:1em;
       letter-spacing:-.035em;
       font-weight:800;
       line-height:1;
@@ -351,15 +348,17 @@
     @media (max-width:600px) {
       .goal-overview { grid-template-columns:minmax(0,1fr) 112px; gap:8px; }
       .goal-card { padding:12px 10px 9px; }
-      .goal-topline { align-items:flex-start; flex-direction:column; gap:7px; padding-right:100px; }
+      .goal-topline { align-items:flex-start; flex-direction:column; gap:7px; }
+      .goal-values { gap:6px 9px; }
       .goal-meta { width:100%; justify-content:space-between; }
       .goal-forecast { font-size:10px; }
       .goal-percent { font-size:22px; }
       .goal-values { font-size:17px; }
       .goal-values #goal-current { font-size:1.2em; }
       .goal-forecast-pin { font-size:9px; padding:4px 6px; }
-      .deposit-summary { flex-direction:row; justify-content:flex-end; align-items:center; gap:7px; padding:4px 8px; }
-      .deposit-summary strong { font-size:17px; }
+      .deposit-summary { gap:4px; }
+      .deposit-summary span { font-size:8px; }
+      .deposit-summary strong { font-size:1em; }
     }
     @media (prefers-reduced-motion:reduce) { .goal-fill { transition:none; } }
     @media (max-width:520px) { .history-row { grid-template-columns:28px minmax(76px,.9fr) minmax(75px,1fr) auto; gap:6px; } .history-kind-icon { width:26px; height:26px; } .history-totals { width:100%; justify-content:space-between; } }
@@ -425,11 +424,10 @@
         <section class="goal-overview" aria-label="Прогресс и депозит">
           <div class="goal-card">
             <div class="goal-topline">
-              <div class="goal-values"><strong id="goal-current">$0</strong><span>/ <strong id="goal-total">$0</strong></span></div>
+              <div class="goal-values"><strong id="goal-current">$0</strong><span>/ <strong id="goal-total">$0</strong></span><div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div></div>
               <div class="goal-meta"><strong class="goal-percent" id="goal-percent">0.0%</strong></div>
             </div>
             <div class="goal-track-wrap">
-              <div class="deposit-summary"><span>ДЕПОЗИТ</span><strong>$500</strong></div>
               <div class="goal-track" id="goal-track" role="progressbar" aria-label="Сумма за месяц до сегодняшнего дня" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div class="goal-fill" id="goal-fill"></div>
               </div>
