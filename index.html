@@ -658,10 +658,11 @@
     }
     function deleteHistoryTransaction(item) {
       if (!item || !Array.isArray(calendarData.history)) return;
-      const amount = Number(item.amount) || 0;
+      const amount = Math.abs(Number(item.amount) || 0);
       if (!window.confirm("Удалить эту операцию? Изменение депозита будет отменено.")) return;
       if (item.source === "deposit-dialog") {
-        depositAmount = Math.round((depositAmount - amount) * 100) / 100;
+        const balanceCorrection = item.type === "deposit" ? -amount : item.type === "withdrawal" ? amount : 0;
+        depositAmount = Math.max(0, Math.round((depositAmount + balanceCorrection) * 100) / 100);
         saveDepositAmount();
       }
       calendarData.history = calendarData.history.filter(entry => entry.id !== item.id);
