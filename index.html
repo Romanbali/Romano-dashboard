@@ -607,8 +607,6 @@
         <div class="calendar-days" id="calendar-days"></div>
         <section class="calendar-editor" id="calendar-editor" hidden aria-label="Редактор сумм календаря">
           <div class="editor-heading"><span>Изменить сумму</span><button class="editor-close" id="editor-close" type="button" aria-label="Закрыть редактор">×</button></div>
-          <p class="editor-hint" id="editor-hint">Выбери конечную дату диапазона или оставь один день</p>
-          <div class="editor-range"><div class="editor-date" id="editor-start-date">—</div><span>→</span><div class="editor-date" id="editor-end-date">—</div></div>
           <label class="editor-amount-label" for="editor-amount">Сумма в USD (можно отрицательную)</label>
           <input class="editor-amount" id="editor-amount" type="number" inputmode="decimal" step="0.01" placeholder="0.00">
           <div class="editor-actions">
@@ -704,9 +702,6 @@
     const calendarDays = document.getElementById("calendar-days");
     const calendarDetail = document.getElementById("calendar-detail");
     const calendarEditor = document.getElementById("calendar-editor");
-    const editorHint = document.getElementById("editor-hint");
-    const editorStartDate = document.getElementById("editor-start-date");
-    const editorEndDate = document.getElementById("editor-end-date");
     const editorAmount = document.getElementById("editor-amount");
     const editorKindActions = document.getElementById("editor-kind-actions");
     const editorDeposit = document.getElementById("editor-deposit");
@@ -1150,10 +1145,6 @@
       return keys;
     }
     function updateEditorRange() {
-      const ordered = [rangeStart, rangeEnd].sort();
-      editorStartDate.textContent = formatEditorDate(ordered[0]);
-      editorEndDate.textContent = formatEditorDate(ordered[1]);
-      editorHint.textContent = selectingRangeEnd ? "Теперь выбери конечную дату — можно нажать или провести по календарю" : "Удерживай дату, чтобы начать новый диапазон";
       editorKindActions.hidden = rangeStart !== rangeEnd || rangeStart > todayKey;
     }
     function openCalendarEditor(dateKey) {
@@ -1287,7 +1278,6 @@
               rangeEnd = dateKey;
               selectingRangeEnd = true;
               calendarDays.dataset.rangeSelecting = "true";
-              editorHint.textContent = "Выбери вторую дату диапазона";
               updateRangeEnd(dateKey);
               return;
             }
@@ -1304,7 +1294,6 @@
             updateRangeEnd(dateKey);
             selectingRangeEnd = false;
             delete calendarDays.dataset.rangeSelecting;
-            editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
             updateEditorRange();
             return;
           }
