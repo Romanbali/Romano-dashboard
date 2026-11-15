@@ -676,7 +676,6 @@
       calendarEditor.hidden = false;
       updateEditorRange();
       renderCalendar();
-      editorAmount.focus({ preventScroll:true });
     }
     function closeCalendarEditor() {
       editorActive = false;
@@ -690,6 +689,12 @@
       if (!editorActive || !selectingRangeEnd || dateKey.slice(0,7) !== rangeStart.slice(0,7)) return;
       rangeEnd = dateKey;
       selectedDate = dateKey;
+      const selectedValues = dateKeysBetween(rangeStart, rangeEnd).map(key => {
+        const itemMonth = calendarData.months[key.slice(0,7)] || {};
+        return itemMonth.days && itemMonth.days[String(Number(key.slice(-2)))];
+      });
+      const firstValue = selectedValues[0];
+      editorAmount.value = selectedValues.every(item => typeof item === "number" && item === firstValue) ? Number(firstValue).toFixed(2) : "";
       updateEditorRange();
       renderCalendar();
     }
@@ -777,14 +782,8 @@
           if (editorActive && selectingRangeEnd) {
             updateRangeEnd(dateKey);
             selectingRangeEnd = false;
-            updateEditorRange();
-            const selectedValues = dateKeysBetween(rangeStart, rangeEnd).map(key => {
-              const itemMonth = calendarData.months[key.slice(0,7)] || {};
-              return itemMonth.days && itemMonth.days[String(Number(key.slice(-2)))];
-            });
-            const firstValue = selectedValues[0];
-            editorAmount.value = selectedValues.every(item => typeof item === "number" && item === firstValue) ? Number(firstValue).toFixed(2) : "";
             editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
+            updateEditorRange();
             return;
           }
           selectedDate = dateKey;
