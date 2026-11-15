@@ -282,6 +282,9 @@
     }
     .calendar-days { margin-top: 5px; }
     .calendar-day {
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-touch-callout:none;
       touch-action:pan-y;
       display: flex;
       flex-direction: column;
@@ -558,7 +561,8 @@
     let holdTimer = null;
     let holdPointerId = null;
     let holdStarted = false;
-    let suppressDayClick = false;
+    let rangePointerId = null;
+    let rangePointerMoved = false;
     let lastPointerX = 0;
     let lastPointerY = 0;
     const calendarStorageKey = "romano-calendar-data-v1";
@@ -696,7 +700,15 @@
       const firstValue = selectedValues[0];
       editorAmount.value = selectedValues.every(item => typeof item === "number" && item === firstValue) ? Number(firstValue).toFixed(2) : "";
       updateEditorRange();
-      renderCalendar();
+      const low = rangeStart < rangeEnd ? rangeStart : rangeEnd;
+      const high = rangeStart < rangeEnd ? rangeEnd : rangeStart;
+      calendarDays.querySelectorAll(".calendar-day[data-date]").forEach(button => {
+        const key = button.dataset.date;
+        button.classList.toggle("range-start", key === low);
+        button.classList.toggle("range-end", key === high && high !== low);
+        button.classList.toggle("in-range", key > low && key < high);
+        button.classList.toggle("selected", key === dateKey);
+      });
     }
     function saveCalendarDataLocally() {
       try {
@@ -778,8 +790,8 @@
         button.append(number, amount);
         button.dataset.date = dateKey;
         button.addEventListener("click", () => {
-          if (suppressDayClick) { suppressDayClick = false; return; }
           if (editorActive && selectingRangeEnd) {
+            if (dateKey === rangeStart) return;
             updateRangeEnd(dateKey);
             selectingRangeEnd = false;
             editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
@@ -861,9 +873,19 @@
     document.getElementById("editor-cancel").addEventListener("click", closeCalendarEditor);
     document.getElementById("editor-apply").addEventListener("click", applyCalendarEdit);
     editorAmount.addEventListener("input", () => editorAmount.setCustomValidity(""));
+    calendarDays.addEventListener("contextmenu", event => event.preventDefault());
+    calendarDays.addEventListener("selectstart", event => event.preventDefault());
     calendarDays.addEventListener("pointerdown", event => {
       const dayButton = event.target.closest(".calendar-day[data-date]");
-      if (!dayButton || event.button !== 0 || editorActive) return;
+      if (!dayButton || event.button !== 0) return;
+      if (editorActive && selectingRangeEnd) {
+        rangePointerId = event.pointerId;
+        rangePointerMoved = false;
+        calendarDays.setPointerCapture(event.pointerId);
+        updateRangeEnd(dayButton.dataset.date);
+        return;
+      }
+      if (editorActive) return;
       holdPointerId = event.pointerId;
       holdStarted = false;
       lastPointerX = event.clientX;
@@ -871,35 +893,39 @@
       const dateKey = dayButton.dataset.date;
       holdTimer = window.setTimeout(() => {
         holdStarted = true;
-        suppressDayClick = true;
         openCalendarEditor(dateKey);
       }, 480);
     });
     calendarDays.addEventListener("pointermove", event => {
+      if (rangePointerId === event.pointerId) {
+        const underPointer = document.elementFromPoint(event.clientX,event.clientY);
+        const dayButton = underPointer && underPointer.closest(".calendar-day[data-date]");
+        if (dayButton && dayButton.dataset.date !== rangeEnd) {
+          rangePointerMoved = true;
+          updateRangeEnd(dayButton.dataset.date);
+        }
+        return;
+      }
       if (holdPointerId !== event.pointerId) return;
       if (!holdStarted && Math.hypot(event.clientX-lastPointerX,event.clientY-lastPointerY) > 12) {
         window.clearTimeout(holdTimer);
         holdTimer = null;
-        return;
-      }
-      if (holdStarted) {
-        const underPointer = document.elementFromPoint(event.clientX,event.clientY);
-        const dayButton = underPointer && underPointer.closest(".calendar-day[data-date]");
-        if (dayButton) updateRangeEnd(dayButton.dataset.date);
       }
     });
     function finishCalendarPointer(event) {
+      if (rangePointerId === event.pointerId) {
+        if (rangePointerMoved) {
+          selectingRangeEnd = false;
+          editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
+          updateEditorRange();
+        }
+        rangePointerId = null;
+        rangePointerMoved = false;
+        return;
+      }
       if (holdPointerId !== event.pointerId) return;
       if (holdTimer) window.clearTimeout(holdTimer);
       holdTimer = null;
-      if (holdStarted) {
-        suppressDayClick = true;
-        event.preventDefault();
-        window.setTimeout(() => { suppressDayClick = false; }, 0);
-        selectingRangeEnd = false;
-        editorHint.textContent = "Диапазон выбран. Введи сумму — она применится ко всем дням";
-        updateEditorRange();
-      }
       holdPointerId = null;
     }
     calendarDays.addEventListener("pointerup", finishCalendarPointer);
