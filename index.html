@@ -690,7 +690,10 @@
     }
 
     function renderHistory() {
-      const transactions = Array.isArray(calendarData.history) ? calendarData.history.slice() : [];
+      const visibleMonthKey = monthKey(visibleMonth);
+      const transactions = (Array.isArray(calendarData.history) ? calendarData.history : [])
+        .filter(item => typeof item.date === "string" && item.date.slice(0, 7) === visibleMonthKey)
+        .slice();
       const deposits = transactions.filter(item => item.type === "deposit").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
       const withdrawals = transactions.filter(item => item.type === "withdrawal").reduce((sum, item) => sum + Math.abs(Math.min(0, Number(item.amount) || 0)), 0);
       historyDeposits.textContent = money(deposits);
@@ -930,6 +933,7 @@
       if (editorActive) closeCalendarEditor();
       calendarDetail.textContent = "Выбери день, чтобы посмотреть сумму";
       renderCalendar();
+      renderHistory();
     }
 
     async function loadCalendarData() {
