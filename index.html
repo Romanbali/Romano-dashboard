@@ -96,8 +96,8 @@
       min-width: 0;
     }
     .tile-row { display: grid; gap: var(--space); min-width: 0; }
-    .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
-    .row-one #calendar-launch { grid-column: 1 / span 2; }
+    .row-one { grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); align-items: start; }
+    .row-one #calendar-launch { grid-column: 1 / span 1; }
     .row-one .tile { height: clamp(110px, 26vw, 180px); }
     .row-two { grid-template-columns: 2fr 1fr; }
     .row-three { grid-template-columns: 1fr 1fr 2fr; }
@@ -660,16 +660,14 @@
 
 
     /* Keep the trading calendar tile exactly two dashboard columns wide */
+    .grid > .tile-row.row-one {
+      grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    }
     .grid > .tile-row.row-one > #calendar-launch {
-      grid-column: 1 / span 2 !important;
+      grid-column: 1 / span 1 !important;
       width: 100%;
       min-width: 0;
       justify-self: stretch;
-    }
-    @media (max-width: 600px) {
-      .grid > .tile-row.row-one > #calendar-launch {
-        grid-column: 1 / span 2 !important;
-      }
     }
 
     /* Unified light theme for dashboard and expanded trading calendar */
