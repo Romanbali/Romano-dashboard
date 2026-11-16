@@ -833,14 +833,60 @@
       .stress-day strong { font-size:clamp(8px,1.8vw,12px); }
     }
 
+
+    /* Full-screen calendar dashboard: remove the surrounding dashboard tiles. */
+    html, body { width:100%; min-height:100%; }
+    body { min-height:100dvh; height:100dvh; padding:0 !important; overflow:hidden; }
+    .dashboard { display:block !important; width:100%; height:100dvh; min-height:100dvh; margin:0; }
+    .rail, .top-panel, .tile-row:not(.row-one) { display:none !important; }
+    .workspace { display:block !important; width:100%; height:100%; min-height:0; }
+    .grid { display:block !important; width:100%; height:100%; min-height:0; }
+    .grid > .tile-row.row-one { display:block !important; width:100%; height:100%; }
+    .grid > .tile-row.row-one > #calendar-launch {
+      display:block;
+      width:100% !important;
+      height:100dvh !important;
+      min-height:100dvh !important;
+      max-height:none !important;
+      margin:0;
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+    #calendar-launch .stress-preview {
+      justify-content:space-evenly;
+      gap:clamp(14px,3vh,30px);
+      width:100%;
+      height:100%;
+      min-height:100%;
+      padding:clamp(20px,5vw,52px);
+    }
+    #calendar-launch .stress-preview-head { width:100%; }
+    #calendar-launch .stress-preview .trading-preview-month { font-size:clamp(25px,5vw,48px); }
+    #calendar-launch .stress-preview .trading-preview-balance { font-size:clamp(19px,3.4vw,32px); padding:8px 14px; }
+    #calendar-launch .stress-chart-wrap { width:100%; height:clamp(150px,32vh,380px); min-height:130px; }
+    #calendar-launch .stress-summary { width:100%; }
+    #calendar-launch .stress-summary > strong { font-size:clamp(34px,7vw,72px); }
+    #calendar-launch .stress-summary-meta { font-size:clamp(10px,1.8vw,16px); gap:8px; }
+    #calendar-launch .stress-days { width:100%; gap:clamp(6px,1.4vw,14px); }
+    #calendar-launch .stress-day { min-height:clamp(76px,14vh,150px); padding:12px 4px; border-radius:14px; }
+    #calendar-launch .stress-day span { font-size:clamp(10px,1.8vw,17px); }
+    #calendar-launch .stress-day strong { margin-top:8px; font-size:clamp(16px,3vw,29px); }
+    #calendar-launch .stress-day small { margin-top:7px; font-size:clamp(10px,1.8vw,17px); }
+    @media(max-width:600px) {
+      #calendar-launch .stress-preview { gap:clamp(12px,2.6vh,24px); padding:20px 14px; }
+      #calendar-launch .stress-chart-wrap { height:clamp(130px,25vh,240px); }
+      #calendar-launch .stress-day { min-height:clamp(66px,12vh,105px); padding:9px 2px; }
+      #calendar-launch .stress-day span, #calendar-launch .stress-day small { font-size:clamp(8px,2.2vw,12px); }
+      #calendar-launch .stress-day strong { font-size:clamp(13px,3.2vw,19px); }
+    }
+
   </style>
 </head>
 <body>
-  <main class="dashboard" aria-label="Dashboard layout">
-    <aside class="rail" aria-hidden="true"></aside>
-    <section class="workspace" aria-label="Dashboard workspace">
-      <header class="top-panel" aria-hidden="true"></header>
-      <div class="grid" aria-label="Dashboard blocks">
+  <main class="dashboard" aria-label="Trading calendar">
+    <section class="workspace" aria-label="Calendar workspace">
+      <div class="grid" aria-label="Calendar">
         <div class="tile-row row-one">
           <button class="tile trading-tile" id="calendar-launch" type="button" aria-label="Open monthly trading calendar">
             <div class="trading-preview stress-preview" id="trading-preview">
@@ -870,19 +916,6 @@
               </div>
             </div>
           </button>
-        </div>
-        <div class="tile-row row-two">
-          <button class="tile" type="button" aria-label="Open block 5"></button>
-          <button class="tile" type="button" aria-label="Open block 6"></button>
-        </div>
-        <div class="tile-row row-three">
-          <button class="tile" type="button" aria-label="Open block 7"></button>
-          <button class="tile" type="button" aria-label="Open block 8"></button>
-          <button class="tile" type="button" aria-label="Open block 9"></button>
-        </div>
-        <div class="tile-row row-four">
-          <button class="tile" type="button" aria-label="Open block 10"></button>
-          <button class="tile" type="button" aria-label="Open block 11"></button>
         </div>
       </div>
     </section>
