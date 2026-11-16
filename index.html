@@ -639,6 +639,56 @@
       .habit-card { padding:11px 8px 10px; }
       .habit-streak { padding:6px 7px; font-size:11px; }
     }
+
+    /* Habit tracker: clearer hierarchy and stronger visual grouping */
+    .bottom-sheet.habits-open { padding:9px 3px max(16px,env(safe-area-inset-bottom)); }
+    .bottom-sheet.habits-open .sheet-content { width:100%; max-width:none; }
+    .habits-panel { width:100%; }
+    .habits-heading { padding:5px 9px 10px; }
+    .habits-title { font-size:24px; font-weight:850; letter-spacing:-.7px; }
+    .habits-month-nav { display:grid; grid-template-columns:38px 1fr 38px; align-items:center; margin:0 6px 12px; padding:0; border:0; }
+    .habits-month-title { font-size:15px; font-weight:800; }
+    .habits-month-btn { width:36px; height:36px; border-radius:12px; background:#f1f3f7; }
+    .habit-filters { gap:7px; margin:0 6px 12px; }
+    .habit-filter { min-height:34px; padding:0 14px; border:1px solid #e4e6ec; border-radius:10px; background:#fff; font-size:11px; }
+    .habit-filter.active { border-color:#252d40; background:#252d40; color:#fff; }
+    .habits-overview { gap:7px; margin:0 5px 11px; }
+    .habits-overview-item { min-height:66px; padding:10px 10px; border:1px solid #e6e9ef; border-radius:13px; background:linear-gradient(145deg,#fff,#f6f8fb); }
+    .habits-overview-value { font-size:19px; color:#222b3d; }
+    .habits-overview-label { font-size:9px; line-height:1.3; }
+    .habit-legend { display:flex; gap:7px 13px; margin:0 9px 12px; color:#777f8d; font-size:10px; }
+    .habit-card { padding:13px 11px 12px; border:1px solid #e3e7ee; border-radius:18px; background:#fff; box-shadow:0 4px 15px rgba(32,43,62,.07); }
+    .habit-card + .habit-card { margin-top:12px; }
+    .habit-card-top { gap:10px; margin-bottom:12px; padding-bottom:11px; border-bottom:1px solid #eff1f5; }
+    .habit-icon { width:45px; height:45px; flex-basis:45px; border:0; border-radius:14px; background:var(--habit-soft); font-size:22px; }
+    .habit-name { font-size:15px; font-weight:800; color:#20283a; }
+    .habit-month-label { margin-top:4px; color:#9299a6; font-size:10px; }
+    .habit-streak { padding:8px 10px; border:1px solid #f6e6d3; border-radius:11px; background:#fff8ef; color:#bd6c23; font-size:12px; font-weight:850; }
+    .habit-card-actions { flex-direction:row; gap:4px; }
+    .habit-action { width:27px; height:27px; border:1px solid #eceef2; border-radius:9px; background:#f8f9fb; font-size:13px; }
+    .habit-heatmap { grid-template-columns:repeat(10,minmax(0,1fr)); gap:5px; }
+    .habit-day { aspect-ratio:1.12; border:1px solid #eceef3; border-radius:7px; background:#f8edf2; color:#9b6b80; font-size:11px; font-weight:750; }
+    .habit-day.done { border-color:var(--habit-color); background:var(--habit-color); color:#fff; box-shadow:inset 0 -2px 0 rgba(0,0,0,.08); }
+    .habit-day.missed { border-color:#e2e5eb; background:#eceef2; color:#89909c; }
+    .habit-day.rest-day,.habit-day.future { border-color:#f0f1f4; background:#fafbfc; color:#c4c8d0; opacity:1; }
+    .habit-day.today { outline:2px solid #20283a; outline-offset:1px; border-color:#fff; }
+    .habit-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:12px; }
+    .habit-stat { min-height:57px; padding:9px 10px; border:1px solid #e9ecf1; border-radius:12px; background:#f7f8fb; }
+    .habit-stat strong { font-size:16px; color:#20283a; }
+    .habit-stat span { margin-top:4px; color:#858d9b; font-size:10px; }
+    .habit-stat:first-child { border-color:#d9e9df; background:#f0f8f3; }
+    .habit-stat:first-child strong { color:#23834e; }
+    .habit-progress { height:7px; margin-top:11px; border-radius:99px; background:#edf0f4; }
+    .habit-progress-fill { border-radius:99px; }
+    .habit-schedule-label { margin-top:6px; color:#89909d; font-size:10px; }
+    @media(max-width:430px) {
+      .habits-overview-item { padding:9px 7px; }
+      .habits-overview-value { font-size:17px; }
+      .habit-card { padding:11px 8px 10px; }
+      .habit-heatmap { gap:4px; }
+      .habit-day { border-radius:6px; font-size:10px; }
+      .habit-stat { min-height:53px; padding:8px; }
+    }
   </style>
 </head>
 <body>
