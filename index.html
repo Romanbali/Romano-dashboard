@@ -965,6 +965,146 @@
         min-height:clamp(68px,11vh,100px) !important; padding:6px 2px !important; border-radius:9px !important;
       }
     }
+
+    /* Reference-inspired plum performance dashboard */
+    #bottom-sheet .calendar-full {
+      padding:0 !important;
+      min-height:100dvh !important;
+      background:#160b1b !important;
+      color:#f8eef9 !important;
+      overflow:hidden;
+    }
+    #bottom-sheet .goal-overview,
+    #bottom-sheet .calendar-header,
+    #bottom-sheet .performance-compact,
+    #bottom-sheet .calendar-expanded,
+    #bottom-sheet .calendar-detail { display:none !important; }
+    #bottom-sheet .stress-dashboard {
+      --stress-pink:#e968d4;
+      --stress-muted:#b98db9;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap:clamp(20px,3.4vh,38px);
+      width:100%;
+      min-height:100dvh;
+      padding:clamp(22px,4vw,46px) clamp(18px,5vw,64px) max(24px,env(safe-area-inset-bottom));
+      overflow:hidden;
+      background:
+        radial-gradient(ellipse at 50% -18%,rgba(157,48,133,.62) 0%,rgba(92,25,79,.38) 34%,transparent 67%),
+        linear-gradient(160deg,#35102f 0%,#210c23 44%,#100713 100%);
+    }
+    #bottom-sheet .stress-dashboard::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.22;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 38%,rgba(0,0,0,.2));
+    }
+    #bottom-sheet .stress-topbar,
+    #bottom-sheet .stress-chart-panel,
+    #bottom-sheet .stress-calendar-strip,
+    #bottom-sheet .stress-selected { position:relative; z-index:1; }
+    #bottom-sheet .stress-topbar {
+      display:grid;
+      grid-template-columns:58px minmax(0,1fr) auto;
+      align-items:center;
+      gap:16px;
+      min-height:74px;
+    }
+    #bottom-sheet .stress-back {
+      display:grid; place-items:center;
+      width:58px; height:58px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:50%;
+      color:#fff;
+      background:rgba(255,255,255,.12);
+      font:400 46px/1 ui-sans-serif,system-ui;
+      cursor:pointer;
+      box-shadow:0 8px 24px rgba(0,0,0,.16);
+    }
+    #bottom-sheet .stress-heading { min-width:0; text-align:center; }
+    #bottom-sheet .stress-kicker { color:#c38abd; font-size:10px; font-weight:800; letter-spacing:.2em; }
+    #bottom-sheet .stress-heading h1 { margin:3px 0 2px; color:#fff; font-size:clamp(25px,4.4vw,40px); font-weight:750; letter-spacing:-.04em; }
+    #bottom-sheet .stress-month { color:#c7a6c5; font-size:13px; font-weight:600; }
+    #bottom-sheet .stress-nav { display:flex; gap:8px; }
+    #bottom-sheet .stress-nav button {
+      display:grid; place-items:center; width:42px; height:42px;
+      border:1px solid rgba(255,255,255,.13); border-radius:50%;
+      color:#f8eaf8; background:rgba(255,255,255,.07);
+      font:400 30px/1 ui-sans-serif,system-ui; cursor:pointer;
+    }
+    #bottom-sheet .stress-chart-panel {
+      padding:clamp(16px,3vw,28px);
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:28px;
+      background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(20,5,23,.22));
+      box-shadow:0 24px 70px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.045);
+    }
+    #bottom-sheet .stress-chart-caption { display:flex; justify-content:space-between; align-items:center; color:#c59ac2; font-size:11px; font-weight:800; letter-spacing:.13em; }
+    #bottom-sheet .stress-chart-caption span:last-child { color:#fff; font-size:clamp(14px,2vw,20px); letter-spacing:-.02em; }
+    #bottom-sheet .stress-main-chart { display:block; width:100%; height:clamp(190px,31vh,330px); margin:10px 0 0; overflow:visible; }
+    #bottom-sheet .stress-gridline { stroke:rgba(255,255,255,.075); stroke-width:1; stroke-dasharray:4 8; }
+    #bottom-sheet .stress-bar { fill:url(#stress-bar-fill); }
+    #bottom-sheet .stress-point { fill:#250e27; stroke:#ed70d7; stroke-width:6; }
+    #bottom-sheet .stress-metrics { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,.8fr) minmax(0,1fr); gap:18px; align-items:end; padding:4px 2px 0; }
+    #bottom-sheet .stress-total, #bottom-sheet .stress-metric { display:flex; flex-direction:column; gap:7px; min-width:0; }
+    #bottom-sheet .stress-total span, #bottom-sheet .stress-metric span { color:#bd91ba; font-size:10px; font-weight:800; letter-spacing:.13em; }
+    #bottom-sheet .stress-total strong { color:#fff; font-size:clamp(36px,7vw,68px); font-weight:650; line-height:.95; letter-spacing:-.055em; white-space:nowrap; }
+    #bottom-sheet .stress-metric { align-items:flex-end; text-align:right; }
+    #bottom-sheet .stress-metric strong { color:#f2d8ef; font-size:clamp(15px,2.4vw,23px); font-weight:650; white-space:nowrap; }
+    #bottom-sheet .stress-calendar-strip { margin-top:auto; }
+    #bottom-sheet .stress-strip-heading { display:flex; justify-content:space-between; gap:12px; margin:0 2px 12px; color:#c69ac3; font-size:10px; font-weight:800; letter-spacing:.14em; }
+    #bottom-sheet .stress-strip-heading span:last-child { color:#9d7b9c; font-weight:600; letter-spacing:0; }
+    #bottom-sheet .stress-date-list { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); grid-template-columns:repeat(7,minmax(0,1fr)); gap:clamp(7px,1.3vw,14px); }
+    #bottom-sheet .stress-date-card {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      min-width:0; min-height:clamp(112px,17vh,166px); padding:12px 5px;
+      border:1px solid rgba(255,255,255,.09); border-radius:20px;
+      color:#ead5e8; background:rgba(255,255,255,.045);
+      cursor:pointer; transition:background .18s ease,border-color .18s ease,transform .18s ease;
+    }
+    #bottom-sheet .stress-date-card .weekday { color:#c19abd; font-size:clamp(10px,1.5vw,14px); font-weight:700; }
+    #bottom-sheet .stress-date-card .day-number { margin:9px 0; color:#fff; font-size:clamp(26px,4.5vw,43px); font-weight:650; line-height:1; }
+    #bottom-sheet .stress-date-card .day-value { color:#e8a1dc; font-size:clamp(9px,1.45vw,13px); font-weight:750; white-space:nowrap; }
+    #bottom-sheet .stress-date-card.negative .day-value { color:#ff898d; }
+    #bottom-sheet .stress-date-card.selected { border:2px solid #e968d4; background:rgba(224,83,202,.11); box-shadow:0 0 22px rgba(226,82,202,.13),inset 0 0 18px rgba(226,82,202,.07); }
+    #bottom-sheet .stress-date-card.selected .weekday,
+    #bottom-sheet .stress-date-card.selected .day-number { color:#fff; }
+    #bottom-sheet .stress-selected { align-self:center; color:#a987a7; font-size:12px; }
+    #bottom-sheet .calendar-editor { position:relative; z-index:2; color:#f8eef9; border-color:rgba(255,255,255,.14); background:#26112a; }
+    #bottom-sheet .editor-heading, #bottom-sheet .editor-amount-label { color:#fff; }
+    #bottom-sheet .editor-hint { color:#c29dc0; }
+    #bottom-sheet .editor-date, #bottom-sheet .editor-amount { color:#fff; border-color:rgba(255,255,255,.16); background:#180b1d; }
+    #bottom-sheet .editor-button { color:#f6eaf5; border-color:rgba(255,255,255,.16); background:#3a1a3c; }
+    #bottom-sheet .editor-button.primary { color:#210d23; border-color:#e968d4; background:#e968d4; }
+    @media(max-width:650px) {
+      #bottom-sheet .stress-dashboard { gap:clamp(17px,3vh,25px); padding:24px 18px max(22px,env(safe-area-inset-bottom)); }
+      #bottom-sheet .stress-topbar { grid-template-columns:48px minmax(0,1fr) 74px; gap:7px; min-height:62px; }
+      #bottom-sheet .stress-back { width:46px; height:46px; font-size:38px; }
+      #bottom-sheet .stress-nav { gap:4px; }
+      #bottom-sheet .stress-nav button { width:34px; height:34px; font-size:24px; }
+      #bottom-sheet .stress-heading h1 { font-size:26px; }
+      #bottom-sheet .stress-kicker { font-size:8px; }
+      #bottom-sheet .stress-month { font-size:11px; }
+      #bottom-sheet .stress-chart-panel { padding:15px 13px 17px; border-radius:22px; }
+      #bottom-sheet .stress-main-chart { height:clamp(160px,24vh,220px); margin-top:7px; }
+      #bottom-sheet .stress-metrics { grid-template-columns:1.2fr .8fr; gap:13px 8px; }
+      #bottom-sheet .stress-total { grid-row:span 2; justify-content:center; }
+      #bottom-sheet .stress-total strong { font-size:clamp(34px,9vw,48px); }
+      #bottom-sheet .stress-metric strong { font-size:14px; }
+      #bottom-sheet .stress-metric span, #bottom-sheet .stress-total span { font-size:8px; }
+      #bottom-sheet .stress-date-list { display:flex; gap:9px; overflow-x:auto; padding:2px 1px 12px; scroll-snap-type:x mandatory; scrollbar-width:none; }
+      #bottom-sheet .stress-date-list::-webkit-scrollbar { display:none; }
+      #bottom-sheet .stress-date-card { flex:0 0 clamp(82px,19vw,112px); min-height:clamp(116px,16vh,146px); border-radius:17px; scroll-snap-align:center; }
+      #bottom-sheet .stress-date-card .day-number { font-size:32px; }
+      #bottom-sheet .stress-date-card .day-value { font-size:10px; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      #bottom-sheet .stress-date-card { transition:none; }
+    }
+
   </style>
 </head>
 <body>
@@ -1016,6 +1156,56 @@
         <div class="sheet-line medium"></div>
         <div class="sheet-placeholder-card"></div>
       </div>
+
+        <section class="stress-dashboard" id="stress-dashboard" aria-label="График результатов">
+          <header class="stress-topbar">
+            <button class="stress-back" id="stress-back" type="button" aria-label="Вернуться к предыдущему месяцу">‹</button>
+            <div class="stress-heading">
+              <span class="stress-kicker">ROMANO DASHBOARD</span>
+              <h1>Performance</h1>
+              <span class="stress-month" id="stress-month">November 2026</span>
+            </div>
+            <div class="stress-nav">
+              <button id="stress-prev" type="button" aria-label="Предыдущий месяц">‹</button>
+              <button id="stress-next" type="button" aria-label="Следующий месяц">›</button>
+            </div>
+          </header>
+          <section class="stress-chart-panel" aria-label="Динамика за неделю">
+            <div class="stress-chart-caption"><span>WEEKLY ACTIVITY</span><span id="stress-balance">$0.00</span></div>
+            <svg class="stress-main-chart" id="stress-main-chart" viewBox="0 0 700 270" preserveAspectRatio="none" role="img" aria-label="График результатов за семь дней">
+              <defs>
+                <linearGradient id="stress-area-fill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#ec68d4" stop-opacity=".32"/>
+                  <stop offset="100%" stop-color="#ec68d4" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="stress-bar-fill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#d95cc7" stop-opacity=".28"/>
+                  <stop offset="100%" stop-color="#d95cc7" stop-opacity=".04"/>
+                </linearGradient>
+                <filter id="stress-line-glow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="5" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <g id="stress-main-grid"></g>
+              <g id="stress-main-bars"></g>
+              <path id="stress-main-area" fill="url(#stress-area-fill)" d=""></path>
+              <path id="stress-main-line" fill="none" stroke="#e968d4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" filter="url(#stress-line-glow)" d=""></path>
+              <g id="stress-main-points"></g>
+            </svg>
+            <div class="stress-metrics">
+              <div class="stress-total"><span>WEEK TOTAL</span><strong id="stress-total">+$0.00</strong></div>
+              <div class="stress-metric"><span>W AVG</span><strong id="stress-average">$0.00</strong></div>
+              <div class="stress-metric"><span>W RANGE</span><strong id="stress-range">$0.00 – $0.00</strong></div>
+            </div>
+          </section>
+          <section class="stress-calendar-strip" aria-label="Дни недели">
+            <div class="stress-strip-heading"><span>THIS WEEK</span><span>Выбери день</span></div>
+            <div class="stress-date-list" id="stress-date-list"></div>
+          </section>
+          <div class="stress-selected" id="stress-selected" aria-live="polite">Сегодня</div>
+        </section>
+
       <div class="calendar-full" id="calendar-full" data-visible="false" aria-label="Monthly balance calendar">
         <section class="goal-overview" aria-label="Прогресс и депозит">
           <div class="goal-card">
@@ -1445,6 +1635,93 @@
       });
     }
 
+
+    function renderStressDashboard() {
+      const key = monthKey(visibleMonth);
+      const month = calendarData.months[key] || {};
+      const days = month.days || {};
+      const { count } = monthDays(visibleMonth);
+      const todayMonth = todayKey.slice(0,7);
+      const endDay = key === todayMonth ? today.getUTCDate() : (key < todayMonth ? count : 1);
+      const firstDay = Math.max(1, endDay - 6);
+      const items = [];
+      for (let day = firstDay; day <= endDay; day++) {
+        const date = new Date(Date.UTC(visibleMonth.getUTCFullYear(), visibleMonth.getUTCMonth(), day));
+        const raw = days[String(day)];
+        items.push({ day, date, dateKey:key + "-" + String(day).padStart(2,"0"), value:typeof raw === "number" ? raw : 0, hasValue:typeof raw === "number" });
+      }
+      const values = items.map(item => item.value);
+      const total = values.reduce((sum,value) => sum + value,0);
+      const average = values.length ? total / values.length : 0;
+      const low = values.length ? Math.min(...values) : 0;
+      const high = values.length ? Math.max(...values) : 0;
+      const signed = value => (value < 0 ? "−" : "+") + "$" + Math.abs(value).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+      const range = value => (value < 0 ? "−" : "+") + "$" + Math.abs(value).toFixed(0);
+      document.getElementById("stress-month").textContent = monthLabel(visibleMonth);
+      document.getElementById("stress-balance").textContent = "$" + depositAmount.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+      document.getElementById("stress-total").textContent = signed(total);
+      document.getElementById("stress-total").style.color = total < 0 ? "#ff898d" : "#fff";
+      document.getElementById("stress-average").textContent = signed(average);
+      document.getElementById("stress-range").textContent = range(low) + " / " + range(high);
+
+      const chart = document.getElementById("stress-main-chart");
+      const bars = document.getElementById("stress-main-bars");
+      const line = document.getElementById("stress-main-line");
+      const area = document.getElementById("stress-main-area");
+      const pointsGroup = document.getElementById("stress-main-points");
+      const grid = document.getElementById("stress-main-grid");
+      const min = Math.min(0,...values);
+      const max = Math.max(1,...values);
+      const spread = Math.max(1,max-min);
+      const points = items.map((item,index) => ({
+        ...item,
+        x:55 + index * (590 / Math.max(1,items.length-1)),
+        y:205 - ((item.value-min)/spread)*145
+      }));
+      grid.innerHTML = [65,115,165,215].map(y => '<line class="stress-gridline" x1="20" y1="'+y+'" x2="680" y2="'+y+'"></line>').join("");
+      bars.innerHTML = points.map(point => '<rect class="stress-bar" x="'+(point.x-24)+'" y="35" width="48" height="190" rx="24"></rect>').join("");
+      const linePath = points.map((point,index) => (index ? "L " : "M ") + point.x.toFixed(1) + " " + point.y.toFixed(1)).join(" ");
+      line.setAttribute("d",linePath);
+      area.setAttribute("d",linePath + " L " + points[points.length-1].x + " 245 L " + points[0].x + " 245 Z");
+      pointsGroup.innerHTML = points.map(point => '<circle class="stress-point" cx="'+point.x.toFixed(1)+'" cy="'+point.y.toFixed(1)+'" r="9"></circle>').join("");
+
+      const list = document.getElementById("stress-date-list");
+      list.innerHTML = "";
+      items.forEach(item => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "stress-date-card" + (item.value < 0 ? " negative" : "") + (selectedDate === item.dateKey ? " selected" : "");
+        button.setAttribute("aria-pressed",String(selectedDate === item.dateKey));
+        const weekday = document.createElement("span");
+        weekday.className = "weekday";
+        weekday.textContent = new Intl.DateTimeFormat("en",{weekday:"short",timeZone:"UTC"}).format(item.date);
+        const day = document.createElement("strong");
+        day.className = "day-number";
+        day.textContent = item.day;
+        const amount = document.createElement("small");
+        amount.className = "day-value";
+        amount.textContent = item.hasValue ? signed(item.value) : "—";
+        button.append(weekday,day,amount);
+        button.addEventListener("click",() => {
+          selectedDate = item.dateKey;
+          list.querySelectorAll(".stress-date-card").forEach(card => {
+            const active = card === button;
+            card.classList.toggle("selected",active);
+            card.setAttribute("aria-pressed",String(active));
+          });
+          document.getElementById("stress-selected").textContent =
+            new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(item.date) +
+            " · " + (item.hasValue ? signed(item.value) : "Нет сохранённой суммы");
+          calendarDetail.textContent = document.getElementById("stress-selected").textContent;
+        });
+        list.appendChild(button);
+      });
+      const selected = items.find(item => item.dateKey === selectedDate);
+      document.getElementById("stress-selected").textContent = selected
+        ? new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(selected.date)
+        : "Последние дни месяца";
+    }
+
     function renderHistory() {
       const visibleMonthKey = monthKey(visibleMonth);
       const transactions = (Array.isArray(calendarData.history) ? calendarData.history : [])
@@ -1740,6 +2017,7 @@
         });
         calendarDays.appendChild(button);
       }
+      renderStressDashboard();
     }
 
     function changeMonth(delta) {
@@ -1836,6 +2114,9 @@
     document.getElementById("delete-dialog-cancel").addEventListener("click", closeDeleteDialog);
     document.getElementById("delete-dialog-confirm").addEventListener("click", deleteHistoryTransaction);
     deleteDialogBackdrop.addEventListener("click", event => { if (event.target === deleteDialogBackdrop) closeDeleteDialog(); });
+    document.getElementById("stress-prev").addEventListener("click", () => changeMonth(-1));
+    document.getElementById("stress-next").addEventListener("click", () => changeMonth(1));
+    document.getElementById("stress-back").addEventListener("click", () => changeMonth(-1));
     document.getElementById("month-prev").addEventListener("click", () => changeMonth(-1));
     document.getElementById("month-next").addEventListener("click", () => changeMonth(1));
     calendarTitle.addEventListener("click", () => setCalendarExpanded(!calendarIsExpanded));
