@@ -314,7 +314,11 @@
       opacity: 1; visibility: visible; transform: translate(0, 0) scale(1, 1);
     }
     .bottom-sheet.trading-open .sheet-handle-area { display: none; }
-    .bottom-sheet.trading-open .sheet-content { max-width: 1120px; margin: 0 auto; }
+    .bottom-sheet.trading-open .sheet-content { max-width: 1120px; margin: 0 auto; position:relative; padding-top:38px; }
+    .trading-close { display:none; }
+    .bottom-sheet.trading-open .trading-close { display:grid; place-items:center; position:absolute; z-index:20; top:2px; right:2px; width:36px; height:36px; border:1px solid #383838; border-radius:50%; background:#171717; color:#f4f4f4; font-size:25px; line-height:1; cursor:pointer; }
+    .bottom-sheet.trading-open .trading-close:active { transform:scale(.94); background:#292929; }
+
     @media(max-width:600px) {
       .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .row-one #calendar-launch { grid-column: span 2; }
@@ -667,6 +671,7 @@
   <section class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true" aria-label="Block details" aria-hidden="true" data-open="false">
     <div class="sheet-handle-area" id="sheet-handle-area" aria-label="Drag down to close"><span class="sheet-handle"></span></div>
     <div class="sheet-content">
+      <button class="trading-close" id="trading-close" type="button" aria-label="Свернуть календарь">×</button>
       <div class="generic-sheet" id="generic-sheet" data-visible="true">
         <div class="sheet-placeholder"></div>
         <div class="sheet-line wide"></div>
@@ -1662,6 +1667,7 @@
     }
     calendarDays.addEventListener("pointerup", finishCalendarPointer);
     calendarDays.addEventListener("pointercancel", finishCalendarPointer);
+    document.getElementById("trading-close").addEventListener("click", closeSheet);
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && !deleteDialogBackdrop.hidden) { closeDeleteDialog(); return; }
