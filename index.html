@@ -1092,13 +1092,16 @@
       const monthTotal = Object.values(days).filter(value => typeof value === "number").reduce((sum, value) => sum + value, 0);
       const progress = monthTotal > 0 ? Math.max(0, Math.min(1, currentTotal / monthTotal)) : 0;
       const compactMoney = value => (value < 0 ? "-$" : "$") + Math.round(Math.abs(value)).toLocaleString("en-US");
-      previewMonth.textContent = monthLabel(visibleMonth);
-      previewBalance.textContent = "$" + Math.round(depositAmount).toLocaleString("en-US");
+      previewMonth.textContent = new Intl.DateTimeFormat("en", { month:"short", year:"numeric", timeZone:"UTC" }).format(visibleMonth);
+      previewBalance.textContent = "$" + depositAmount.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
       previewProgressCurrent.textContent = compactMoney(currentTotal);
       previewProgressTarget.textContent = compactMoney(monthTotal);
-      previewProgressFill.style.width = (progress * 100) + "%";
+      previewProgressFill.style.width = "100%";
+      const progressPart = Math.max(0.02, progress);
+      const remainingPart = Math.max(0.02, 1 - progress);
+      previewProgressFill.parentElement.parentElement.style.gridTemplateColumns = "minmax(10px," + progressPart + "fr) auto minmax(10px," + remainingPart + "fr) auto";
       const todayInMonth = key === todayKey.slice(0,7) ? Number(todayKey.slice(-2)) : Math.min(count, today.getUTCDate());
-      const firstDay = Math.max(1, Math.min(count - 9, todayInMonth - 4));
+      const firstDay = Math.max(1, Math.min(count - 9, todayInMonth - 6));
       previewDays.innerHTML = "";
       for (let day = firstDay; day <= Math.min(count, firstDay + 9); day++) {
         const value = days[String(day)];
@@ -1108,7 +1111,7 @@
         const date = document.createElement("time");
         date.textContent = day + " " + new Intl.DateTimeFormat("en", { month:"short", timeZone:"UTC" }).format(visibleMonth);
         const amount = document.createElement("strong");
-        amount.textContent = typeof value === "number" ? compactMoney(value) : "—";
+        amount.textContent = typeof value === "number" ? (value > 0 ? "+" : "") + compactMoney(value) : "—";
         item.append(date, amount);
         previewDays.appendChild(item);
       }
@@ -1327,6 +1330,7 @@
       performanceCompact.style.margin = calendarIsExpanded ? "0" : "";
     }
     function renderCalendar() {
+      renderPreview();
       updateGoalProgress(visibleMonth);
       renderCompactPerformance();
       calendarExpanded.hidden = !calendarIsExpanded;
