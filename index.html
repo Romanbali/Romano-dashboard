@@ -963,6 +963,7 @@
     function recalculateDeposit() {
       depositAmount = Math.round((depositBaseAmount + getCalendarContribution() + getDepositTransactionsTotal()) * 100) / 100;
       renderDepositAmount();
+      renderPreview();
       try { localStorage.setItem(depositStorageKey, String(depositAmount)); } catch (error) { console.warn("Could not save deposit amount", error); }
     }
     function renderDepositAmount() {
