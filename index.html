@@ -659,9 +659,9 @@
 
 
 
-    /* Keep the trading calendar tile exactly two dashboard columns wide */
+    /* Align the calendar preview with the wide tile in the next row */
     .grid > .tile-row.row-one {
-      grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     }
     .grid > .tile-row.row-one > #calendar-launch {
       grid-column: 1 / span 1 !important;
@@ -829,7 +829,6 @@
               <div class="trading-preview-days" id="preview-days"></div>
             </div>
           </button>
-          <button class="tile" type="button" aria-label="Open block 4"></button>
         </div>
         <div class="tile-row row-two">
           <button class="tile" type="button" aria-label="Open block 5"></button>
