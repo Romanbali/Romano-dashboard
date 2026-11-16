@@ -559,9 +559,8 @@
     .habit-streak { flex:0 0 auto; padding:4px 6px; border-radius:999px; background:#fff4e9; color:#d47a32; font-size:10px; font-weight:850; white-space:nowrap; }
     .habit-card-actions { display:flex; flex:0 0 auto; flex-direction:column; gap:3px; }
     .habit-action { display:grid; place-items:center; width:23px; height:23px; border:0; border-radius:7px; background:#f5f4f6; color:#8b8992; font-size:13px; cursor:pointer; }
-    .habit-weekdays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; margin:0 0 5px; }
-    .habit-weekdays span { color:#aaa8b0; font-size:8px; font-weight:750; text-align:center; }
-    .habit-heatmap { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; }
+    .habit-weekdays { display:none; }
+    .habit-heatmap { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:6px; }
     .habit-day { display:grid; place-items:center; min-width:0; aspect-ratio:1; padding:0; border:1px solid transparent; border-radius:5px; background:var(--habit-soft); color:transparent; font:600 10px inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s ease,border-color .12s ease; }
     .habit-day.done { border-color:var(--habit-color); background:var(--habit-color); color:transparent; }
     .habit-day.missed { background:linear-gradient(145deg,#e7e4e9,#d9d5dd); border-color:#e0dce3; }
@@ -1240,11 +1239,7 @@
         const remove=document.createElement("button");remove.type="button";remove.className="habit-action";remove.textContent="×";remove.setAttribute("aria-label","Удалить "+habit.name);
         remove.addEventListener("click",()=>{if(!window.confirm("Удалить привычку «"+habit.name+"» и все её отметки?"))return;habits=habits.filter(item=>item.id!==habit.id);saveHabits();if(editingHabitId===habit.id)resetHabitForm();renderHabits();});
         actions.append(edit,remove);top.append(icon,info,streak,actions);card.appendChild(top);
-        const weekdays=document.createElement("div");weekdays.className="habit-weekdays";
-        ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(day=>{const el=document.createElement("span");el.textContent=day;weekdays.appendChild(el);});
-        card.appendChild(weekdays);
         const heat=document.createElement("div");heat.className="habit-heatmap";
-        for(let i=0;i<offset;i++){const blank=document.createElement("span");blank.className="habit-day empty";heat.appendChild(blank);}
         for(let day=1;day<=daysInMonth;day++){
           const date=new Date(year,month,day),key=habitDateKey(date),isFuture=date>today,isScheduled=habitIsScheduled(habit,date),isDone=stats.completed.has(key);
           const cell=document.createElement("button");cell.type="button";cell.className="habit-day";cell.setAttribute("aria-pressed",String(isDone));
@@ -1265,7 +1260,6 @@
           });
           heat.appendChild(cell);
         }
-        const totalCells=offset+daysInMonth;for(let i=totalCells;i<42;i++){const blank=document.createElement("span");blank.className="habit-day empty";heat.appendChild(blank);}
         card.appendChild(heat);
         const statGrid=document.createElement("div");statGrid.className="habit-stats";
         [
