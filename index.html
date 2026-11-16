@@ -95,7 +95,8 @@
       min-width: 0;
     }
     .tile-row { display: grid; gap: var(--space); min-width: 0; }
-    .row-one { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+    .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
+    .row-one #calendar-launch { grid-column: span 2; }
     .row-one .tile { height: clamp(110px, 26vw, 180px); }
     .row-two { grid-template-columns: 2fr 1fr; }
     .row-three { grid-template-columns: 1fr 1fr 2fr; }
@@ -297,6 +298,28 @@
       .bottom-sheet.trading-open .calendar-amount { font-size:clamp(7px,2vw,11px); }
     }
     @media(prefers-reduced-motion:reduce) { .performance-compact { transition:none; } }
+    /* Trading calendar opens as a centered Sandbox-style dialog, not a bottom drawer. */
+    .bottom-sheet.trading-open {
+      top: 3dvh; right: 2vw; bottom: 3dvh; left: 2vw;
+      width: auto; height: auto; min-height: 0; max-height: 94dvh;
+      padding: 12px clamp(10px, 2vw, 20px) max(14px, env(safe-area-inset-bottom));
+      overflow: auto; border-radius: 24px;
+      opacity: 0; visibility: hidden;
+      transform: scale(.965) translateY(10px);
+      transition: transform 260ms var(--ease-out), opacity 260ms var(--ease-out), visibility 260ms;
+      overscroll-behavior: contain;
+    }
+    .bottom-sheet.trading-open[data-open="true"] {
+      opacity: 1; visibility: visible; transform: scale(1) translateY(0);
+    }
+    .bottom-sheet.trading-open .sheet-handle-area { display: none; }
+    .bottom-sheet.trading-open .sheet-content { max-width: 1120px; margin: 0 auto; }
+    @media(max-width:600px) {
+      .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .row-one #calendar-launch { grid-column: span 2; }
+      .bottom-sheet.trading-open { top: 2dvh; right: 2vw; bottom: 2dvh; left: 2vw; max-height: 96dvh; padding: 10px 8px max(12px,env(safe-area-inset-bottom)); border-radius: 22px; }
+    }
+
     .generic-sheet[data-visible="false"] { display: none; }
 
     .calendar-header {
