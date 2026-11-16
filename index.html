@@ -658,6 +658,20 @@
     }
 
 
+
+    /* Keep the trading calendar tile exactly two dashboard columns wide */
+    .grid > .tile-row.row-one > #calendar-launch {
+      grid-column: 1 / span 2 !important;
+      width: 100%;
+      min-width: 0;
+      justify-self: stretch;
+    }
+    @media (max-width: 600px) {
+      .grid > .tile-row.row-one > #calendar-launch {
+        grid-column: 1 / span 2 !important;
+      }
+    }
+
     /* Unified light theme for dashboard and expanded trading calendar */
     .trading-tile { background:#fff; border-color:#d9dce5; }
     .trading-tile:active { background:#f4f6fb; border-color:#c5ccda; }
