@@ -657,6 +657,142 @@
       .trading-preview-day strong { font-size:clamp(7px,1.65vw,11px); }
     }
 
+
+    /* Unified light theme for dashboard and expanded trading calendar */
+    .trading-tile { background:#fff; border-color:#d9dce5; }
+    .trading-tile:active { background:#f4f6fb; border-color:#c5ccda; }
+    .trading-preview { color:#20283a; }
+    .trading-preview-month { color:#20283a; }
+    .trading-preview-balance { background:#eef1f6; color:#20283a; box-shadow:none; }
+    .trading-preview-progress { color:#2563eb; }
+    .trading-preview-track,.trading-preview-track-rest { background:#e4e8f0; }
+    .trading-preview-track span { background:#2563eb; box-shadow:none; }
+    .trading-preview-day,.trading-preview-day strong { color:#596273; }
+    .trading-preview-day.positive strong { color:#159447; }
+    .trading-preview-day.negative strong { color:#dc4b45; }
+    .trading-preview-day.today { background:rgba(37,99,235,.08); }
+
+    .bottom-sheet.trading-open {
+      background:#f5f7fb;
+      color:#20283a;
+      border-color:#d9deea;
+      box-shadow:0 18px 60px rgba(25,35,55,.18);
+    }
+    .bottom-sheet.trading-open .sheet-handle { background:#c8ced9; }
+    .bottom-sheet.trading-open .calendar-full {
+      border-color:#d8deea;
+      background:linear-gradient(145deg,#fff,#f8faff);
+      box-shadow:0 12px 38px rgba(30,45,75,.08),inset 0 0 0 1px rgba(255,255,255,.8);
+    }
+    .bottom-sheet.trading-open .goal-card {
+      border:1px solid #e1e6ef;
+      background:linear-gradient(145deg,#fff,#f8faff);
+      box-shadow:0 2px 8px rgba(30,45,75,.045);
+    }
+    .bottom-sheet.trading-open .goal-values { color:#20283a; }
+    .bottom-sheet.trading-open .goal-values #goal-current { color:#159447!important; }
+    .bottom-sheet.trading-open .goal-values #goal-total,
+    .bottom-sheet.trading-open .deposit-summary strong { color:#4b5568; }
+    .bottom-sheet.trading-open .deposit-summary span { color:#858d9c; }
+    .bottom-sheet.trading-open .goal-track { background:#e4e8f0; box-shadow:inset 0 1px 2px rgba(30,45,75,.08); }
+    .bottom-sheet.trading-open .goal-fill { background:linear-gradient(90deg,#45c978,#159447); box-shadow:none; }
+    .bottom-sheet.trading-open .goal-percent { color:#159447; }
+    .bottom-sheet.trading-open .performance-mini { color:#596273; }
+    .bottom-sheet.trading-open .performance-mini.positive .value { color:#159447; }
+    .bottom-sheet.trading-open .performance-mini.negative .value { color:#dc4b45; }
+    .bottom-sheet.trading-open .performance-mini.today { background:#edf3ff; outline:1px solid #b9cdfa; }
+    .bottom-sheet.trading-open .calendar-title { color:#20283a; }
+    .bottom-sheet.trading-open .calendar-control {
+      border-color:#dce2ec;
+      background:#f0f3f8;
+      color:#4b5568;
+    }
+    .bottom-sheet.trading-open .calendar-control:active { background:#e4eaf4; }
+    .bottom-sheet.trading-open .calendar-weekdays { background:#eef1f6; }
+    .bottom-sheet.trading-open .calendar-weekdays span { color:#697386; }
+    .bottom-sheet.trading-open .calendar-day {
+      border-color:#e2e7f0;
+      background:#fff;
+      color:#20283a;
+      box-shadow:0 1px 3px rgba(30,45,75,.035);
+    }
+    .bottom-sheet.trading-open .calendar-day-number { color:#20283a; }
+    .bottom-sheet.trading-open .calendar-amount { color:#159447; }
+    .bottom-sheet.trading-open .calendar-amount.negative { color:#dc4b45; }
+    .bottom-sheet.trading-open .calendar-amount.no-value { color:#a4acb9; }
+    .bottom-sheet.trading-open .calendar-day.today {
+      border-color:#6b91e8;
+      background:linear-gradient(145deg,#edf3ff,#e5eeff);
+      box-shadow:inset 0 0 0 1px rgba(37,99,235,.08);
+    }
+    .bottom-sheet.trading-open .calendar-day.today .calendar-day-number { color:#2458b8; }
+    .bottom-sheet.trading-open .calendar-day.today .calendar-amount { color:#2458b8; }
+    .bottom-sheet.trading-open .calendar-day.today::after {
+      background:#3478e5;
+      box-shadow:0 0 0 3px rgba(52,120,229,.12);
+    }
+    .bottom-sheet.trading-open .calendar-day.range-start,
+    .bottom-sheet.trading-open .calendar-day.range-end {
+      border-color:#4f6fe5;
+      background:#4f6fe5;
+      color:#fff;
+    }
+    .bottom-sheet.trading-open .calendar-day.range-start .calendar-day-number,
+    .bottom-sheet.trading-open .calendar-day.range-end .calendar-day-number,
+    .bottom-sheet.trading-open .calendar-day.range-start .calendar-amount,
+    .bottom-sheet.trading-open .calendar-day.range-end .calendar-amount { color:#fff!important; }
+    .bottom-sheet.trading-open .calendar-day.in-range { border-color:#e5ecff; background:#eef3ff; }
+    .bottom-sheet.trading-open .calendar-day.in-range .calendar-day-number { color:#2458b8; }
+    .bottom-sheet.trading-open .calendar-editor,
+    .bottom-sheet.trading-open .history-panel,
+    .bottom-sheet.trading-open .backup-panel {
+      color:#20283a;
+      border-color:#dfe4ed;
+      background:#fff;
+      box-shadow:0 2px 8px rgba(30,45,75,.045);
+    }
+    .bottom-sheet.trading-open .editor-heading,
+    .bottom-sheet.trading-open .history-title,
+    .bottom-sheet.trading-open .editor-amount-label,
+    .bottom-sheet.trading-open .backup-title { color:#20283a; }
+    .bottom-sheet.trading-open .editor-hint,
+    .bottom-sheet.trading-open .history-date,
+    .bottom-sheet.trading-open .backup-description,
+    .bottom-sheet.trading-open .backup-status { color:#778195; }
+    .bottom-sheet.trading-open .editor-date,
+    .bottom-sheet.trading-open .editor-amount {
+      color:#20283a;
+      border-color:#dce2ec;
+      background:#f8faff;
+    }
+    .bottom-sheet.trading-open .editor-button {
+      color:#4b5568;
+      border-color:#dce2ec;
+      background:#f2f5fa;
+    }
+    .bottom-sheet.trading-open .editor-button.primary {
+      color:#fff;
+      border-color:#2563eb;
+      background:#2563eb;
+    }
+    .bottom-sheet.trading-open .calendar-detail { color:#596273; background:#f0f3f8; }
+    .bottom-sheet.trading-open .calendar-detail strong { color:#20283a; }
+    .bottom-sheet.trading-open .history-row { color:#20283a; border-color:#e8ebf1; }
+    .bottom-sheet.trading-open .history-row:active,
+    .bottom-sheet.trading-open .history-row[aria-pressed="true"] {
+      background:#f1f5fc;
+      box-shadow:inset 0 0 0 1px #dce5f4;
+    }
+    .bottom-sheet.trading-open .history-type.withdrawal,
+    .bottom-sheet.trading-open .history-totals .withdrawal-total { color:#20283a; }
+    .bottom-sheet.trading-open .history-kind-icon { color:#596579; background:#eef1f6; }
+    .bottom-sheet.trading-open .trading-close {
+      border-color:#dce2ec;
+      background:#f0f3f8;
+      color:#39445a;
+    }
+    .bottom-sheet.trading-open .trading-close:active { background:#e3e9f2; }
+
   </style>
 </head>
 <body>
