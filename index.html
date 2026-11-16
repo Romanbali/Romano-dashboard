@@ -305,12 +305,13 @@
       padding: 12px clamp(10px, 2vw, 20px) max(14px, env(safe-area-inset-bottom));
       overflow: auto; border-radius: 24px;
       opacity: 0; visibility: hidden;
-      transform: scale(.965) translateY(10px);
-      transition: transform 260ms var(--ease-out), opacity 260ms var(--ease-out), visibility 260ms;
+      transform-origin: top left;
+      transform: translate(var(--from-x, 0px), var(--from-y, 0px)) scale(var(--from-scale-x, .965), var(--from-scale-y, .965));
+      transition: transform 520ms var(--ease-out), opacity 260ms var(--ease-out), visibility 260ms;
       overscroll-behavior: contain;
     }
     .bottom-sheet.trading-open[data-open="true"] {
-      opacity: 1; visibility: visible; transform: scale(1) translateY(0);
+      opacity: 1; visibility: visible; transform: translate(0, 0) scale(1, 1);
     }
     .bottom-sheet.trading-open .sheet-handle-area { display: none; }
     .bottom-sheet.trading-open .sheet-content { max-width: 1120px; margin: 0 auto; }
@@ -1370,13 +1371,29 @@
 
     function openSheet(tile, showCalendar) {
       activeTile = tile;
-      sheet.classList.toggle("trading-open", tile === calendarLaunch);
+      const isTradingCalendar = tile === calendarLaunch;
+      sheet.classList.toggle("trading-open", isTradingCalendar);
       genericSheet.dataset.visible = String(!showCalendar);
       calendarFull.dataset.visible = String(showCalendar);
       historyPanel.dataset.visible = String(showCalendar);
       backupPanel.dataset.visible = String(showCalendar);
       sheet.style.transform = "";
-      sheet.dataset.open = "true";
+      if (isTradingCalendar) {
+        const source = tile.getBoundingClientRect();
+        sheet.style.setProperty("--from-x", (source.left - (window.innerWidth * 0.02)) + "px");
+        sheet.style.setProperty("--from-y", (source.top - (window.innerHeight * 0.02)) + "px");
+        sheet.style.setProperty("--from-scale-x", (source.width / Math.max(1, window.innerWidth * 0.96)).toString());
+        sheet.style.setProperty("--from-scale-y", (source.height / Math.max(1, window.innerHeight * 0.96)).toString());
+        sheet.style.transition = "none";
+        sheet.dataset.open = "false";
+        void sheet.offsetWidth;
+        requestAnimationFrame(() => {
+          sheet.style.transition = "";
+          sheet.dataset.open = "true";
+        });
+      } else {
+        sheet.dataset.open = "true";
+      }
       sheet.setAttribute("aria-hidden", "false");
       backdrop.dataset.open = "true";
       document.body.classList.add("sheet-open");
