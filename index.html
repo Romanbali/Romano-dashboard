@@ -321,8 +321,8 @@
     .bottom-sheet.trading-open .trading-close:active { transform:scale(.94); background:#292929; }
 
     @media(max-width:600px) {
-      .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .row-one #calendar-launch { grid-column: 1 / span 2; }
+      .row-one { grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); }
+      .row-one #calendar-launch { grid-column: 1 / span 1; }
       .bottom-sheet.trading-open { top: 2dvh; right: 2vw; bottom: 2dvh; left: 2vw; max-height: 96dvh; padding: 10px 8px max(12px,env(safe-area-inset-bottom)); border-radius: 22px; }
     }
 
