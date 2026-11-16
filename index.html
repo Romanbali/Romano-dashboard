@@ -564,9 +564,9 @@
     .habit-heatmap { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; }
     .habit-day { display:grid; place-items:center; min-width:0; aspect-ratio:1; padding:0; border:1px solid transparent; border-radius:5px; background:var(--habit-soft); color:transparent; font:600 10px inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s ease,border-color .12s ease; }
     .habit-day.done { border-color:var(--habit-color); background:var(--habit-color); color:transparent; }
-    .habit-day.missed { background:var(--habit-soft); }
+    .habit-day.missed { background:linear-gradient(145deg,#e7e4e9,#d9d5dd); border-color:#e0dce3; }
     .habit-day.rest-day { border-color:transparent; background:#f3f3f4; cursor:default; }
-    .habit-day.today { border:1px solid #777480; box-shadow:inset 0 0 0 1px rgba(255,255,255,.85); }
+    .habit-day.today { border:2px solid #777480; box-shadow:inset 0 0 0 1px rgba(255,255,255,.85); }
     .habit-day.future { background:#f3f3f4; opacity:.85; cursor:default; }
     .habit-day.empty { visibility:hidden; pointer-events:none; }
     .habit-day:not(:disabled):active { transform:scale(.9); }
@@ -577,6 +577,11 @@
     .habit-progress { height:5px; overflow:hidden; margin-top:8px; border-radius:999px; background:#f0eef2; }
     .habit-progress-fill { height:100%; border-radius:inherit; background:var(--habit-color); }
     .habit-schedule-label { margin-top:7px; color:#92909a; font-size:9px; text-align:center; }
+    .habit-legend { display:flex; flex-wrap:wrap; gap:8px 13px; margin:0 0 12px; color:#8f8b96; font-size:10px; }
+    .habit-legend span { display:inline-flex; align-items:center; gap:5px; }
+    .habit-legend i { width:9px; height:9px; border-radius:3px; background:#e7e4e9; }
+    .habit-legend i.done { background:#43bd72; }
+    .habit-legend i.rest { background:#f3f3f4; border:1px solid #e6e5e8; }
     .habit-empty { grid-column:1/-1; padding:32px 18px; border:1px dashed #d9d7df; border-radius:20px; background:#fff; color:#85838d; text-align:center; font-size:14px; }
     @media(max-width:380px) { .habit-card { padding:10px 7px 11px; } .habit-icon { width:38px;height:38px;flex-basis:38px;font-size:20px; } .habit-card-top { gap:5px; } .habit-streak { font-size:9px;padding:3px 4px; } .habit-weekdays,.habit-heatmap { gap:3px; } .habit-stat { padding:6px 4px; } }
     @media(prefers-reduced-motion:reduce) { .habit-day { transition:none !important; } }
@@ -652,6 +657,7 @@
           <button class="habit-filter" type="button" data-category="Другое">Другое</button>
         </div>
         <div class="habits-overview" id="habits-overview" aria-live="polite"></div>
+        <div class="habit-legend" aria-label="Обозначения календаря"><span><i class="done"></i>Выполнено</span><span><i></i>Пропуск</span><span><i class="rest"></i>Не запланировано</span></div>
         <form class="habit-add-form" id="habit-add-form">
           <input class="habit-add-input" id="habit-name-input" maxlength="48" placeholder="Название привычки" aria-label="Название новой привычки" required>
           <input class="habit-icon-input" id="habit-icon-input" maxlength="4" value="✨" aria-label="Эмодзи привычки">
@@ -1245,6 +1251,7 @@
           const isVisibleDay=isScheduled&&date>=habitCreatedDate(habit);
           if(isDone)cell.classList.add("done");
           else if(!isVisibleDay)cell.classList.add("rest-day");
+          else if(date<today)cell.classList.add("missed");
           if(key===todayKey)cell.classList.add("today");
           if(isFuture||!isVisibleDay)cell.disabled=true;
           let state=isDone?"выполнено":isFuture?"будущий день":isVisibleDay?"пропуск":"не запланировано";
