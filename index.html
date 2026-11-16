@@ -978,6 +978,7 @@
     #bottom-sheet .calendar-header,
     #bottom-sheet .performance-compact,
     #bottom-sheet .calendar-expanded,
+    #bottom-sheet .calendar-expanded[hidden],
     #bottom-sheet .calendar-detail { display:none !important; }
     #bottom-sheet .stress-dashboard {
       --stress-pink:#e968d4;
@@ -1159,7 +1160,7 @@
 
         <section class="stress-dashboard" id="stress-dashboard" aria-label="График результатов">
           <header class="stress-topbar">
-            <button class="stress-back" id="stress-back" type="button" aria-label="Вернуться к предыдущему месяцу">‹</button>
+            <button class="stress-back" id="stress-back" type="button" aria-label="Вернуться к текущему месяцу">‹</button>
             <div class="stress-heading">
               <span class="stress-kicker">ROMANO DASHBOARD</span>
               <h1>Performance</h1>
@@ -2116,7 +2117,12 @@
     deleteDialogBackdrop.addEventListener("click", event => { if (event.target === deleteDialogBackdrop) closeDeleteDialog(); });
     document.getElementById("stress-prev").addEventListener("click", () => changeMonth(-1));
     document.getElementById("stress-next").addEventListener("click", () => changeMonth(1));
-    document.getElementById("stress-back").addEventListener("click", () => changeMonth(-1));
+    document.getElementById("stress-back").addEventListener("click", () => {
+      visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
+      selectedDate = todayKey;
+      renderCalendar();
+      renderHistory();
+    });
     document.getElementById("month-prev").addEventListener("click", () => changeMonth(-1));
     document.getElementById("month-next").addEventListener("click", () => changeMonth(1));
     calendarTitle.addEventListener("click", () => setCalendarExpanded(!calendarIsExpanded));
