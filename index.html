@@ -210,6 +210,9 @@
     }
     .bottom-sheet[data-open="true"] { transform: translateY(0); }
     .bottom-sheet.trading-open { height: 80vh; max-height: 80vh; }
+    .bottom-sheet.habits-open { width:100%; height:94dvh; max-height:94dvh; padding:7px 5px max(14px,env(safe-area-inset-bottom)); }
+    .bottom-sheet.habits-open .sheet-content { width:100%; max-width:none; }
+    .bottom-sheet.habits-open .habits-panel { width:100%; }
     .sheet-handle-area {
       display: flex;
       flex: 0 0 25px;
@@ -513,43 +516,69 @@
       .calendar-day.range-start,.calendar-day.range-end { border-radius:10px; }
       .calendar-amount { font-size:clamp(6px,1.9vw,11px); }
     }
-    /* Monthly habit tracker */
+    /* Full-width habit tracker */
     .habits-panel[hidden] { display:none; }
-    .habits-panel { color:#252536; }
-    .habits-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 18px; }
-    .habits-title { margin:0; font-size:clamp(24px,4vw,32px); font-weight:750; letter-spacing:-.04em; }
-    .habit-add-open { width:54px; height:54px; flex:0 0 54px; border:0; border-radius:50%; background:#fff; color:#54a66a; font-size:34px; line-height:1; box-shadow:0 3px 14px rgba(45,52,64,.10); cursor:pointer; }
+    .habits-panel { width:100%; color:#252536; padding:0 2px 20px; }
+    .habits-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 14px; }
+    .habits-title { margin:0; color:#33323d; font-size:clamp(25px,5vw,32px); font-weight:760; letter-spacing:-.045em; }
+    .habit-add-open { width:50px; height:50px; flex:0 0 50px; border:0; border-radius:50%; background:#fff; color:#54a66a; font-size:32px; line-height:1; box-shadow:0 3px 14px rgba(45,52,64,.10); cursor:pointer; }
+    .habits-month-nav { display:grid; grid-template-columns:40px minmax(0,1fr) 40px; align-items:center; gap:8px; margin:0 0 13px; }
+    .habits-month-title { margin:0; color:#4a4854; text-align:center; text-transform:capitalize; font-size:16px; font-weight:750; }
+    .habits-month-btn { width:38px; height:38px; border:1px solid #e6e3e9; border-radius:50%; background:#fff; color:#696775; font-size:22px; cursor:pointer; }
+    .habits-month-btn:disabled { opacity:.3; cursor:default; }
     .habit-filters { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
-    .habit-filter { min-height:42px; padding:0 17px; border:1px solid #d8d7df; border-radius:999px; background:#fff; color:#42414b; font:inherit; font-size:14px; cursor:pointer; }
-    .habit-filter.active { border-color:#7abf91; background:#e9f7ee; color:#328b50; font-weight:750; }
-    .habit-add-form { display:none; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 16px; padding:12px; border:1px solid #e5e3e9; border-radius:16px; background:#fff; }
+    .habit-filter { min-height:39px; padding:0 15px; border:1px solid #d8d7df; border-radius:999px; background:#fff; color:#42414b; font:inherit; font-size:13px; cursor:pointer; }
+    .habit-filter.active { border-color:#80c99a; background:#eaf7ef; color:#328b50; font-weight:750; }
+    .habits-overview { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:0 0 13px; }
+    .habits-overview-item { min-width:0; padding:10px 9px; border:1px solid #eeeaf0; border-radius:15px; background:#fff; }
+    .habits-overview-value { display:block; overflow:hidden; color:#343340; font-size:clamp(16px,4vw,21px); font-weight:850; letter-spacing:-.04em; text-overflow:ellipsis; white-space:nowrap; }
+    .habits-overview-label { display:block; margin-top:3px; color:#918e99; font-size:10px; line-height:1.2; }
+    .habit-add-form { display:none; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 14px; padding:12px; border:1px solid #e5e3e9; border-radius:17px; background:#fff; box-shadow:0 2px 10px rgba(40,38,52,.05); }
     .habit-add-form.open { display:flex; }
-    .habit-add-input { flex:1 1 180px; min-width:0; min-height:44px; padding:10px 13px; border:1px solid #e0e3eb; border-radius:12px; background:#fafbfe; color:#20283a; font:inherit; font-size:14px; outline:none; }
+    .habit-add-input { flex:1 1 150px; min-width:0; min-height:43px; padding:10px 12px; border:1px solid #e0e3eb; border-radius:11px; background:#fafbfe; color:#20283a; font:inherit; font-size:14px; outline:none; }
     .habit-add-input:focus { border-color:#80c99b; box-shadow:0 0 0 3px rgba(91,183,124,.12); }
-    .habit-category-select { min-height:44px; padding:0 12px; border:1px solid #e0e3eb; border-radius:12px; background:#fff; color:#454653; font:inherit; }
-    .habit-add-button { min-height:44px; padding:0 17px; border:0; border-radius:12px; background:#53ad70; color:#fff; font:inherit; font-size:13px; font-weight:800; cursor:pointer; }
-    .habit-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:stretch; }
-    .habit-card { min-width:0; min-height:330px; padding:16px 14px 18px; border:1px solid #d9d7dc; border-radius:25px; background:#fff; box-shadow:0 2px 5px rgba(28,30,40,.13); }
-    .habit-card-top { display:flex; align-items:center; gap:10px; min-width:0; margin-bottom:17px; }
-    .habit-icon { display:grid; place-items:center; width:58px; height:58px; flex:0 0 58px; border:4px solid var(--habit-ring); border-radius:50%; background:var(--habit-soft); font-size:27px; }
+    .habit-category-select,.habit-schedule-select { flex:1 1 120px; min-width:0; min-height:43px; padding:0 10px; border:1px solid #e0e3eb; border-radius:11px; background:#fff; color:#454653; font:inherit; font-size:12px; }
+    .habit-icon-input { width:54px; min-height:43px; padding:6px; border:1px solid #e0e3eb; border-radius:11px; background:#fafbfe; text-align:center; font-size:23px; }
+    .habit-custom-days { display:none; flex:1 0 100%; flex-wrap:wrap; gap:6px; }
+    .habit-custom-days.visible { display:flex; }
+    .habit-day-choice { position:relative; }
+    .habit-day-choice input { position:absolute; opacity:0; pointer-events:none; }
+    .habit-day-choice span { display:grid; place-items:center; width:35px; height:35px; border:1px solid #e2e1e7; border-radius:50%; background:#fff; color:#777481; font-size:11px; font-weight:700; }
+    .habit-day-choice input:checked + span { border-color:#68b982; background:#e8f7ed; color:#2f9250; }
+    .habit-day-choice input:focus-visible + span { outline:2px solid #64ad7b; outline-offset:2px; }
+    .habit-form-actions { display:flex; gap:7px; flex:1 0 100%; justify-content:flex-end; }
+    .habit-add-button,.habit-cancel-button { min-height:41px; padding:0 16px; border:0; border-radius:11px; background:#53ad70; color:#fff; font:inherit; font-size:12px; font-weight:800; cursor:pointer; }
+    .habit-cancel-button { border:1px solid #e1dfe6; background:#f7f6f8; color:#777481; }
+    .habit-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; align-items:stretch; }
+    .habit-card { min-width:0; padding:12px 9px 13px; border:1px solid #dedbe2; border-radius:21px; background:#fff; box-shadow:0 2px 5px rgba(28,30,40,.10); }
+    .habit-card-top { display:flex; align-items:center; gap:7px; min-width:0; margin-bottom:12px; }
+    .habit-icon { display:grid; place-items:center; width:43px; height:43px; flex:0 0 43px; border:3px solid var(--habit-ring); border-radius:50%; background:var(--habit-soft); font-size:22px; }
     .habit-card-info { flex:1; min-width:0; }
-    .habit-name { overflow:hidden; margin:0; color:#34343d; font-size:14px; font-weight:650; text-overflow:ellipsis; white-space:nowrap; }
-    .habit-month-label { margin-top:3px; color:#85838d; font-size:11px; }
-    .habit-streak { flex:0 0 auto; padding:4px 7px; border-radius:999px; background:#fff4e9; color:#d47a32; font-size:11px; font-weight:800; white-space:nowrap; }
-    .habit-delete { align-self:flex-start; width:26px; height:26px; flex:0 0 26px; border:0; border-radius:50%; background:#f5f4f6; color:#8b8992; font-size:17px; cursor:pointer; }
-    .habit-weekdays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; margin:0 0 7px; }
-    .habit-weekdays span { color:#aaa8b0; font-size:9px; font-weight:700; text-align:center; }
-    .habit-heatmap { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; }
-    .habit-day { display:grid; place-items:center; min-width:0; aspect-ratio:1; padding:0; border:1px solid transparent; border-radius:6px; background:var(--habit-soft); color:transparent; font:600 10px inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s ease,border-color .12s ease; }
-    .habit-day.done { background:var(--habit-color); color:transparent; }
+    .habit-name { overflow:hidden; margin:0; color:#34343d; font-size:clamp(12px,3.4vw,15px); font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+    .habit-month-label { margin-top:3px; color:#85838d; font-size:10px; text-transform:lowercase; }
+    .habit-streak { flex:0 0 auto; padding:4px 6px; border-radius:999px; background:#fff4e9; color:#d47a32; font-size:10px; font-weight:850; white-space:nowrap; }
+    .habit-card-actions { display:flex; flex:0 0 auto; flex-direction:column; gap:3px; }
+    .habit-action { display:grid; place-items:center; width:23px; height:23px; border:0; border-radius:7px; background:#f5f4f6; color:#8b8992; font-size:13px; cursor:pointer; }
+    .habit-weekdays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; margin:0 0 5px; }
+    .habit-weekdays span { color:#aaa8b0; font-size:8px; font-weight:750; text-align:center; }
+    .habit-heatmap { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; }
+    .habit-day { display:grid; place-items:center; min-width:0; aspect-ratio:1; padding:0; border:1px solid transparent; border-radius:5px; background:var(--habit-soft); color:transparent; font:600 10px inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s ease,border-color .12s ease; }
+    .habit-day.done { border-color:var(--habit-color); background:var(--habit-color); color:transparent; }
     .habit-day.missed { background:var(--habit-soft); }
-    .habit-day.today { border-color:#8d8a94; }
+    .habit-day.rest-day { border-color:transparent; background:#f3f3f4; cursor:default; }
+    .habit-day.today { border:1px solid #777480; box-shadow:inset 0 0 0 1px rgba(255,255,255,.85); }
     .habit-day.future { background:#f3f3f4; opacity:.85; cursor:default; }
     .habit-day.empty { visibility:hidden; pointer-events:none; }
     .habit-day:not(:disabled):active { transform:scale(.9); }
+    .habit-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; margin-top:10px; }
+    .habit-stat { min-width:0; padding:7px 6px; border-radius:9px; background:#f8f7f9; }
+    .habit-stat strong { display:block; overflow:hidden; color:#3d3b46; font-size:12px; font-weight:850; text-overflow:ellipsis; white-space:nowrap; }
+    .habit-stat span { display:block; margin-top:2px; color:#95919c; font-size:9px; }
+    .habit-progress { height:5px; overflow:hidden; margin-top:8px; border-radius:999px; background:#f0eef2; }
+    .habit-progress-fill { height:100%; border-radius:inherit; background:var(--habit-color); }
+    .habit-schedule-label { margin-top:7px; color:#92909a; font-size:9px; text-align:center; }
     .habit-empty { grid-column:1/-1; padding:32px 18px; border:1px dashed #d9d7df; border-radius:20px; background:#fff; color:#85838d; text-align:center; font-size:14px; }
-    @media(max-width:560px) { .habit-list { gap:10px; } .habit-card { min-height:0; padding:13px 10px 15px; border-radius:22px; } .habit-icon { width:52px; height:52px; flex-basis:52px; font-size:24px; } .habit-card-top { gap:8px; margin-bottom:15px; } .habit-streak { padding:3px 5px; font-size:10px; } .habit-heatmap,.habit-weekdays { gap:5px; } }
-    @media(max-width:360px) { .habit-list { grid-template-columns:1fr; } }
+    @media(max-width:380px) { .habit-card { padding:10px 7px 11px; } .habit-icon { width:38px;height:38px;flex-basis:38px;font-size:20px; } .habit-card-top { gap:5px; } .habit-streak { font-size:9px;padding:3px 4px; } .habit-weekdays,.habit-heatmap { gap:3px; } .habit-stat { padding:6px 4px; } }
     @media(prefers-reduced-motion:reduce) { .habit-day { transition:none !important; } }
 
   </style>
@@ -608,18 +637,41 @@
       </div>
       <section class="habits-panel" id="habits-panel" hidden aria-label="Трекер привычек">
         <div class="habits-heading">
-          <h2 class="habits-title">Месяц</h2>
+          <h2 class="habits-title">Привычки</h2>
           <button class="habit-add-open" id="habit-add-open" type="button" aria-label="Добавить привычку">＋</button>
+        </div>
+        <div class="habits-month-nav">
+          <button class="habits-month-btn" id="habits-month-prev" type="button" aria-label="Предыдущий месяц">‹</button>
+          <h3 class="habits-month-title" id="habits-month-title">Ноябрь 2026</h3>
+          <button class="habits-month-btn" id="habits-month-next" type="button" aria-label="Следующий месяц">›</button>
         </div>
         <div class="habit-filters" id="habit-filters" aria-label="Категории привычек">
           <button class="habit-filter active" type="button" data-category="Все">Все</button>
           <button class="habit-filter" type="button" data-category="Здоровье">Здоровье</button>
           <button class="habit-filter" type="button" data-category="Спорт">Спорт</button>
+          <button class="habit-filter" type="button" data-category="Другое">Другое</button>
         </div>
+        <div class="habits-overview" id="habits-overview" aria-live="polite"></div>
         <form class="habit-add-form" id="habit-add-form">
           <input class="habit-add-input" id="habit-name-input" maxlength="48" placeholder="Название привычки" aria-label="Название новой привычки" required>
+          <input class="habit-icon-input" id="habit-icon-input" maxlength="4" value="✨" aria-label="Эмодзи привычки">
           <select class="habit-category-select" id="habit-category-input" aria-label="Категория"><option>Здоровье</option><option>Спорт</option><option>Другое</option></select>
-          <button class="habit-add-button" type="submit">Добавить</button>
+          <select class="habit-schedule-select" id="habit-schedule-input" aria-label="Расписание">
+            <option value="daily">Каждый день</option><option value="weekdays">По будням</option><option value="weekends">По выходным</option><option value="custom">Выбрать дни</option>
+          </select>
+          <div class="habit-custom-days" id="habit-custom-days">
+            <label class="habit-day-choice"><input type="checkbox" value="1"><span>Пн</span></label>
+            <label class="habit-day-choice"><input type="checkbox" value="2"><span>Вт</span></label>
+            <label class="habit-day-choice"><input type="checkbox" value="3"><span>Ср</span></label>
+            <label class="habit-day-choice"><input type="checkbox" value="4"><span>Чт</span></label>
+            <label class="habit-day-choice"><input type="checkbox" value="5"><span>Пт</span></label>
+            <label class="habit-day-choice"><input type="checkbox" value="6"><span>Сб</span></label>
+            <label class="habit-day-choice"><input type="checkbox" value="0"><span>Вс</span></label>
+          </div>
+          <div class="habit-form-actions">
+            <button class="habit-cancel-button" id="habit-add-cancel" type="button">Отмена</button>
+            <button class="habit-add-button" id="habit-add-submit" type="submit">Добавить</button>
+          </div>
         </form>
         <div class="habit-list" id="habit-list"></div>
       </section>
@@ -730,10 +782,22 @@
     const habitsPanel = document.getElementById("habits-panel");
     const habitList = document.getElementById("habit-list");
     const habitNameInput = document.getElementById("habit-name-input");
+    const habitIconInput = document.getElementById("habit-icon-input");
+    const habitCategoryInput = document.getElementById("habit-category-input");
+    const habitScheduleInput = document.getElementById("habit-schedule-input");
+    const habitCustomDays = document.getElementById("habit-custom-days");
+    const habitAddForm = document.getElementById("habit-add-form");
+    const habitsMonthTitle = document.getElementById("habits-month-title");
+    const habitsMonthPrev = document.getElementById("habits-month-prev");
+    const habitsMonthNext = document.getElementById("habits-month-next");
+    const habitsOverview = document.getElementById("habits-overview");
     const habitsPreviewList = document.getElementById("habits-preview-list");
     const habitsPreviewSubtitle = document.getElementById("habits-preview-subtitle");
     const habitsStorageKey = "romano-habits-v1";
     let habits = [];
+    let activeHabitCategory = "Все";
+    let editingHabitId = null;
+    let habitsVisibleMonth = null;
     const backdrop = document.getElementById("sheet-backdrop");
     const sheet = document.getElementById("bottom-sheet");
     const handle = document.getElementById("sheet-handle-area");
@@ -834,6 +898,7 @@
     let calendarData = { currency: "USD", months: {} };
     const today = new Date();
     const todayKey = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
+    habitsVisibleMonth = new Date(today.getFullYear(),today.getMonth(),1);
     let visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
     let selectedDate = null;
     let editorActive = false;
@@ -932,7 +997,7 @@
             localStorage.setItem(calendarStorageKey, JSON.stringify(calendarData));
             localStorage.setItem(depositBaseStorageKey, String(depositBaseAmount));
             localStorage.setItem(depositHistoryStorageKey, JSON.stringify((Array.isArray(backup.depositHistory) ? backup.depositHistory : []).filter(item => item && item.source === "deposit-dialog")));
-            habits = Array.isArray(backup.habits) ? backup.habits.filter(item => item && typeof item.name === "string").map(item => ({...item,completed:Array.isArray(item.completed)?item.completed:[]})) : [];
+            habits = Array.isArray(backup.habits) ? backup.habits.filter(item => item && typeof item.name === "string").map(normalizeHabit) : [];
             localStorage.setItem(habitsStorageKey, JSON.stringify(habits));
           } catch (storageError) {
             console.warn("Could not save restored backup", storageError);
@@ -993,105 +1058,271 @@
     }
 
     function habitDateKey(date) {
-      return date.getFullYear() + "-" + String(date.getMonth()+1).padStart(2,"0") + "-" + String(date.getDate()).padStart(2,"0");
+      return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
     }
-    function habitStreak(habit) {
-      const completed = new Set(Array.isArray(habit.completed) ? habit.completed : []);
-      let cursor = new Date(today.getFullYear(),today.getMonth(),today.getDate());
-      if (!completed.has(habitDateKey(cursor))) cursor.setDate(cursor.getDate()-1);
-      let streak = 0;
-      while (completed.has(habitDateKey(cursor))) { streak++; cursor.setDate(cursor.getDate()-1); }
-      return streak;
+    function habitDateFromKey(key) {
+      const parts=String(key||"").split("-").map(Number);
+      return parts.length===3 && parts.every(Number.isFinite) ? new Date(parts[0],parts[1]-1,parts[2]) : new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    }
+    function habitMidnight(date) { return new Date(date.getFullYear(),date.getMonth(),date.getDate()); }
+    function habitDaysOfWeek(habit) {
+      const days=Array.isArray(habit.weekdays) ? habit.weekdays.map(Number).filter(day=>Number.isInteger(day)&&day>=0&&day<=6) : [0,1,2,3,4,5,6];
+      return Array.from(new Set(days)).sort((a,b)=>a-b);
+    }
+    function habitIsScheduled(habit,date) { return habitDaysOfWeek(habit).includes(date.getDay()); }
+    function habitCreatedDate(habit) { return habitDateFromKey(habit.createdAt||todayKey); }
+    function habitCompletedSet(habit) { return new Set(Array.isArray(habit.completed)?habit.completed:[]); }
+    function habitStats(habit) {
+      const completed=habitCompletedSet(habit);
+      const created=habitMidnight(habitCreatedDate(habit));
+      const end=habitMidnight(today);
+      let best=0,run=0,total=0;
+      const cursor=new Date(created);
+      while(cursor<=end) {
+        const key=habitDateKey(cursor);
+        if(habitIsScheduled(habit,cursor)) {
+          if(completed.has(key)) { run++; total++; best=Math.max(best,run); }
+          else run=0;
+        }
+        cursor.setDate(cursor.getDate()+1);
+      }
+      let current=0;
+      const streakCursor=new Date(end);
+      if(habitIsScheduled(habit,streakCursor)&&!completed.has(habitDateKey(streakCursor))) streakCursor.setDate(streakCursor.getDate()-1);
+      while(streakCursor>=created) {
+        const key=habitDateKey(streakCursor);
+        if(habitIsScheduled(habit,streakCursor)) {
+          if(completed.has(key)) current++;
+          else break;
+        }
+        streakCursor.setDate(streakCursor.getDate()-1);
+      }
+      const monthStart=new Date(habitsVisibleMonth.getFullYear(),habitsVisibleMonth.getMonth(),1);
+      const monthEnd=new Date(habitsVisibleMonth.getFullYear(),habitsVisibleMonth.getMonth()+1,0);
+      const statsStart=created>monthStart?created:monthStart;
+      const statsEnd=monthEnd<end?monthEnd:end;
+      let due=0,done=0;
+      if(statsStart<=statsEnd) {
+        const day=new Date(statsStart);
+        while(day<=statsEnd) {
+          const key=habitDateKey(day);
+          if(habitIsScheduled(habit,day)) { due++; if(completed.has(key)) done++; }
+          day.setDate(day.getDate()+1);
+        }
+      }
+      const percentage=due?Math.round(done/due*100):0;
+      return {current,best,total,due,done,percentage,completed};
+    }
+    function normalizeHabit(item) {
+      const completed=Array.isArray(item.completed)?Array.from(new Set(item.completed.filter(key=>/^\d{4}-\d{2}-\d{2}$/.test(key)))).sort():[];
+      const inferredStart=completed.length?completed[0]:todayKey;
+      const weekdays=Array.isArray(item.weekdays)?habitDaysOfWeek(item):[0,1,2,3,4,5,6];
+      const category=["Здоровье","Спорт","Другое"].includes(item.category)?item.category:"Здоровье";
+      const icon=typeof item.icon==="string"&&item.icon.trim()?item.icon.trim():habitColors[category].icon;
+      return {...item,name:String(item.name||"").trim().slice(0,48),category,icon,createdAt:/^\d{4}-\d{2}-\d{2}$/.test(item.createdAt||"")?item.createdAt:inferredStart,weekdays:weekdays.length?weekdays:[0,1,2,3,4,5,6],completed};
     }
     function saveHabits() {
       try { localStorage.setItem(habitsStorageKey,JSON.stringify(habits)); }
       catch(error) { console.warn("Could not save habits",error); }
     }
-    let activeHabitCategory = "Все";
     const habitColors = {
-      "Здоровье": { color:"#ed78b4", soft:"#fcecf4", ring:"#f2b0d1", icon:"💪" },
-      "Спорт": { color:"#2fbd6c", soft:"#e8f7ee", ring:"#a4e4bd", icon:"❤️" },
-      "Другое": { color:"#8c83df", soft:"#f0effb", ring:"#c9c4f1", icon:"✨" }
+      "Здоровье": { color:"#ed78b4",soft:"#fcecf4",ring:"#f2b0d1",icon:"💪" },
+      "Спорт": { color:"#2fbd6c",soft:"#e8f7ee",ring:"#a4e4bd",icon:"❤️" },
+      "Другое": { color:"#8c83df",soft:"#f0effb",ring:"#c9c4f1",icon:"✨" }
     };
+    function habitScheduleLabel(habit) {
+      const days=habitDaysOfWeek(habit);
+      if(days.length===7)return "Каждый день";
+      if(days.length===5&&[1,2,3,4,5].every(day=>days.includes(day)))return "По будням";
+      if(days.length===2&&days.includes(0)&&days.includes(6))return "По выходным";
+      const names=["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
+      return days.map(day=>names[day]).join(" · ");
+    }
     function renderHabitsPreview() {
-      habitsPreviewList.innerHTML = "";
-      habitsPreviewSubtitle.textContent = habits.length ? habits.length + " привычки · отметки за месяц" : "Добавь первую привычку";
-      habits.slice(0,2).forEach(habit => {
-        const row=document.createElement("div"); row.className="habits-preview-row";
-        const name=document.createElement("span"); name.className="habits-preview-name"; name.textContent=habit.name;
-        const streak=document.createElement("span"); streak.className="habits-preview-streak"; streak.textContent="🔥 "+habitStreak(habit);
-        row.append(name,streak); habitsPreviewList.appendChild(row);
+      habitsPreviewList.innerHTML="";
+      habitsPreviewSubtitle.textContent=habits.length?habits.length+" привычек · рекорд "+Math.max(0,...habits.map(habit=>habitStats(habit).best))+" дн.":"Добавь первую привычку";
+      habits.slice(0,2).forEach(habit=>{
+        const row=document.createElement("div");row.className="habits-preview-row";
+        const name=document.createElement("span");name.className="habits-preview-name";name.textContent=habit.name;
+        const streak=document.createElement("span");streak.className="habits-preview-streak";streak.textContent="🔥 "+habitStats(habit).current;
+        row.append(name,streak);habitsPreviewList.appendChild(row);
       });
     }
+    function renderHabitsOverview(visibleHabits) {
+      let due=0,done=0,todayDue=0,todayDone=0,best=0;
+      visibleHabits.forEach(habit=>{
+        const stats=habitStats(habit);due+=stats.due;done+=stats.done;best=Math.max(best,stats.best);
+        if(habitIsScheduled(habit,today)){todayDue++;if(stats.completed.has(todayKey))todayDone++;}
+      });
+      const rate=due?Math.round(done/due*100):0;
+      habitsOverview.innerHTML="";
+      [
+        {value:todayDue?todayDone+"/"+todayDue:"—",label:"Сегодня выполнено"},
+        {value:due?rate+"%":"—",label:"Выполнение за месяц"},
+        {value:best+" дн.",label:"Лучший рекорд"}
+      ].forEach(stat=>{
+        const box=document.createElement("div");box.className="habits-overview-item";
+        const value=document.createElement("strong");value.className="habits-overview-value";value.textContent=stat.value;
+        const label=document.createElement("span");label.className="habits-overview-label";label.textContent=stat.label;
+        box.append(value,label);habitsOverview.appendChild(box);
+      });
+    }
+    function setHabitFormSchedule(days) {
+      const all=[0,1,2,3,4,5,6],work=[1,2,3,4,5],weekend=[0,6];
+      let type="custom";
+      if(all.every(day=>days.includes(day))&&days.length===7)type="daily";
+      else if(work.length===days.length&&work.every(day=>days.includes(day)))type="weekdays";
+      else if(weekend.length===days.length&&weekend.every(day=>days.includes(day)))type="weekends";
+      habitScheduleInput.value=type;
+      habitCustomDays.querySelectorAll("input").forEach(input=>{input.checked=days.includes(Number(input.value));});
+      habitCustomDays.classList.toggle("visible",type==="custom");
+    }
+    function selectedHabitDays() {
+      const type=habitScheduleInput.value;
+      if(type==="daily")return [0,1,2,3,4,5,6];
+      if(type==="weekdays")return [1,2,3,4,5];
+      if(type==="weekends")return [0,6];
+      return Array.from(habitCustomDays.querySelectorAll("input:checked")).map(input=>Number(input.value)).sort((a,b)=>a-b);
+    }
+    function resetHabitForm() {
+      editingHabitId=null;habitAddForm.reset();habitIconInput.value="✨";
+      setHabitFormSchedule([0,1,2,3,4,5,6]);
+      document.getElementById("habit-add-submit").textContent="Добавить";
+      habitAddForm.classList.remove("open");
+    }
+    function beginEditHabit(habit) {
+      editingHabitId=habit.id;
+      habitNameInput.value=habit.name;
+      habitIconInput.value=habit.icon||"✨";
+      habitCategoryInput.value=habit.category||"Здоровье";
+      setHabitFormSchedule(habitDaysOfWeek(habit));
+      document.getElementById("habit-add-submit").textContent="Сохранить";
+      habitAddForm.classList.add("open");
+      habitNameInput.focus();
+      habitAddForm.scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
     function renderHabits() {
-      habitList.innerHTML = "";
-      const visibleHabits = habits.filter(habit => activeHabitCategory==="Все" || (habit.category||"Здоровье")===activeHabitCategory);
-      if (!visibleHabits.length) {
-        const empty=document.createElement("div"); empty.className="habit-empty";
-        empty.textContent=habits.length ? "В этой категории пока нет привычек." : "Нажми ＋, чтобы добавить первую привычку.";
-        habitList.appendChild(empty); renderHabitsPreview(); return;
+      const visibleHabits=habits.filter(habit=>activeHabitCategory==="Все"||habit.category===activeHabitCategory);
+      const monthTitle=habitsVisibleMonth.toLocaleDateString("ru-RU",{month:"long",year:"numeric"});
+      habitsMonthTitle.textContent=monthTitle;
+      habitsMonthNext.disabled=habitsVisibleMonth.getFullYear()===today.getFullYear()&&habitsVisibleMonth.getMonth()===today.getMonth();
+      document.querySelectorAll(".habit-filter").forEach(button=>button.classList.toggle("active",button.dataset.category===activeHabitCategory));
+      renderHabitsOverview(visibleHabits);
+      habitList.innerHTML="";
+      if(!visibleHabits.length) {
+        const empty=document.createElement("div");empty.className="habit-empty";
+        empty.textContent=habits.length?"В этой категории пока нет привычек.":"Нажми ＋, чтобы добавить первую привычку.";
+        habitList.appendChild(empty);renderHabitsPreview();return;
       }
-      const now=new Date(today.getFullYear(),today.getMonth(),today.getDate());
-      visibleHabits.forEach(habit => {
-        const category=habit.category||"Здоровье";
-        const palette=habitColors[category]||habitColors["Другое"];
-        const card=document.createElement("article"); card.className="habit-card";
-        card.style.setProperty("--habit-color",palette.color);
-        card.style.setProperty("--habit-soft",palette.soft);
-        card.style.setProperty("--habit-ring",palette.ring);
-        const top=document.createElement("div"); top.className="habit-card-top";
-        const icon=document.createElement("div"); icon.className="habit-icon"; icon.textContent=habit.icon||palette.icon;
-        const info=document.createElement("div"); info.className="habit-card-info";
-        const name=document.createElement("h3"); name.className="habit-name"; name.textContent=habit.name;
-        const monthLabel=document.createElement("div"); monthLabel.className="habit-month-label"; monthLabel.textContent=now.toLocaleDateString("ru-RU",{month:"short",year:"numeric"});
-        info.append(name,monthLabel);
-        const streak=document.createElement("div"); streak.className="habit-streak"; streak.textContent="🔥 "+habitStreak(habit);
-        const remove=document.createElement("button"); remove.type="button"; remove.className="habit-delete"; remove.textContent="×"; remove.setAttribute("aria-label","Удалить привычку "+habit.name);
-        remove.addEventListener("click",()=>{if(!window.confirm("Удалить привычку «"+habit.name+"» и её отметки?"))return;habits=habits.filter(item=>item.id!==habit.id);saveHabits();renderHabits();});
-        top.append(icon,info,streak,remove); card.appendChild(top);
-        const weekdays=document.createElement("div"); weekdays.className="habit-weekdays";
+      const year=habitsVisibleMonth.getFullYear(),month=habitsVisibleMonth.getMonth();
+      const first=new Date(year,month,1),offset=(first.getDay()+6)%7,daysInMonth=new Date(year,month+1,0).getDate();
+      const monthShort=habitsVisibleMonth.toLocaleDateString("ru-RU",{month:"short",year:"numeric"});
+      visibleHabits.forEach(habit=>{
+        const palette=habitColors[habit.category]||habitColors["Другое"];
+        const stats=habitStats(habit);
+        const card=document.createElement("article");card.className="habit-card";
+        card.style.setProperty("--habit-color",palette.color);card.style.setProperty("--habit-soft",palette.soft);card.style.setProperty("--habit-ring",palette.ring);
+        const top=document.createElement("div");top.className="habit-card-top";
+        const icon=document.createElement("div");icon.className="habit-icon";icon.textContent=habit.icon||palette.icon;
+        const info=document.createElement("div");info.className="habit-card-info";
+        const name=document.createElement("h3");name.className="habit-name";name.textContent=habit.name;
+        const dateLabel=document.createElement("div");dateLabel.className="habit-month-label";dateLabel.textContent=monthShort+" · "+habitScheduleLabel(habit);
+        info.append(name,dateLabel);
+        const streak=document.createElement("div");streak.className="habit-streak";streak.textContent="🔥 "+stats.current;
+        const actions=document.createElement("div");actions.className="habit-card-actions";
+        const edit=document.createElement("button");edit.type="button";edit.className="habit-action";edit.textContent="✎";edit.setAttribute("aria-label","Изменить "+habit.name);edit.addEventListener("click",()=>beginEditHabit(habit));
+        const remove=document.createElement("button");remove.type="button";remove.className="habit-action";remove.textContent="×";remove.setAttribute("aria-label","Удалить "+habit.name);
+        remove.addEventListener("click",()=>{if(!window.confirm("Удалить привычку «"+habit.name+"» и все её отметки?"))return;habits=habits.filter(item=>item.id!==habit.id);saveHabits();if(editingHabitId===habit.id)resetHabitForm();renderHabits();});
+        actions.append(edit,remove);top.append(icon,info,streak,actions);card.appendChild(top);
+        const weekdays=document.createElement("div");weekdays.className="habit-weekdays";
         ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(day=>{const el=document.createElement("span");el.textContent=day;weekdays.appendChild(el);});
         card.appendChild(weekdays);
-        const heat=document.createElement("div"); heat.className="habit-heatmap";
-        const first=new Date(now.getFullYear(),now.getMonth(),1); const offset=(first.getDay()+6)%7;
+        const heat=document.createElement("div");heat.className="habit-heatmap";
         for(let i=0;i<offset;i++){const blank=document.createElement("span");blank.className="habit-day empty";heat.appendChild(blank);}
-        const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
         for(let day=1;day<=daysInMonth;day++){
-          const date=new Date(now.getFullYear(),now.getMonth(),day); const key=habitDateKey(date);
-          const button=document.createElement("button"); button.type="button"; button.className="habit-day"; button.textContent=day;
-          const isDone=(habit.completed||[]).includes(key);
-          if(isDone)button.classList.add("done");
-          if(key===todayKey)button.classList.add("today");
-          if(date>now){button.classList.add("future");button.disabled=true;}
-          button.setAttribute("aria-label",date.toLocaleDateString("ru-RU")+(isDone?", выполнено":date<now?", пропуск":", сегодня"));
-          button.setAttribute("aria-pressed",String(isDone));
-          button.addEventListener("click",()=>{const completed=new Set(habit.completed||[]);if(completed.has(key))completed.delete(key);else completed.add(key);habit.completed=Array.from(completed).sort();saveHabits();renderHabits();});
-          heat.appendChild(button);
+          const date=new Date(year,month,day),key=habitDateKey(date),isFuture=date>today,isScheduled=habitIsScheduled(habit,date),isDone=stats.completed.has(key);
+          const cell=document.createElement("button");cell.type="button";cell.className="habit-day";cell.setAttribute("aria-pressed",String(isDone));
+          const isVisibleDay=isScheduled&&date>=habitCreatedDate(habit);
+          if(isDone)cell.classList.add("done");
+          else if(!isVisibleDay)cell.classList.add("rest-day");
+          if(key===todayKey)cell.classList.add("today");
+          if(isFuture||!isVisibleDay)cell.disabled=true;
+          let state=isDone?"выполнено":isFuture?"будущий день":isVisibleDay?"пропуск":"не запланировано";
+          cell.setAttribute("aria-label",date.toLocaleDateString("ru-RU")+", "+state);
+          cell.title=date.toLocaleDateString("ru-RU")+" · "+state;
+          cell.addEventListener("click",()=>{
+            if(cell.disabled)return;
+            const completed=new Set(habit.completed||[]);
+            if(completed.has(key))completed.delete(key);else completed.add(key);
+            habit.completed=Array.from(completed).sort();saveHabits();renderHabits();
+          });
+          heat.appendChild(cell);
         }
-        const totalCells=offset+daysInMonth; for(let i=totalCells;i<42;i++){const blank=document.createElement("span");blank.className="habit-day empty";heat.appendChild(blank);}
-        card.appendChild(heat); habitList.appendChild(card);
+        const totalCells=offset+daysInMonth;for(let i=totalCells;i<42;i++){const blank=document.createElement("span");blank.className="habit-day empty";heat.appendChild(blank);}
+        card.appendChild(heat);
+        const statGrid=document.createElement("div");statGrid.className="habit-stats";
+        [
+          {value:stats.current+" дн.",label:"Текущая серия"},
+          {value:stats.best+" дн.",label:"Рекорд серии"},
+          {value:String(stats.total),label:"Всего выполнено"},
+          {value:stats.percentage+"%",label:"За этот месяц"}
+        ].forEach(item=>{
+          const stat=document.createElement("div");stat.className="habit-stat";
+          const strong=document.createElement("strong");strong.textContent=item.value;
+          const label=document.createElement("span");label.textContent=item.label;
+          stat.append(strong,label);statGrid.appendChild(stat);
+        });
+        card.appendChild(statGrid);
+        const progress=document.createElement("div");progress.className="habit-progress";
+        const fill=document.createElement("div");fill.className="habit-progress-fill";fill.style.width=stats.percentage+"%";progress.appendChild(fill);card.appendChild(progress);
+        const schedule=document.createElement("div");schedule.className="habit-schedule-label";schedule.textContent=stats.done+" из "+stats.due+" запланированных дней";card.appendChild(schedule);
+        habitList.appendChild(card);
       });
       renderHabitsPreview();
     }
     document.getElementById("habit-filters").addEventListener("click",event=>{
-      const button=event.target.closest("[data-category]"); if(!button)return;
-      activeHabitCategory=button.dataset.category;
-      document.querySelectorAll(".habit-filter").forEach(item=>item.classList.toggle("active",item===button));
-      renderHabits();
+      const button=event.target.closest("[data-category]");if(!button)return;
+      activeHabitCategory=button.dataset.category;renderHabits();
     });
     document.getElementById("habit-add-open").addEventListener("click",()=>{
-      const form=document.getElementById("habit-add-form"); form.classList.toggle("open");
-      if(form.classList.contains("open"))habitNameInput.focus();
+      if(!habitAddForm.classList.contains("open")) {
+        resetHabitForm();habitAddForm.classList.add("open");
+        if(!habitIconInput.value)habitIconInput.value="✨";
+      } else { resetHabitForm(); }
+    });
+    document.getElementById("habit-add-cancel").addEventListener("click",resetHabitForm);
+    habitScheduleInput.addEventListener("change",()=>{
+      habitCustomDays.classList.toggle("visible",habitScheduleInput.value==="custom");
     });
     document.getElementById("habit-add-form").addEventListener("submit",event=>{
-      event.preventDefault(); const name=habitNameInput.value.trim(); if(!name)return;
-      const category=document.getElementById("habit-category-input").value;
-      habits.push({id:"habit-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),name,category,completed:[]});
-      habitNameInput.value=""; activeHabitCategory="Все";
-      document.querySelectorAll(".habit-filter").forEach(item=>item.classList.toggle("active",item.dataset.category==="Все"));
-      event.currentTarget.classList.remove("open"); saveHabits(); renderHabits();
+      event.preventDefault();
+      const name=habitNameInput.value.trim();
+      if(!name)return;
+      const weekdays=selectedHabitDays();
+      if(!weekdays.length){window.alert("Выбери хотя бы один день недели.");return;}
+      if(editingHabitId) {
+        const habit=habits.find(item=>item.id===editingHabitId);
+        if(habit){habit.name=name;habit.category=habitCategoryInput.value;habit.icon=habitIconInput.value.trim()||habitColors[habitCategoryInput.value].icon;habit.weekdays=weekdays;}
+      } else {
+        habits.push(normalizeHabit({id:"habit-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),name,category:habitCategoryInput.value,icon:habitIconInput.value.trim()||habitColors[habitCategoryInput.value].icon,createdAt:todayKey,weekdays,completed:[]}));
+      }
+      activeHabitCategory="Все";resetHabitForm();saveHabits();renderHabits();
     });
-    function loadHabits(){try{const saved=JSON.parse(localStorage.getItem(habitsStorageKey)||"[]");if(Array.isArray(saved))habits=saved.filter(item=>item&&typeof item.name==="string").map(item=>({...item,category:item.category||"Здоровье",completed:Array.isArray(item.completed)?item.completed:[]}));}catch(error){console.warn("Could not restore habits",error);}renderHabits();}
+    habitsMonthPrev.addEventListener("click",()=>{
+      habitsVisibleMonth=new Date(habitsVisibleMonth.getFullYear(),habitsVisibleMonth.getMonth()-1,1);renderHabits();
+    });
+    habitsMonthNext.addEventListener("click",()=>{
+      if(habitsMonthNext.disabled)return;
+      habitsVisibleMonth=new Date(habitsVisibleMonth.getFullYear(),habitsVisibleMonth.getMonth()+1,1);renderHabits();
+    });
+    function loadHabits(){
+      try {
+        const saved=JSON.parse(localStorage.getItem(habitsStorageKey)||"[]");
+        if(Array.isArray(saved))habits=saved.filter(item=>item&&typeof item.name==="string").map(normalizeHabit);
+        saveHabits();
+      } catch(error) { console.warn("Could not restore habits",error); }
+      renderHabits();
+    }
 
     function renderPreview() {
       const key = monthKey(visibleMonth);
@@ -1423,6 +1654,7 @@
     function openSheet(tile, showCalendar, showHabits) {
       activeTile = tile;
       sheet.classList.toggle("trading-open", tile === calendarLaunch);
+      sheet.classList.toggle("habits-open", tile === habitsLaunch);
       genericSheet.dataset.visible = String(!showCalendar && !showHabits);
       calendarFull.dataset.visible = String(showCalendar);
       habitsPanel.hidden = !showHabits;
