@@ -230,8 +230,73 @@
     .sheet-line.wide { width: 88%; }
     .sheet-line.medium { width: 62%; }
     .sheet-placeholder-card { height: 76px; margin-top: 28px; border-radius: 16px; background: #f7f7f6; }
-    .calendar-full { display: none; width: 100%; max-width: 900px; margin: 0 auto; }
-    .calendar-full[data-visible="true"] { display: block; }
+    .calendar-full { display:none; width:100%; max-width:984px; margin:0 auto; }
+    .calendar-full[data-visible="true"] { display:block; }
+    /* Sandbox monthly performance calendar skin */
+    .bottom-sheet.trading-open { height:94dvh; max-height:94dvh; padding:10px clamp(10px,2vw,20px) max(14px,env(safe-area-inset-bottom)); background:#050505; color:#f2f2f2; border:1px solid #252525; border-radius:22px 22px 0 0; }
+    .bottom-sheet.trading-open .sheet-handle { background:#454545; }
+    .bottom-sheet.trading-open .sheet-content { max-width:984px; }
+    .bottom-sheet.trading-open .calendar-full { padding:14px; border:1px solid rgba(220,220,205,.72); border-radius:23px; background:linear-gradient(145deg,#0d0d0d,#030303); box-shadow:0 22px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.035); }
+    .bottom-sheet.trading-open .goal-card { padding:12px 14px 14px; border:0; border-radius:16px; background:linear-gradient(145deg,#0c0c0c,#080808); box-shadow:inset 0 0 0 1px rgba(255,255,255,.035); }
+    .bottom-sheet.trading-open .goal-values { color:#f2f2f2; font-size:clamp(18px,3.4vw,27px); }
+    .bottom-sheet.trading-open .goal-values #goal-current { color:#f4ed16!important; }
+    .bottom-sheet.trading-open .goal-values #goal-total { color:#d7d7d7; }
+    .bottom-sheet.trading-open .deposit-summary strong { color:#d7d7d7; }
+    .bottom-sheet.trading-open .deposit-summary span { color:#929292; }
+    .bottom-sheet.trading-open .goal-track-wrap { padding:14px 0 0; }
+    .bottom-sheet.trading-open .goal-track { height:5px; background:#414141; box-shadow:inset 0 1px 2px rgba(0,0,0,.7); }
+    .bottom-sheet.trading-open .goal-fill { background:#f4ed16; box-shadow:0 0 7px rgba(244,237,22,.18); }
+    .bottom-sheet.trading-open .goal-percent { color:#f4ed16; }
+    .performance-compact { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:4px; margin:20px 0 12px; max-height:100px; overflow:hidden; transition:max-height .55s cubic-bezier(.2,.75,.25,1),opacity .32s ease,margin .55s cubic-bezier(.2,.75,.25,1); }
+    .performance-mini { min-width:0; padding:4px 0 2px; border:0; border-radius:8px; background:transparent; color:#d8d8d8; text-align:center; cursor:pointer; }
+    .performance-mini .date { display:block; font-size:clamp(9px,1.8vw,14px); line-height:1.15; white-space:nowrap; }
+    .performance-mini .value { display:block; margin-top:6px; font-size:clamp(8px,1.6vw,13px); line-height:1.15; font-weight:650; white-space:nowrap; }
+    .performance-mini.positive .value { color:#f4ed16; }
+    .performance-mini.negative .value { color:#ee695d; }
+    .performance-mini.today { background:#1c1c12; outline:1px solid rgba(244,237,22,.55); }
+    .performance-mini.future { opacity:.35; }
+    .bottom-sheet.trading-open .calendar-header { grid-template-columns:38px minmax(0,1fr) 38px; padding:6px 0 12px; border:0; }
+    .bottom-sheet.trading-open .calendar-title { color:#f2f2f2; font-size:clamp(21px,4vw,30px); cursor:pointer; }
+    .bottom-sheet.trading-open .calendar-control { width:36px;height:36px;border:1px solid #303030;border-radius:50%;background:#151515;color:#d8d8d8; }
+    .bottom-sheet.trading-open .calendar-weekdays { margin:0 0 10px; padding:5px; gap:4px; border-radius:12px; background:#111; }
+    .bottom-sheet.trading-open .calendar-weekdays span { min-height:25px; border-radius:7px; background:transparent; color:#aaa; font-size:11px; }
+    .bottom-sheet.trading-open .calendar-days { gap:6px; margin:0; }
+    .bottom-sheet.trading-open .calendar-day { min-height:clamp(56px,10vw,88px); padding:8px 6px 10px; border:1px solid #202020; border-radius:12px; background:linear-gradient(145deg,#121212,#0d0d0d); color:#e7e7e7; }
+    .bottom-sheet.trading-open .calendar-day-number { color:#e7e7e7; font-size:15px; }
+    .bottom-sheet.trading-open .calendar-amount { color:#f4ed16; font-size:clamp(9px,1.8vw,15px); }
+    .bottom-sheet.trading-open .calendar-amount.negative { color:#ee695d; }
+    .bottom-sheet.trading-open .calendar-amount.no-value { color:#777; }
+    .bottom-sheet.trading-open .calendar-day.outside,.bottom-sheet.trading-open .calendar-day.future { opacity:.35; }
+    .bottom-sheet.trading-open .calendar-day.today { border-color:rgba(244,237,22,.55); background:linear-gradient(145deg,#17170e,#10100b); box-shadow:inset 0 0 0 1px rgba(244,237,22,.08); transform:none; }
+    .bottom-sheet.trading-open .calendar-day.today .calendar-day-number { color:#fff; }
+    .bottom-sheet.trading-open .calendar-day.range-start,.bottom-sheet.trading-open .calendar-day.range-end { border-color:#f4ed16; background:#f4ed16; color:#080808; opacity:1; }
+    .bottom-sheet.trading-open .calendar-day.range-start .calendar-day-number,.bottom-sheet.trading-open .calendar-day.range-end .calendar-day-number,.bottom-sheet.trading-open .calendar-day.range-start .calendar-amount,.bottom-sheet.trading-open .calendar-day.range-end .calendar-amount { color:#080808!important; }
+    .bottom-sheet.trading-open .calendar-day.in-range { border-color:rgba(244,237,22,.32); background:rgba(244,237,22,.13); }
+    .bottom-sheet.trading-open .calendar-day.in-range .calendar-day-number { color:#fff; }
+    .bottom-sheet.trading-open .calendar-editor,.bottom-sheet.trading-open .history-panel,.bottom-sheet.trading-open .backup-panel { color:#eee; border-color:#292929; background:#0c0c0c; box-shadow:none; }
+    .bottom-sheet.trading-open .editor-heading,.bottom-sheet.trading-open .history-title,.bottom-sheet.trading-open .editor-amount-label { color:#eee; }
+    .bottom-sheet.trading-open .editor-hint,.bottom-sheet.trading-open .history-date { color:#999; }
+    .bottom-sheet.trading-open .editor-date,.bottom-sheet.trading-open .editor-amount { color:#eee; border-color:#333; background:#151515; }
+    .bottom-sheet.trading-open .editor-button { color:#ddd; border-color:#333; background:#1a1a1a; }
+    .bottom-sheet.trading-open .editor-button.primary { color:#090909; border-color:#f4ed16; background:#f4ed16; }
+    .bottom-sheet.trading-open .calendar-detail { color:#aaa; background:#151515; }
+    .bottom-sheet.trading-open .calendar-detail strong { color:#fff; }
+    .bottom-sheet.trading-open .history-row { color:#eee; border-color:#292929; }
+    .bottom-sheet.trading-open .history-row:active,.bottom-sheet.trading-open .history-row[aria-pressed="true"] { background:#1b1b1b; box-shadow:inset 0 0 0 1px #333; }
+    .bottom-sheet.trading-open .history-type.withdrawal,.bottom-sheet.trading-open .history-totals .withdrawal-total { color:#eee; }
+    .bottom-sheet.trading-open .history-kind-icon { color:#ddd; background:#222; }
+    .bottom-sheet.trading-open .backup-title { color:#eee; }
+    .bottom-sheet.trading-open .backup-description,.bottom-sheet.trading-open .backup-status { color:#999; }
+    @media(max-width:600px) {
+      .bottom-sheet.trading-open { padding:8px 8px max(12px,env(safe-area-inset-bottom)); }
+      .bottom-sheet.trading-open .calendar-full { padding:10px; border-radius:18px; }
+      .bottom-sheet.trading-open .goal-values { font-size:16px; column-gap:7px; }
+      .performance-compact { gap:2px; margin-top:16px; }
+      .bottom-sheet.trading-open .calendar-days { gap:4px 3px; }
+      .bottom-sheet.trading-open .calendar-day { min-height:clamp(50px,12vw,72px); padding:6px 2px; border-radius:9px; }
+      .bottom-sheet.trading-open .calendar-amount { font-size:clamp(7px,2vw,11px); }
+    }
+    @media(prefers-reduced-motion:reduce) { .performance-compact { transition:none; } }
     .generic-sheet[data-visible="false"] { display: none; }
 
     .calendar-header {
@@ -576,13 +641,16 @@
         </section>
         <div class="calendar-header">
           <button class="calendar-control" id="month-prev" type="button" aria-label="Previous month">←</button>
-          <h2 class="calendar-title" id="calendar-title">July 2026</h2>
+          <h2 class="calendar-title" id="calendar-title" role="button" tabindex="0" aria-expanded="false">July 2026</h2>
           <button class="calendar-control" id="month-next" type="button" aria-label="Next month">→</button>
         </div>
-        <div class="calendar-weekdays">
-          <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+        <div class="performance-compact" id="performance-compact" aria-label="Ten-day performance strip"></div>
+        <div class="calendar-expanded" id="calendar-expanded" hidden>
+          <div class="calendar-weekdays">
+            <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+          </div>
+          <div class="calendar-days" id="calendar-days"></div>
         </div>
-        <div class="calendar-days" id="calendar-days"></div>
         <section class="calendar-editor" id="calendar-editor" hidden aria-label="Редактор сумм календаря">
           <div class="editor-heading"><span>Изменить сумму</span><button class="editor-close" id="editor-close" type="button" aria-label="Закрыть редактор">×</button></div>
           <label class="editor-amount-label" for="editor-amount">Сумма в USD (можно отрицательную)</label>
@@ -670,6 +738,9 @@
     const genericSheet = document.getElementById("generic-sheet");
     const calendarFull = document.getElementById("calendar-full");
     const calendarTitle = document.getElementById("calendar-title");
+    const performanceCompact = document.getElementById("performance-compact");
+    const calendarExpanded = document.getElementById("calendar-expanded");
+    let calendarIsExpanded = false;
     const calendarDays = document.getElementById("calendar-days");
     const calendarDetail = document.getElementById("calendar-detail");
     const calendarEditor = document.getElementById("calendar-editor");
@@ -1123,8 +1194,37 @@
       calendarDetail.textContent = "Сумма " + money(amount) + " сохранена для " + (daysCount === 1 ? formatEditorDate(start) : daysCount + " дней");
     }
 
+    function renderCompactPerformance() {
+      const key = monthKey(visibleMonth);
+      const month = calendarData.months[key] || {};
+      const { count } = monthDays(visibleMonth);
+      const todayInMonth = key === todayKey.slice(0,7) ? Number(todayKey.slice(-2)) : Math.min(count, today.getUTCDate());
+      const firstDay = Math.max(1, Math.min(count - 9, todayInMonth - 4));
+      performanceCompact.innerHTML = "";
+      for (let day = firstDay; day <= Math.min(count, firstDay + 9); day++) {
+        const dateKey = key + "-" + String(day).padStart(2,"0");
+        const value = month.days && month.days[String(day)];
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "performance-mini" + (typeof value === "number" ? (value < 0 ? " negative" : " positive") : "") + (dateKey === todayKey ? " today" : "") + (dateKey > todayKey ? " future" : "");
+        const dateLabel = day + " " + new Intl.DateTimeFormat("en",{month:"short",timeZone:"UTC"}).format(visibleMonth);
+        item.innerHTML = '<span class="date">' + dateLabel + '</span><span class="value">' + (typeof value === "number" ? money(value) : "—") + '</span>';
+        item.addEventListener("click", () => { selectedDate = dateKey; setCalendarExpanded(true); renderCalendar(); });
+        performanceCompact.appendChild(item);
+      }
+    }
+    function setCalendarExpanded(expanded) {
+      calendarIsExpanded = Boolean(expanded);
+      calendarExpanded.hidden = !calendarIsExpanded;
+      calendarTitle.setAttribute("aria-expanded", String(calendarIsExpanded));
+      performanceCompact.style.maxHeight = calendarIsExpanded ? "0" : "100px";
+      performanceCompact.style.opacity = calendarIsExpanded ? "0" : "1";
+      performanceCompact.style.margin = calendarIsExpanded ? "0" : "";
+    }
     function renderCalendar() {
       updateGoalProgress(visibleMonth);
+      renderCompactPerformance();
+      calendarExpanded.hidden = !calendarIsExpanded;
       const key = monthKey(visibleMonth);
       const month = calendarData.months[key] || {};
       const { count, offset } = monthDays(visibleMonth);
@@ -1207,6 +1307,7 @@
 
     function changeMonth(delta) {
       visibleMonth = new Date(Date.UTC(visibleMonth.getUTCFullYear(), visibleMonth.getUTCMonth() + delta, 1));
+      setCalendarExpanded(false);
       selectedDate = null;
       if (editorActive) closeCalendarEditor();
       calendarDetail.textContent = "Выбери день, чтобы посмотреть сумму";
@@ -1257,6 +1358,7 @@
       backdrop.dataset.open = "true";
       document.body.classList.add("sheet-open");
       if (showCalendar) {
+        setCalendarExpanded(false);
         visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
         selectedDate = todayKey;
         calendarDetail.textContent = "Сегодня · " + today.toLocaleDateString("ru-RU");
@@ -1283,6 +1385,8 @@
     deleteDialogBackdrop.addEventListener("click", event => { if (event.target === deleteDialogBackdrop) closeDeleteDialog(); });
     document.getElementById("month-prev").addEventListener("click", () => changeMonth(-1));
     document.getElementById("month-next").addEventListener("click", () => changeMonth(1));
+    calendarTitle.addEventListener("click", () => setCalendarExpanded(!calendarIsExpanded));
+    calendarTitle.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setCalendarExpanded(!calendarIsExpanded); } });
     document.getElementById("editor-close").addEventListener("click", closeCalendarEditor);
     document.getElementById("editor-cancel").addEventListener("click", closeCalendarEditor);
     document.getElementById("editor-apply").addEventListener("click", applyCalendarEdit);
