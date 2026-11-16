@@ -602,7 +602,31 @@
       .calendar-day.range-start,.calendar-day.range-end { border-radius:10px; }
       .calendar-amount { font-size:clamp(6px,1.9vw,11px); }
     }
-</style>
+
+    /* Readability pass: taller trading calendar and larger mobile typography */
+    .bottom-sheet.trading-open .calendar-title { font-size:clamp(25px,5vw,32px); }
+    .bottom-sheet.trading-open .calendar-control { width:42px; height:42px; font-size:25px; }
+    .bottom-sheet.trading-open .calendar-weekdays span { min-height:34px; font-size:13px; }
+    .bottom-sheet.trading-open .calendar-days { gap:7px 5px; }
+    .bottom-sheet.trading-open .calendar-day {
+      min-height:clamp(76px,13vw,96px);
+      gap:7px;
+      padding:9px 4px;
+      border-radius:12px;
+    }
+    .bottom-sheet.trading-open .calendar-day-number { font-size:clamp(19px,3.2vw,23px); }
+    .bottom-sheet.trading-open .calendar-amount { font-size:clamp(11px,2vw,15px); }
+    .bottom-sheet.trading-open .performance-mini .date { font-size:clamp(11px,2vw,15px); }
+    .bottom-sheet.trading-open .performance-mini .value { font-size:clamp(10px,1.9vw,14px); }
+    @media(max-width:600px) {
+      .bottom-sheet.trading-open .calendar-days { gap:6px 4px; }
+      .bottom-sheet.trading-open .calendar-day { min-height:clamp(76px,18vw,92px); padding:9px 3px; }
+      .bottom-sheet.trading-open .calendar-day-number { font-size:20px; }
+      .bottom-sheet.trading-open .calendar-amount { font-size:clamp(10px,2.7vw,13px); }
+      .bottom-sheet.trading-open .calendar-weekdays span { min-height:34px; font-size:12px; }
+    }
+
+  </style>
 </head>
 <body>
   <main class="dashboard" aria-label="Dashboard layout">
