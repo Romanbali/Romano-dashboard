@@ -472,8 +472,15 @@
     .calendar-days { gap:4px 3px; margin-top:9px; }
     .calendar-day { min-height:clamp(48px,10vw,72px); gap:4px; padding:4px 1px; border:1px solid transparent; border-radius:13px; background:#fff; }
     .calendar-day.selected { background:#f1f3ff; border-color:#dfe4ff; }
-    .calendar-day.today { border:0; background:#4f6fe5; }
-    .calendar-day.today .calendar-day-number { color:#fff; }
+    .calendar-day.today {
+      position:relative; z-index:2;
+      border:1px solid #4565dc; border-radius:13px;
+      color:#fff;
+      background:linear-gradient(145deg,#718cff 0%,#536fe0 55%,#405bc8 100%);
+      box-shadow:0 4px 11px rgba(69,98,211,.28),inset 0 1px 0 rgba(255,255,255,.28);
+    }
+    .calendar-day.today .calendar-day-number { color:#fff; font-weight:850; }
+    .calendar-day.today .calendar-amount { color:rgba(255,255,255,.94); }
     .calendar-day-number { color:#222838; font-weight:650; }
     .calendar-amount { font-weight:750; }
     .calendar-day.range-start,.calendar-day.range-end { background:#4f6fe5; border-color:#4f6fe5; border-radius:10px; }
