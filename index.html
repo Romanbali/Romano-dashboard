@@ -843,73 +843,58 @@
       .stress-day strong { font-size:clamp(8px,1.8vw,12px); }
     }
 
+
+    /* Monthly balance calendar embedded in the full-width site header. */
+    .site-header {
+      display:block !important; height:auto !important; min-height:0 !important;
+      padding:clamp(10px,1.8vw,20px) !important; overflow:visible !important;
+      background:#050505 !important; border:1px solid #252525 !important;
+      border-radius:0 0 22px 22px !important; box-shadow:0 8px 28px rgba(0,0,0,.16) !important;
+    }
+    .site-header .header-calendar,
+    .site-header .header-calendar[data-visible="true"] {
+      display:block !important; width:100% !important; max-width:none !important; margin:0 !important;
+      padding:14px clamp(12px,2vw,24px) !important; border:1px solid rgba(220,220,205,.32) !important;
+      border-radius:18px !important; background:linear-gradient(145deg,#0d0d0d,#030303) !important;
+      color:#f2f2f2 !important; box-shadow:inset 0 0 0 1px rgba(255,255,255,.025) !important;
+    }
+    .site-header .goal-overview { margin-bottom:8px !important; }
+    .site-header .goal-card { padding:10px 14px !important; border:0 !important; background:linear-gradient(145deg,#0c0c0c,#080808) !important; box-shadow:none !important; }
+    .site-header .goal-values { color:#f2f2f2 !important; }
+    .site-header .goal-values #goal-current { color:#f4ed16 !important; }
+    .site-header .goal-values #goal-total,.site-header .deposit-summary strong { color:#d7d7d7 !important; }
+    .site-header .deposit-summary span { color:#929292 !important; }
+    .site-header .goal-track-wrap { padding:8px 0 2px !important; }
+    .site-header .goal-track { height:5px !important; background:#414141 !important; }
+    .site-header .goal-fill { background:#f4ed16 !important; }
+    .site-header .goal-percent { color:#f4ed16 !important; }
+    .site-header .calendar-header { grid-template-columns:38px minmax(0,1fr) 38px !important; padding:6px 0 8px !important; border:0 !important; }
+    .site-header .calendar-title { color:#f2f2f2 !important; font-size:clamp(20px,3vw,28px) !important; }
+    .site-header .calendar-control { width:36px !important; height:36px !important; border:1px solid #303030 !important; border-radius:50% !important; background:#151515 !important; color:#d8d8d8 !important; }
+    .site-header .performance-compact { margin:8px 0 4px !important; }
+    .site-header .performance-mini { color:#d8d8d8 !important; }
+    .site-header .performance-mini.today { background:#1c1c12 !important; }
+    .site-header .calendar-weekdays { margin:0 0 8px !important; padding:5px !important; gap:4px !important; border-radius:12px !important; background:#111 !important; }
+    .site-header .calendar-weekdays span { min-height:25px !important; background:transparent !important; color:#aaa !important; }
+    .site-header .calendar-days { gap:6px !important; margin:0 !important; }
+    .site-header .calendar-day { min-height:clamp(56px,8vw,88px) !important; padding:8px 6px 10px !important; border:1px solid #202020 !important; border-radius:12px !important; background:linear-gradient(145deg,#121212,#0d0d0d) !important; color:#e7e7e7 !important; }
+    .site-header .calendar-day-number { color:#e7e7e7 !important; }
+    .site-header .calendar-amount { color:#f4ed16 !important; }
+    .site-header .calendar-amount.negative { color:#ee695d !important; }
+    .site-header .calendar-day.today { border-color:rgba(244,237,22,.55) !important; background:#17170e !important; }
+    @media(max-width:600px) {
+      .site-header { padding:8px !important; }
+      .site-header .header-calendar { padding:10px 8px !important; }
+      .site-header .calendar-days { gap:3px !important; }
+      .site-header .calendar-day { min-height:56px !important; padding:6px 2px !important; }
+    }
+
   </style>
 </head>
 <body>
   <main class="dashboard" aria-label="Dashboard layout">
-    <header class="site-header" aria-label="Site header"></header>
-    <aside class="rail" aria-hidden="true"></aside>
-    <section class="workspace" aria-label="Dashboard workspace">
-      <div class="grid" aria-label="Dashboard blocks">
-        <div class="tile-row row-one">
-          <button class="tile trading-tile" id="calendar-launch" type="button" aria-label="Open monthly trading calendar">
-            <div class="trading-preview stress-preview" id="trading-preview">
-              <div class="stress-preview-head">
-                <span class="trading-preview-month" id="preview-month">NOV 2026</span>
-                <strong class="trading-preview-balance" id="preview-balance">$500</strong>
-              </div>
-              <div class="stress-chart-wrap">
-                <svg class="stress-chart" viewBox="0 0 700 150" preserveAspectRatio="none" role="img" aria-label="График результатов за последние семь дней">
-                  <g id="preview-chart-bars"></g>
-                  <path id="preview-chart-line" d="" fill="none" stroke="#e45bd1" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <g id="preview-chart-points"></g>
-                </svg>
-              </div>
-              <div class="stress-summary">
-                <strong id="preview-week-total">+$0.00</strong>
-                <div class="stress-summary-meta">
-                  <span id="preview-week-average">СРЕДНЕЕ $0.00</span>
-                  <span id="preview-week-range">ДИАПАЗОН $0.00</span>
-                </div>
-              </div>
-              <div class="stress-days" id="preview-days"></div>
-              <div hidden>
-                <span id="preview-progress-current"></span>
-                <span id="preview-progress-target"></span>
-                <span id="preview-progress-fill"></span>
-              </div>
-            </div>
-          </button>
-        </div>
-        <div class="tile-row row-two">
-          <button class="tile" type="button" aria-label="Open block 5"></button>
-          <button class="tile" type="button" aria-label="Open block 6"></button>
-        </div>
-        <div class="tile-row row-three">
-          <button class="tile" type="button" aria-label="Open block 7"></button>
-          <button class="tile" type="button" aria-label="Open block 8"></button>
-          <button class="tile" type="button" aria-label="Open block 9"></button>
-        </div>
-        <div class="tile-row row-four">
-          <button class="tile" type="button" aria-label="Open block 10"></button>
-          <button class="tile" type="button" aria-label="Open block 11"></button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div class="sheet-backdrop" id="sheet-backdrop"></div>
-  <section class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true" aria-label="Block details" aria-hidden="true" data-open="false">
-    <div class="sheet-handle-area" id="sheet-handle-area" aria-label="Drag down to close"><span class="sheet-handle"></span></div>
-    <div class="sheet-content">
-      <button class="trading-close" id="trading-close" type="button" aria-label="Свернуть календарь">×</button>
-      <div class="generic-sheet" id="generic-sheet" data-visible="true">
-        <div class="sheet-placeholder"></div>
-        <div class="sheet-line wide"></div>
-        <div class="sheet-line medium"></div>
-        <div class="sheet-placeholder-card"></div>
-      </div>
-      <div class="calendar-full" id="calendar-full" data-visible="false" aria-label="Monthly balance calendar">
+    <header class="site-header" aria-label="Site header">
+      <div class="calendar-full header-calendar" id="calendar-full" data-visible="true" aria-label="Monthly balance calendar">
         <section class="goal-overview" aria-label="Прогресс и депозит">
           <div class="goal-card">
             <div class="goal-topline">
@@ -989,6 +974,69 @@
         </div>
         <div class="calendar-detail" id="calendar-detail" aria-live="polite">Выбери день, чтобы посмотреть сумму</div>
       </div>
+    </header>
+    <aside class="rail" aria-hidden="true"></aside>
+    <section class="workspace" aria-label="Dashboard workspace">
+      <div class="grid" aria-label="Dashboard blocks">
+        <div class="tile-row row-one">
+          <button class="tile trading-tile" id="calendar-launch" type="button" aria-label="Open monthly trading calendar">
+            <div class="trading-preview stress-preview" id="trading-preview">
+              <div class="stress-preview-head">
+                <span class="trading-preview-month" id="preview-month">NOV 2026</span>
+                <strong class="trading-preview-balance" id="preview-balance">$500</strong>
+              </div>
+              <div class="stress-chart-wrap">
+                <svg class="stress-chart" viewBox="0 0 700 150" preserveAspectRatio="none" role="img" aria-label="График результатов за последние семь дней">
+                  <g id="preview-chart-bars"></g>
+                  <path id="preview-chart-line" d="" fill="none" stroke="#e45bd1" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <g id="preview-chart-points"></g>
+                </svg>
+              </div>
+              <div class="stress-summary">
+                <strong id="preview-week-total">+$0.00</strong>
+                <div class="stress-summary-meta">
+                  <span id="preview-week-average">СРЕДНЕЕ $0.00</span>
+                  <span id="preview-week-range">ДИАПАЗОН $0.00</span>
+                </div>
+              </div>
+              <div class="stress-days" id="preview-days"></div>
+              <div hidden>
+                <span id="preview-progress-current"></span>
+                <span id="preview-progress-target"></span>
+                <span id="preview-progress-fill"></span>
+              </div>
+            </div>
+          </button>
+        </div>
+        <div class="tile-row row-two">
+          <button class="tile" type="button" aria-label="Open block 5"></button>
+          <button class="tile" type="button" aria-label="Open block 6"></button>
+        </div>
+        <div class="tile-row row-three">
+          <button class="tile" type="button" aria-label="Open block 7"></button>
+          <button class="tile" type="button" aria-label="Open block 8"></button>
+          <button class="tile" type="button" aria-label="Open block 9"></button>
+        </div>
+        <div class="tile-row row-four">
+          <button class="tile" type="button" aria-label="Open block 10"></button>
+          <button class="tile" type="button" aria-label="Open block 11"></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="sheet-backdrop" id="sheet-backdrop"></div>
+  <section class="bottom-sheet" id="bottom-sheet" role="dialog" aria-modal="true" aria-label="Block details" aria-hidden="true" data-open="false">
+    <div class="sheet-handle-area" id="sheet-handle-area" aria-label="Drag down to close"><span class="sheet-handle"></span></div>
+    <div class="sheet-content">
+      <button class="trading-close" id="trading-close" type="button" aria-label="Свернуть календарь">×</button>
+      <div class="generic-sheet" id="generic-sheet" data-visible="true">
+        <div class="sheet-placeholder"></div>
+        <div class="sheet-line wide"></div>
+        <div class="sheet-line medium"></div>
+        <div class="sheet-placeholder-card"></div>
+      </div>
+
       <section class="history-panel" id="history-panel" data-visible="false" aria-label="История операций">
         <div class="history-heading">
           <h2 class="history-title">История операций</h2>
