@@ -689,6 +689,40 @@
       .habit-day { border-radius:6px; font-size:10px; }
       .habit-stat { min-height:53px; padding:8px; }
     }
+
+    /* Readability pass: enforce legible type and remove oversized card spacing */
+    .bottom-sheet.habits-open { overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    .bottom-sheet.habits-open, .bottom-sheet.habits-open * { text-rendering:optimizeLegibility; }
+    .bottom-sheet.habits-open .habits-title { font-size:27px !important; line-height:1.2; }
+    .bottom-sheet.habits-open .habits-month-title { font-size:17px !important; }
+    .bottom-sheet.habits-open .habit-filter { font-size:13px !important; min-height:38px; }
+    .bottom-sheet.habits-open .habits-overview-item { min-height:76px; padding:12px; }
+    .bottom-sheet.habits-open .habits-overview-value { font-size:23px !important; line-height:1.15; }
+    .bottom-sheet.habits-open .habits-overview-label { font-size:11px !important; line-height:1.35; }
+    .bottom-sheet.habits-open .habit-legend { font-size:12px !important; margin-bottom:14px; }
+    .bottom-sheet.habits-open .habit-card { display:block; min-height:0; padding:14px 12px 13px; }
+    .bottom-sheet.habits-open .habit-card-top { margin-bottom:13px; }
+    .bottom-sheet.habits-open .habit-icon { width:48px; height:48px; flex-basis:48px; font-size:25px; }
+    .bottom-sheet.habits-open .habit-name { font-size:18px !important; line-height:1.25; }
+    .bottom-sheet.habits-open .habit-month-label { font-size:12px !important; line-height:1.3; }
+    .bottom-sheet.habits-open .habit-streak { font-size:14px !important; padding:8px 10px; }
+    .bottom-sheet.habits-open .habit-action { width:32px; height:32px; font-size:16px; }
+    .bottom-sheet.habits-open .habit-heatmap { gap:6px; }
+    .bottom-sheet.habits-open .habit-day { min-height:48px; aspect-ratio:auto; border-radius:8px; font-family:inherit !important; font-size:14px !important; font-weight:800 !important; line-height:1 !important; }
+    .bottom-sheet.habits-open .habit-day.done { color:#fff !important; }
+    .bottom-sheet.habits-open .habit-day.missed { color:#535d6c !important; }
+    .bottom-sheet.habits-open .habit-day.rest-day { color:#a3a8b2 !important; }
+    .bottom-sheet.habits-open .habit-stats { gap:7px; margin-top:14px; }
+    .bottom-sheet.habits-open .habit-stat { min-height:66px; padding:10px; }
+    .bottom-sheet.habits-open .habit-stat strong { font-size:18px !important; line-height:1.2; }
+    .bottom-sheet.habits-open .habit-stat span { font-size:11px !important; line-height:1.3; }
+    .bottom-sheet.habits-open .habit-progress { height:8px; margin-top:12px; }
+    .bottom-sheet.habits-open .habit-schedule-label { font-size:11px !important; margin-top:8px; }
+    .bottom-sheet.habits-open .habit-card + .habit-card { margin-top:14px; }
+    @media(max-width:430px) {
+      .bottom-sheet.habits-open .habit-day { min-height:42px; font-size:13px !important; }
+      .bottom-sheet.habits-open .habit-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
   </style>
 </head>
 <body>
