@@ -1485,7 +1485,7 @@
       backdrop.dataset.open = "true";
       document.body.classList.add("sheet-open");
       if (showCalendar) {
-        setCalendarExpanded(false);
+        setCalendarExpanded(true);
         visibleMonth = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
         selectedDate = todayKey;
         calendarDetail.textContent = "Сегодня · " + today.toLocaleDateString("ru-RU");
