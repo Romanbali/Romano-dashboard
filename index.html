@@ -1703,7 +1703,27 @@
         amount.className = "day-value";
         amount.textContent = item.hasValue ? signed(item.value) : "—";
         button.append(weekday,day,amount);
+        let stressHoldTimer = null;
+        let stressHoldHandled = false;
+        button.addEventListener("pointerdown",event => {
+          if (event.button !== 0) return;
+          stressHoldHandled = false;
+          stressHoldTimer = window.setTimeout(() => {
+            stressHoldHandled = true;
+            openCalendarEditor(item.dateKey);
+          },480);
+        });
+        ["pointerup","pointercancel","pointerleave"].forEach(name => button.addEventListener(name,() => {
+          if (stressHoldTimer !== null) window.clearTimeout(stressHoldTimer);
+          stressHoldTimer = null;
+        }));
+        button.addEventListener("contextmenu",event => {
+          event.preventDefault();
+          stressHoldHandled = true;
+          openCalendarEditor(item.dateKey);
+        });
         button.addEventListener("click",() => {
+          if (stressHoldHandled) { stressHoldHandled = false; return; }
           selectedDate = item.dateKey;
           list.querySelectorAll(".stress-date-card").forEach(card => {
             const active = card === button;
