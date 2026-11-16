@@ -1154,6 +1154,46 @@
         row.append(name,streak);habitsPreviewList.appendChild(row);
       });
     }
+    function setHabitFormSchedule(days) {
+      const all=[0,1,2,3,4,5,6],work=[1,2,3,4,5],weekend=[0,6];
+      let type="custom";
+      if(days.length===7&&all.every(day=>days.includes(day)))type="daily";
+      else if(days.length===5&&work.every(day=>days.includes(day)))type="weekdays";
+      else if(days.length===2&&weekend.every(day=>days.includes(day)))type="weekends";
+      habitScheduleInput.value=type;
+      habitCustomDays.querySelectorAll("input").forEach(input=>{input.checked=days.includes(Number(input.value));});
+      habitCustomDays.classList.toggle("visible",type==="custom");
+    }
+    function selectedHabitDays() {
+      const type=habitScheduleInput.value;
+      if(type==="daily")return [0,1,2,3,4,5,6];
+      if(type==="weekdays")return [1,2,3,4,5];
+      if(type==="weekends")return [0,6];
+      return Array.from(habitCustomDays.querySelectorAll("input:checked")).map(input=>Number(input.value)).sort((a,b)=>a-b);
+    }
+    function resetHabitForm() {
+      editingHabitId=null;
+      habitAddForm.reset();
+      habitIconInput.value="✨";
+      setHabitFormSchedule([0,1,2,3,4,5,6]);
+      document.getElementById("habit-add-submit").textContent="Добавить";
+      document.getElementById("habit-form-title").textContent="Новая привычка";
+      habitAddForm.classList.remove("open");
+    }
+    function beginEditHabit(habit) {
+      editingHabitId=habit.id;
+      selectedHabitId=habit.id;
+      habitNameInput.value=habit.name;
+      habitIconInput.value=habit.icon||"✨";
+      habitCategoryInput.value=habit.category||"Здоровье";
+      setHabitFormSchedule(habitDaysOfWeek(habit));
+      document.getElementById("habit-add-submit").textContent="Сохранить";
+      document.getElementById("habit-form-title").textContent="Изменить привычку";
+      habitAddForm.classList.add("open");
+      renderHabitDock();
+      habitNameInput.focus();
+      habitAddForm.scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
     function renderHabitsOverview(habit) {
       habitsOverview.innerHTML="";
       if(!habit){habitsOverview.hidden=true;return;}
@@ -1246,6 +1286,7 @@
       if(!habitAddForm.classList.contains("open")) {
         resetHabitForm();habitAddForm.classList.add("open");
         if(!habitIconInput.value)habitIconInput.value="✨";
+        habitAddForm.scrollIntoView({behavior:"smooth",block:"nearest"});
       } else { resetHabitForm(); }
     });
     document.getElementById("habit-add-cancel").addEventListener("click",resetHabitForm);
@@ -1266,13 +1307,6 @@
         habits.push(created);selectedHabitId=created.id;
       }
       resetHabitForm();saveHabits();renderHabits();
-    });
-    habitsMonthPrev.addEventListener("click",()=>{
-      habitsVisibleMonth=new Date(habitsVisibleMonth.getFullYear(),habitsVisibleMonth.getMonth()-1,1);renderHabits();
-    });
-    habitsMonthNext.addEventListener("click",()=>{
-      if(habitsMonthNext.disabled)return;
-      habitsVisibleMonth=new Date(habitsVisibleMonth.getFullYear(),habitsVisibleMonth.getMonth()+1,1);renderHabits();
     });
     function loadHabits(){
       try {
