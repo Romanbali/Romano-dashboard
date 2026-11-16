@@ -37,6 +37,16 @@
       width: 100%;
       min-width: 0;
     }
+    .site-header {
+      grid-column: 1 / -1;
+      width: calc(100% + 2 * clamp(8px, 1.35vw, 15px));
+      height: clamp(42px, 6.2vw, 68px);
+      margin: calc(-1 * clamp(8px, 1.35vw, 15px)) calc(-1 * clamp(8px, 1.35vw, 15px)) 0;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: 0 2px 5px rgba(28, 36, 58, 0.055);
+    }
     .rail, .top-panel, .tile {
       background: var(--surface);
       border: 1px solid var(--stroke);
@@ -46,7 +56,7 @@
     .rail { min-height: clamp(590px, 86vh, 900px); }
     .workspace {
       display: grid;
-      grid-template-rows: clamp(42px, 6.2vw, 68px) auto;
+      grid-template-rows: auto;
       gap: clamp(10px, 1.65vw, 18px);
       min-width: 0;
     }
@@ -837,9 +847,9 @@
 </head>
 <body>
   <main class="dashboard" aria-label="Dashboard layout">
+    <header class="site-header" aria-label="Site header"></header>
     <aside class="rail" aria-hidden="true"></aside>
     <section class="workspace" aria-label="Dashboard workspace">
-      <header class="top-panel" aria-hidden="true"></header>
       <div class="grid" aria-label="Dashboard blocks">
         <div class="tile-row row-one">
           <button class="tile trading-tile" id="calendar-launch" type="button" aria-label="Open monthly trading calendar">
