@@ -881,6 +881,91 @@
       #calendar-launch .stress-day strong { font-size:clamp(13px,3.2vw,19px); }
     }
 
+
+    /* True edge-to-edge calendar view. The dashboard grid is removed entirely. */
+    html, body {
+      width:100% !important; height:100% !important; min-height:100% !important;
+      margin:0 !important; padding:0 !important; overflow:hidden !important;
+      background:#f6f7fb !important;
+    }
+    body.sheet-open { overflow:hidden !important; }
+    .dashboard { display:none !important; }
+    #sheet-backdrop, .sheet-backdrop { display:none !important; }
+    #bottom-sheet.bottom-sheet,
+    #bottom-sheet.bottom-sheet.trading-open {
+      position:fixed !important; inset:0 !important;
+      display:block !important; width:100vw !important; height:100dvh !important;
+      min-height:100dvh !important; max-height:none !important;
+      margin:0 !important; padding:0 !important; overflow-x:hidden !important; overflow-y:auto !important;
+      border:0 !important; border-radius:0 !important; box-shadow:none !important;
+      background:#f6f7fb !important; color:#20283a !important;
+      transform:none !important; transition:none !important;
+      opacity:1 !important; visibility:visible !important;
+    }
+    #bottom-sheet .sheet-handle-area,
+    #bottom-sheet .trading-close,
+    #bottom-sheet .generic-sheet { display:none !important; }
+    #bottom-sheet .sheet-content {
+      display:block !important; width:100% !important; max-width:none !important;
+      min-height:100dvh !important; margin:0 !important; padding:0 !important;
+      position:static !important;
+    }
+    #bottom-sheet .calendar-full,
+    #bottom-sheet .calendar-full[data-visible="false"],
+    #bottom-sheet .calendar-full[data-visible="true"] {
+      display:block !important; width:100% !important; max-width:none !important;
+      min-height:100dvh !important; margin:0 !important; padding:clamp(12px,2.5vw,28px) !important;
+      border:0 !important; border-radius:0 !important; box-shadow:none !important;
+      background:#f6f7fb !important; color:#20283a !important;
+    }
+    #bottom-sheet .goal-card {
+      width:100% !important; padding:clamp(14px,2.5vw,24px) !important;
+      border:1px solid #d9dce5 !important; border-radius:16px !important;
+      background:#fff !important; box-shadow:0 2px 7px rgba(28,36,58,.045) !important;
+    }
+    #bottom-sheet .goal-values { color:#20283a !important; }
+    #bottom-sheet .goal-values #goal-current { color:#2563eb !important; }
+    #bottom-sheet .goal-values #goal-total,
+    #bottom-sheet .deposit-summary strong { color:#20283a !important; }
+    #bottom-sheet .deposit-summary span { color:#697386 !important; }
+    #bottom-sheet .goal-track { background:#e5e8ee !important; }
+    #bottom-sheet .goal-fill { background:#2563eb !important; }
+    #bottom-sheet .goal-percent { color:#2563eb !important; }
+    #bottom-sheet .calendar-header { width:100% !important; margin-top:16px; }
+    #bottom-sheet .calendar-title { color:#20283a !important; }
+    #bottom-sheet .calendar-control {
+      border:1px solid #d9dce5 !important; background:#fff !important; color:#20283a !important;
+    }
+    #bottom-sheet .performance-compact { display:none !important; }
+    #bottom-sheet .calendar-expanded,
+    #bottom-sheet .calendar-expanded[hidden] { display:block !important; }
+    #bottom-sheet .calendar-weekdays { display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important; }
+    #bottom-sheet .calendar-days {
+      display:grid !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+      width:100% !important; gap:clamp(5px,1vw,12px) !important; margin:0 !important;
+    }
+    #bottom-sheet .calendar-day {
+      min-width:0 !important; min-height:clamp(76px,13vh,150px) !important;
+      padding:clamp(7px,1.4vw,16px) !important;
+      border:1px solid #e0e4ec !important; border-radius:12px !important;
+      background:#fff !important; color:#20283a !important;
+    }
+    #bottom-sheet .calendar-day-number { color:#20283a !important; }
+    #bottom-sheet .calendar-amount { color:#2563eb !important; }
+    #bottom-sheet .calendar-amount.negative { color:#e05252 !important; }
+    #bottom-sheet .calendar-detail { color:#596273 !important; background:#eef1f6 !important; }
+    #bottom-sheet .calendar-detail strong { color:#20283a !important; }
+    #bottom-sheet .history-panel, #bottom-sheet .backup-panel {
+      max-width:none !important; background:#fff !important;
+    }
+    @media(max-width:600px) {
+      #bottom-sheet .calendar-full { padding:10px 8px 20px !important; }
+      #bottom-sheet .calendar-days { gap:4px !important; }
+      #bottom-sheet .calendar-day {
+        min-height:clamp(68px,11vh,100px) !important; padding:6px 2px !important; border-radius:9px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2009,6 +2094,8 @@
     });
 
     loadCalendarData();
+    /* Open the real monthly calendar immediately, without a preview tile or drawer animation. */
+    openSheet(calendarLaunch, true);
   </script>
 </body>
 </html>
