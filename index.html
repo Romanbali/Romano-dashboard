@@ -96,7 +96,7 @@
     }
     .tile-row { display: grid; gap: var(--space); min-width: 0; }
     .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
-    .row-one #calendar-launch { grid-column: span 2; }
+    .row-one #calendar-launch { grid-column: 1 / span 2; }
     .row-one .tile { height: clamp(110px, 26vw, 180px); }
     .row-two { grid-template-columns: 2fr 1fr; }
     .row-three { grid-template-columns: 1fr 1fr 2fr; }
@@ -321,7 +321,7 @@
 
     @media(max-width:600px) {
       .row-one { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .row-one #calendar-launch { grid-column: span 2; }
+      .row-one #calendar-launch { grid-column: 1 / span 2; }
       .bottom-sheet.trading-open { top: 2dvh; right: 2vw; bottom: 2dvh; left: 2vw; max-height: 96dvh; padding: 10px 8px max(12px,env(safe-area-inset-bottom)); border-radius: 22px; }
     }
 
